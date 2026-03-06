@@ -27,18 +27,7 @@ jobs:
           cache: true
 
       - name: Install dependencies
-        run: flutter pub get 2>&1 | tee pub_get_android.txt; exit ${PIPESTATUS[0]}
-        continue-on-error: true
-
-      - name: Upload pub get log
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: pub-get-log-android
-          path: pub_get_android.txt
-
-      - name: Fail if pub get failed
-        run: grep -q "^Resolving dependencies\.\.\. " pub_get_android.txt || (cat pub_get_android.txt && exit 1)
+        run: flutter pub get
 
       - name: Build APK (release)
         run: flutter build apk --release
@@ -65,15 +54,7 @@ jobs:
           cache: true
 
       - name: Install dependencies
-        run: flutter pub get 2>&1 | tee pub_get_ios.txt; exit ${PIPESTATUS[0]}
-        continue-on-error: true
-
-      - name: Upload pub get log
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: pub-get-log-ios
-          path: pub_get_ios.txt
+        run: flutter pub get
 
       - name: Build iOS (no codesign)
         run: flutter build ios --release --no-codesign
