@@ -40,6 +40,9 @@ dependencies:
   latlong2: 0.9.1
   google_maps_flutter: 2.12.2
 
+  # Radar / Geofencing
+  flutter_radar: 3.12.4
+
   # Navigation
   go_router: 12.1.3
 
