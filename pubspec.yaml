@@ -39,9 +39,6 @@ dependencies:
   flutter_map: 8.2.2
   latlong2: 0.9.1
   google_maps_flutter: 2.12.2
-  mapbox_maps_flutter: 2.19.1
-  flutter_radar: 3.12.4
-  google_maps: 8.1.1
 
   # Navigation
   go_router: 12.1.3
