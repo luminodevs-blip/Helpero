@@ -84,8 +84,6 @@ class _FaqWidgetState extends State<FaqWidget> {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -223,7 +221,7 @@ class _FaqWidgetState extends State<FaqWidget> {
                                                           .fontStyle,
                                                 ),
                                                 fontSize: 17.0,
-                                                letterSpacing: 0.0,
+                                                letterSpacing: 0.2,
                                                 fontWeight: FontWeight.w500,
                                                 fontStyle:
                                                     FlutterFlowTheme.of(context)
@@ -249,6 +247,12 @@ class _FaqWidgetState extends State<FaqWidget> {
                                         onTap: () async {
                                           context.goNamed(
                                             HowDoIBookAServiceWidget.routeName,
+                                            queryParameters: {
+                                              'page': serializeParam(
+                                                'FAQ',
+                                                ParamType.String,
+                                              ),
+                                            }.withoutNulls,
                                             extra: <String, dynamic>{
                                               '__transition_info__':
                                                   TransitionInfo(
@@ -279,36 +283,38 @@ class _FaqWidgetState extends State<FaqWidget> {
                                                     8.0, 6.0, 8.0, 6.0),
                                             child: Text(
                                               'How to book?',
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        font:
-                                                            GoogleFonts.outfit(
-                                                          fontWeight:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontWeight,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        fontSize: 14.5,
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                      ),
+                                              style: FlutterFlowTheme.of(
+                                                      context)
+                                                  .bodyMedium
+                                                  .override(
+                                                    font: GoogleFonts.outfit(
+                                                      fontWeight:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodyMedium
+                                                              .fontWeight,
+                                                      fontStyle:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodyMedium
+                                                              .fontStyle,
+                                                    ),
+                                                    color: FlutterFlowTheme.of(
+                                                            context)
+                                                        .primaryText,
+                                                    fontSize: 14.5,
+                                                    letterSpacing: 0.2,
+                                                    fontWeight:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .bodyMedium
+                                                            .fontWeight,
+                                                    fontStyle:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .bodyMedium
+                                                            .fontStyle,
+                                                  ),
                                             ),
                                           ),
                                         ),
@@ -322,6 +328,12 @@ class _FaqWidgetState extends State<FaqWidget> {
                                           context.goNamed(
                                             CanICancelOrRescheduleMyBookingWidget
                                                 .routeName,
+                                            queryParameters: {
+                                              'page': serializeParam(
+                                                'FAQ',
+                                                ParamType.String,
+                                              ),
+                                            }.withoutNulls,
                                             extra: <String, dynamic>{
                                               '__transition_info__':
                                                   TransitionInfo(
@@ -370,7 +382,7 @@ class _FaqWidgetState extends State<FaqWidget> {
                                                                   .fontStyle,
                                                         ),
                                                         fontSize: 14.5,
-                                                        letterSpacing: 0.0,
+                                                        letterSpacing: 0.2,
                                                         fontWeight:
                                                             FlutterFlowTheme.of(
                                                                     context)
@@ -395,6 +407,12 @@ class _FaqWidgetState extends State<FaqWidget> {
                                           context.goNamed(
                                             WhatIsTheRefundPolicyWidget
                                                 .routeName,
+                                            queryParameters: {
+                                              'page': serializeParam(
+                                                'FAQ',
+                                                ParamType.String,
+                                              ),
+                                            }.withoutNulls,
                                             extra: <String, dynamic>{
                                               '__transition_info__':
                                                   TransitionInfo(
@@ -443,7 +461,7 @@ class _FaqWidgetState extends State<FaqWidget> {
                                                                   .fontStyle,
                                                         ),
                                                         fontSize: 14.5,
-                                                        letterSpacing: 0.0,
+                                                        letterSpacing: 0.2,
                                                         fontWeight:
                                                             FlutterFlowTheme.of(
                                                                     context)
@@ -477,6 +495,12 @@ class _FaqWidgetState extends State<FaqWidget> {
                                           context.goNamed(
                                             WhoAreTheHelperoProfessionalsWidget
                                                 .routeName,
+                                            queryParameters: {
+                                              'page': serializeParam(
+                                                'FAQ',
+                                                ParamType.String,
+                                              ),
+                                            }.withoutNulls,
                                             extra: <String, dynamic>{
                                               '__transition_info__':
                                                   TransitionInfo(
@@ -525,7 +549,7 @@ class _FaqWidgetState extends State<FaqWidget> {
                                                                   .fontStyle,
                                                         ),
                                                         fontSize: 14.5,
-                                                        letterSpacing: 0.0,
+                                                        letterSpacing: 0.2,
                                                         fontWeight:
                                                             FlutterFlowTheme.of(
                                                                     context)
@@ -549,6 +573,12 @@ class _FaqWidgetState extends State<FaqWidget> {
                                         onTap: () async {
                                           context.goNamed(
                                             WhatIsHelperoPlusWidget.routeName,
+                                            queryParameters: {
+                                              'page': serializeParam(
+                                                'FAQ',
+                                                ParamType.String,
+                                              ),
+                                            }.withoutNulls,
                                             extra: <String, dynamic>{
                                               '__transition_info__':
                                                   TransitionInfo(
@@ -597,7 +627,7 @@ class _FaqWidgetState extends State<FaqWidget> {
                                                                   .fontStyle,
                                                         ),
                                                         fontSize: 14.5,
-                                                        letterSpacing: 0.0,
+                                                        letterSpacing: 0.2,
                                                         fontWeight:
                                                             FlutterFlowTheme.of(
                                                                     context)
@@ -641,7 +671,7 @@ class _FaqWidgetState extends State<FaqWidget> {
                                                           .fontStyle,
                                                 ),
                                                 fontSize: 17.0,
-                                                letterSpacing: 0.0,
+                                                letterSpacing: 0.2,
                                                 fontWeight: FontWeight.w500,
                                                 fontStyle:
                                                     FlutterFlowTheme.of(context)
@@ -821,7 +851,11 @@ class _FaqWidgetState extends State<FaqWidget> {
                             ),
                           ),
                         ),
-                      ].addToStart(SizedBox(height: 4.0)),
+                      ].addToStart(SizedBox(
+                          height: valueOrDefault<double>(
+                        isWeb ? 16.0 : 44.0,
+                        44.0,
+                      ))),
                     ),
                   ),
                 ),

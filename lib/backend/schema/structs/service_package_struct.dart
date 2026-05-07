@@ -39,6 +39,15 @@ class ServicePackageStruct extends BaseStruct {
     String? configBanner,
     String? configHeader1,
     String? configHeader2,
+    int? kitchenDurationMinutes,
+    String? category,
+    String? categoryImageUrl,
+    double? categoryRating,
+    String? categoryBookingsCount,
+    String? categoryPackageHeader,
+    String? categoryMiniHeader,
+    String? categoryVideoUrl,
+    String? categorySlug,
   })  : _id = id,
         _name = name,
         _imageUrl = imageUrl,
@@ -59,7 +68,16 @@ class ServicePackageStruct extends BaseStruct {
         _durationMinutes = durationMinutes,
         _configBanner = configBanner,
         _configHeader1 = configHeader1,
-        _configHeader2 = configHeader2;
+        _configHeader2 = configHeader2,
+        _kitchenDurationMinutes = kitchenDurationMinutes,
+        _category = category,
+        _categoryImageUrl = categoryImageUrl,
+        _categoryRating = categoryRating,
+        _categoryBookingsCount = categoryBookingsCount,
+        _categoryPackageHeader = categoryPackageHeader,
+        _categoryMiniHeader = categoryMiniHeader,
+        _categoryVideoUrl = categoryVideoUrl,
+        _categorySlug = categorySlug;
 
   // "id" field.
   int? _id;
@@ -248,6 +266,75 @@ class ServicePackageStruct extends BaseStruct {
 
   bool hasConfigHeader2() => _configHeader2 != null;
 
+  // "kitchenDurationMinutes" field.
+  int? _kitchenDurationMinutes;
+  int get kitchenDurationMinutes => _kitchenDurationMinutes ?? 0;
+  set kitchenDurationMinutes(int? val) => _kitchenDurationMinutes = val;
+
+  void incrementKitchenDurationMinutes(int amount) =>
+      kitchenDurationMinutes = kitchenDurationMinutes + amount;
+
+  bool hasKitchenDurationMinutes() => _kitchenDurationMinutes != null;
+
+  // "category" field.
+  String? _category;
+  String get category => _category ?? '';
+  set category(String? val) => _category = val;
+
+  bool hasCategory() => _category != null;
+
+  // "categoryImageUrl" field.
+  String? _categoryImageUrl;
+  String get categoryImageUrl => _categoryImageUrl ?? '';
+  set categoryImageUrl(String? val) => _categoryImageUrl = val;
+
+  bool hasCategoryImageUrl() => _categoryImageUrl != null;
+
+  // "categoryRating" field.
+  double? _categoryRating;
+  double get categoryRating => _categoryRating ?? 0.0;
+  set categoryRating(double? val) => _categoryRating = val;
+
+  void incrementCategoryRating(double amount) =>
+      categoryRating = categoryRating + amount;
+
+  bool hasCategoryRating() => _categoryRating != null;
+
+  // "categoryBookingsCount" field.
+  String? _categoryBookingsCount;
+  String get categoryBookingsCount => _categoryBookingsCount ?? '';
+  set categoryBookingsCount(String? val) => _categoryBookingsCount = val;
+
+  bool hasCategoryBookingsCount() => _categoryBookingsCount != null;
+
+  // "categoryPackageHeader" field.
+  String? _categoryPackageHeader;
+  String get categoryPackageHeader => _categoryPackageHeader ?? '';
+  set categoryPackageHeader(String? val) => _categoryPackageHeader = val;
+
+  bool hasCategoryPackageHeader() => _categoryPackageHeader != null;
+
+  // "categoryMiniHeader" field.
+  String? _categoryMiniHeader;
+  String get categoryMiniHeader => _categoryMiniHeader ?? '';
+  set categoryMiniHeader(String? val) => _categoryMiniHeader = val;
+
+  bool hasCategoryMiniHeader() => _categoryMiniHeader != null;
+
+  // "categoryVideoUrl" field.
+  String? _categoryVideoUrl;
+  String get categoryVideoUrl => _categoryVideoUrl ?? '';
+  set categoryVideoUrl(String? val) => _categoryVideoUrl = val;
+
+  bool hasCategoryVideoUrl() => _categoryVideoUrl != null;
+
+  // "categorySlug" field.
+  String? _categorySlug;
+  String get categorySlug => _categorySlug ?? '';
+  set categorySlug(String? val) => _categorySlug = val;
+
+  bool hasCategorySlug() => _categorySlug != null;
+
   static ServicePackageStruct fromMap(Map<String, dynamic> data) =>
       ServicePackageStruct(
         id: castToType<int>(data['id']),
@@ -277,6 +364,15 @@ class ServicePackageStruct extends BaseStruct {
         configBanner: data['configBanner'] as String?,
         configHeader1: data['configHeader1'] as String?,
         configHeader2: data['configHeader2'] as String?,
+        kitchenDurationMinutes: castToType<int>(data['kitchenDurationMinutes']),
+        category: data['category'] as String?,
+        categoryImageUrl: data['categoryImageUrl'] as String?,
+        categoryRating: castToType<double>(data['categoryRating']),
+        categoryBookingsCount: data['categoryBookingsCount'] as String?,
+        categoryPackageHeader: data['categoryPackageHeader'] as String?,
+        categoryMiniHeader: data['categoryMiniHeader'] as String?,
+        categoryVideoUrl: data['categoryVideoUrl'] as String?,
+        categorySlug: data['categorySlug'] as String?,
       );
 
   static ServicePackageStruct? maybeFromMap(dynamic data) => data is Map
@@ -305,6 +401,15 @@ class ServicePackageStruct extends BaseStruct {
         'configBanner': _configBanner,
         'configHeader1': _configHeader1,
         'configHeader2': _configHeader2,
+        'kitchenDurationMinutes': _kitchenDurationMinutes,
+        'category': _category,
+        'categoryImageUrl': _categoryImageUrl,
+        'categoryRating': _categoryRating,
+        'categoryBookingsCount': _categoryBookingsCount,
+        'categoryPackageHeader': _categoryPackageHeader,
+        'categoryMiniHeader': _categoryMiniHeader,
+        'categoryVideoUrl': _categoryVideoUrl,
+        'categorySlug': _categorySlug,
       }.withoutNulls;
 
   @override
@@ -397,6 +502,42 @@ class ServicePackageStruct extends BaseStruct {
         ),
         'configHeader2': serializeParam(
           _configHeader2,
+          ParamType.String,
+        ),
+        'kitchenDurationMinutes': serializeParam(
+          _kitchenDurationMinutes,
+          ParamType.int,
+        ),
+        'category': serializeParam(
+          _category,
+          ParamType.String,
+        ),
+        'categoryImageUrl': serializeParam(
+          _categoryImageUrl,
+          ParamType.String,
+        ),
+        'categoryRating': serializeParam(
+          _categoryRating,
+          ParamType.double,
+        ),
+        'categoryBookingsCount': serializeParam(
+          _categoryBookingsCount,
+          ParamType.String,
+        ),
+        'categoryPackageHeader': serializeParam(
+          _categoryPackageHeader,
+          ParamType.String,
+        ),
+        'categoryMiniHeader': serializeParam(
+          _categoryMiniHeader,
+          ParamType.String,
+        ),
+        'categoryVideoUrl': serializeParam(
+          _categoryVideoUrl,
+          ParamType.String,
+        ),
+        'categorySlug': serializeParam(
+          _categorySlug,
           ParamType.String,
         ),
       }.withoutNulls;
@@ -510,6 +651,51 @@ class ServicePackageStruct extends BaseStruct {
           ParamType.String,
           false,
         ),
+        kitchenDurationMinutes: deserializeParam(
+          data['kitchenDurationMinutes'],
+          ParamType.int,
+          false,
+        ),
+        category: deserializeParam(
+          data['category'],
+          ParamType.String,
+          false,
+        ),
+        categoryImageUrl: deserializeParam(
+          data['categoryImageUrl'],
+          ParamType.String,
+          false,
+        ),
+        categoryRating: deserializeParam(
+          data['categoryRating'],
+          ParamType.double,
+          false,
+        ),
+        categoryBookingsCount: deserializeParam(
+          data['categoryBookingsCount'],
+          ParamType.String,
+          false,
+        ),
+        categoryPackageHeader: deserializeParam(
+          data['categoryPackageHeader'],
+          ParamType.String,
+          false,
+        ),
+        categoryMiniHeader: deserializeParam(
+          data['categoryMiniHeader'],
+          ParamType.String,
+          false,
+        ),
+        categoryVideoUrl: deserializeParam(
+          data['categoryVideoUrl'],
+          ParamType.String,
+          false,
+        ),
+        categorySlug: deserializeParam(
+          data['categorySlug'],
+          ParamType.String,
+          false,
+        ),
       );
 
   @override
@@ -539,7 +725,16 @@ class ServicePackageStruct extends BaseStruct {
         durationMinutes == other.durationMinutes &&
         configBanner == other.configBanner &&
         configHeader1 == other.configHeader1 &&
-        configHeader2 == other.configHeader2;
+        configHeader2 == other.configHeader2 &&
+        kitchenDurationMinutes == other.kitchenDurationMinutes &&
+        category == other.category &&
+        categoryImageUrl == other.categoryImageUrl &&
+        categoryRating == other.categoryRating &&
+        categoryBookingsCount == other.categoryBookingsCount &&
+        categoryPackageHeader == other.categoryPackageHeader &&
+        categoryMiniHeader == other.categoryMiniHeader &&
+        categoryVideoUrl == other.categoryVideoUrl &&
+        categorySlug == other.categorySlug;
   }
 
   @override
@@ -564,7 +759,16 @@ class ServicePackageStruct extends BaseStruct {
         durationMinutes,
         configBanner,
         configHeader1,
-        configHeader2
+        configHeader2,
+        kitchenDurationMinutes,
+        category,
+        categoryImageUrl,
+        categoryRating,
+        categoryBookingsCount,
+        categoryPackageHeader,
+        categoryMiniHeader,
+        categoryVideoUrl,
+        categorySlug
       ]);
 }
 
@@ -584,6 +788,15 @@ ServicePackageStruct createServicePackageStruct({
   String? configBanner,
   String? configHeader1,
   String? configHeader2,
+  int? kitchenDurationMinutes,
+  String? category,
+  String? categoryImageUrl,
+  double? categoryRating,
+  String? categoryBookingsCount,
+  String? categoryPackageHeader,
+  String? categoryMiniHeader,
+  String? categoryVideoUrl,
+  String? categorySlug,
 }) =>
     ServicePackageStruct(
       id: id,
@@ -601,4 +814,13 @@ ServicePackageStruct createServicePackageStruct({
       configBanner: configBanner,
       configHeader1: configHeader1,
       configHeader2: configHeader2,
+      kitchenDurationMinutes: kitchenDurationMinutes,
+      category: category,
+      categoryImageUrl: categoryImageUrl,
+      categoryRating: categoryRating,
+      categoryBookingsCount: categoryBookingsCount,
+      categoryPackageHeader: categoryPackageHeader,
+      categoryMiniHeader: categoryMiniHeader,
+      categoryVideoUrl: categoryVideoUrl,
+      categorySlug: categorySlug,
     );

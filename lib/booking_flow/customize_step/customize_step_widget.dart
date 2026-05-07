@@ -112,8 +112,6 @@ class _CustomizeStepWidgetState extends State<CustomizeStepWidget>
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -282,24 +280,31 @@ class _CustomizeStepWidgetState extends State<CustomizeStepWidget>
                                         0.0, 0.0, 0.0, 32.0),
                                     child:
                                         FutureBuilder<List<ServiceAddonsRow>>(
-                                      future: ServiceAddonsTable().queryRows(
-                                        queryFn: (q) => q
-                                            .eqOrNull(
-                                              'service_id',
-                                              FFAppState()
-                                                  .activeBookingDraft
-                                                  .serviceId,
-                                            )
-                                            .eqOrNull(
-                                              'display_stage',
-                                              FFAppConstants.kStageCustomize,
-                                            )
-                                            .eqOrNull(
-                                              'section_index',
-                                              1,
-                                            )
-                                            .order('sort_order',
-                                                ascending: true),
+                                      future: FFAppState().customize1(
+                                        uniqueQueryKey: FFAppState()
+                                            .activeBookingDraft
+                                            .serviceId
+                                            .toString(),
+                                        requestFn: () =>
+                                            ServiceAddonsTable().queryRows(
+                                          queryFn: (q) => q
+                                              .eqOrNull(
+                                                'service_id',
+                                                FFAppState()
+                                                    .activeBookingDraft
+                                                    .serviceId,
+                                              )
+                                              .eqOrNull(
+                                                'display_stage',
+                                                FFAppConstants.kStageCustomize,
+                                              )
+                                              .eqOrNull(
+                                                'section_index',
+                                                1,
+                                              )
+                                              .order('sort_order',
+                                                  ascending: true),
+                                        ),
                                       ),
                                       builder: (context, snapshot) {
                                         // Customize what your widget looks like when it's loading.
@@ -482,7 +487,7 @@ class _CustomizeStepWidgetState extends State<CustomizeStepWidget>
                                                                           TextSpan(
                                                                             text:
                                                                                 valueOrDefault<String>(
-                                                                              listViewServiceAddonsRow.price.toString(),
+                                                                              listViewServiceAddonsRow.price?.toString(),
                                                                               '21.99',
                                                                             ),
                                                                             style:
@@ -611,17 +616,23 @@ class _CustomizeStepWidgetState extends State<CustomizeStepWidget>
                                                                       FFAppState()
                                                                           .activeBookingDraft,
                                                                       listViewServiceAddonsRow
-                                                                          .id,
+                                                                          .id!,
                                                                       listViewServiceAddonsRow
                                                                           .name,
                                                                       listViewServiceAddonsRow
-                                                                          .price,
+                                                                          .price!,
                                                                       listViewServiceAddonsRow
                                                                           .compareAtPrice,
                                                                       listViewServiceAddonsRow
                                                                           .durationMinutes!,
                                                                       'remove',
                                                                       'customize',
+                                                                      valueOrDefault<
+                                                                          int>(
+                                                                        listViewServiceAddonsRow
+                                                                            .minSpecialists,
+                                                                        1,
+                                                                      ),
                                                                     );
                                                                     FFAppState()
                                                                             .activeBookingDraft =
@@ -699,7 +710,7 @@ class _CustomizeStepWidgetState extends State<CustomizeStepWidget>
                                                                       functions
                                                                           .getAddonQty(
                                                                               FFAppState().activeBookingDraft.selectedAddons.toList(),
-                                                                              listViewServiceAddonsRow.id)
+                                                                              listViewServiceAddonsRow.id!)
                                                                           .toString(),
                                                                       '0',
                                                                     ),
@@ -724,17 +735,23 @@ class _CustomizeStepWidgetState extends State<CustomizeStepWidget>
                                                                       FFAppState()
                                                                           .activeBookingDraft,
                                                                       listViewServiceAddonsRow
-                                                                          .id,
+                                                                          .id!,
                                                                       listViewServiceAddonsRow
                                                                           .name,
                                                                       listViewServiceAddonsRow
-                                                                          .price,
+                                                                          .price!,
                                                                       listViewServiceAddonsRow
                                                                           .compareAtPrice,
                                                                       listViewServiceAddonsRow
                                                                           .durationMinutes!,
                                                                       'add',
                                                                       'customize',
+                                                                      valueOrDefault<
+                                                                          int>(
+                                                                        listViewServiceAddonsRow
+                                                                            .minSpecialists,
+                                                                        1,
+                                                                      ),
                                                                     );
                                                                     FFAppState()
                                                                             .activeBookingDraft =
@@ -944,24 +961,31 @@ class _CustomizeStepWidgetState extends State<CustomizeStepWidget>
                                         0.0, 0.0, 0.0, 32.0),
                                     child:
                                         FutureBuilder<List<ServiceAddonsRow>>(
-                                      future: ServiceAddonsTable().queryRows(
-                                        queryFn: (q) => q
-                                            .eqOrNull(
-                                              'service_id',
-                                              FFAppState()
-                                                  .activeBookingDraft
-                                                  .serviceId,
-                                            )
-                                            .eqOrNull(
-                                              'display_stage',
-                                              FFAppConstants.kStageCustomize,
-                                            )
-                                            .eqOrNull(
-                                              'section_index',
-                                              2,
-                                            )
-                                            .order('sort_order',
-                                                ascending: true),
+                                      future: FFAppState().customize2(
+                                        uniqueQueryKey: FFAppState()
+                                            .activeBookingDraft
+                                            .serviceId
+                                            .toString(),
+                                        requestFn: () =>
+                                            ServiceAddonsTable().queryRows(
+                                          queryFn: (q) => q
+                                              .eqOrNull(
+                                                'service_id',
+                                                FFAppState()
+                                                    .activeBookingDraft
+                                                    .serviceId,
+                                              )
+                                              .eqOrNull(
+                                                'display_stage',
+                                                FFAppConstants.kStageCustomize,
+                                              )
+                                              .eqOrNull(
+                                                'section_index',
+                                                2,
+                                              )
+                                              .order('sort_order',
+                                                  ascending: true),
+                                        ),
                                       ),
                                       builder: (context, snapshot) {
                                         // Customize what your widget looks like when it's loading.
@@ -1144,7 +1168,7 @@ class _CustomizeStepWidgetState extends State<CustomizeStepWidget>
                                                                           TextSpan(
                                                                             text:
                                                                                 valueOrDefault<String>(
-                                                                              listViewServiceAddonsRow.price.toString(),
+                                                                              listViewServiceAddonsRow.price?.toString(),
                                                                               '21.99',
                                                                             ),
                                                                             style:
@@ -1273,17 +1297,19 @@ class _CustomizeStepWidgetState extends State<CustomizeStepWidget>
                                                                       FFAppState()
                                                                           .activeBookingDraft,
                                                                       listViewServiceAddonsRow
-                                                                          .id,
+                                                                          .id!,
                                                                       listViewServiceAddonsRow
                                                                           .name,
                                                                       listViewServiceAddonsRow
-                                                                          .price,
+                                                                          .price!,
                                                                       listViewServiceAddonsRow
                                                                           .compareAtPrice,
                                                                       listViewServiceAddonsRow
                                                                           .durationMinutes!,
                                                                       'remove',
                                                                       'upsell',
+                                                                      listViewServiceAddonsRow
+                                                                          .minSpecialists,
                                                                     );
                                                                     FFAppState()
                                                                             .activeBookingDraft =
@@ -1333,7 +1359,7 @@ class _CustomizeStepWidgetState extends State<CustomizeStepWidget>
                                                                     functions
                                                                         .getAddonQty(
                                                                             FFAppState().activeBookingDraft.selectedAddons.toList(),
-                                                                            listViewServiceAddonsRow.id)
+                                                                            listViewServiceAddonsRow.id!)
                                                                         .toString(),
                                                                     '0',
                                                                   ),
@@ -1379,17 +1405,19 @@ class _CustomizeStepWidgetState extends State<CustomizeStepWidget>
                                                                       FFAppState()
                                                                           .activeBookingDraft,
                                                                       listViewServiceAddonsRow
-                                                                          .id,
+                                                                          .id!,
                                                                       listViewServiceAddonsRow
                                                                           .name,
                                                                       listViewServiceAddonsRow
-                                                                          .price,
+                                                                          .price!,
                                                                       listViewServiceAddonsRow
                                                                           .compareAtPrice,
                                                                       listViewServiceAddonsRow
                                                                           .durationMinutes!,
                                                                       'add',
                                                                       'upsell',
+                                                                      listViewServiceAddonsRow
+                                                                          .minSpecialists,
                                                                     );
                                                                     FFAppState()
                                                                             .activeBookingDraft =
@@ -1474,7 +1502,11 @@ class _CustomizeStepWidgetState extends State<CustomizeStepWidget>
                             ),
                           ),
                         ),
-                      ].addToStart(SizedBox(height: 48.0)),
+                      ].addToStart(SizedBox(
+                          height: valueOrDefault<double>(
+                        isWeb ? 4.0 : 44.0,
+                        44.0,
+                      ))),
                     ),
                   ),
                 ),
@@ -1507,10 +1539,8 @@ class _CustomizeStepWidgetState extends State<CustomizeStepWidget>
                                   decoration: BoxDecoration(
                                     color: FlutterFlowTheme.of(context).primary,
                                     borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(10.0),
-                                      bottomRight: Radius.circular(0.0),
                                       topLeft: Radius.circular(10.0),
-                                      topRight: Radius.circular(0.0),
+                                      bottomLeft: Radius.circular(10.0),
                                     ),
                                   ),
                                 ).animateOnPageLoad(animationsMap[

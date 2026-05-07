@@ -84,8 +84,6 @@ class _MyAccountWidgetState extends State<MyAccountWidget> {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -301,6 +299,12 @@ class _MyAccountWidgetState extends State<MyAccountWidget> {
                                   onTap: () async {
                                     context.goNamed(
                                       WhatIsHelperoPlusWidget.routeName,
+                                      queryParameters: {
+                                        'page': serializeParam(
+                                          'My account',
+                                          ParamType.String,
+                                        ),
+                                      }.withoutNulls,
                                       extra: <String, dynamic>{
                                         '__transition_info__': TransitionInfo(
                                           hasTransition: true,

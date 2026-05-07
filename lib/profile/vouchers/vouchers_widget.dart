@@ -113,8 +113,6 @@ class _VouchersWidgetState extends State<VouchersWidget> {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -164,7 +162,7 @@ class _VouchersWidgetState extends State<VouchersWidget> {
                                         ),
                                       ),
                                       Text(
-                                        'Vouchers',
+                                        'Promocodes',
                                         style: FlutterFlowTheme.of(context)
                                             .bodyMedium
                                             .override(
@@ -871,7 +869,17 @@ class _VouchersWidgetState extends State<VouchersWidget> {
                                                       child: Container(
                                                         height: 560.0,
                                                         child:
-                                                            VoucherInfoWidget(),
+                                                            VoucherInfoWidget(
+                                                          title:
+                                                              voucherItem.title,
+                                                          description:
+                                                              voucherItem
+                                                                  .description,
+                                                          expiresIn: functions
+                                                              .getDaysLeftText(
+                                                                  voucherItem
+                                                                      .expiresAt),
+                                                        ),
                                                       ),
                                                     ),
                                                   );
@@ -916,13 +924,9 @@ class _VouchersWidgetState extends State<VouchersWidget> {
                                                         .secondaryBackground,
                                                     borderRadius:
                                                         BorderRadius.only(
-                                                      bottomLeft:
-                                                          Radius.circular(0.0),
-                                                      bottomRight:
-                                                          Radius.circular(8.0),
-                                                      topLeft:
-                                                          Radius.circular(0.0),
                                                       topRight:
+                                                          Radius.circular(8.0),
+                                                      bottomRight:
                                                           Radius.circular(8.0),
                                                     ),
                                                   ),
@@ -1142,7 +1146,11 @@ class _VouchersWidgetState extends State<VouchersWidget> {
                             ),
                           ),
                         ),
-                      ].addToStart(SizedBox(height: 48.0)),
+                      ].addToStart(SizedBox(
+                          height: valueOrDefault<double>(
+                        isWeb ? 4.0 : 44.0,
+                        44.0,
+                      ))),
                     ),
                   ),
                 ),

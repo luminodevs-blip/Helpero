@@ -14,8 +14,8 @@ class OrderItemsRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => OrderItemsTable();
 
-  int get id => getField<int>('id')!;
-  set id(int value) => setField<int>('id', value);
+  int? get id => getField<int>('id');
+  set id(int? value) => setField<int>('id', value);
 
   int? get orderId => getField<int>('order_id');
   set orderId(int? value) => setField<int>('order_id', value);

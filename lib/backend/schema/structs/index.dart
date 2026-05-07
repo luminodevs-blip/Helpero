@@ -16,6 +16,8 @@ export 'service_addon_struct.dart';
 export 'service_category_struct.dart';
 export 'service_package_struct.dart';
 export 'stripe_struct.dart';
+export 'support_message_struct.dart';
+export 'support_option_struct.dart';
 export 'user_profile_struct.dart';
 export 'user_voucher_struct.dart';
 export 'visit_details_struct.dart';

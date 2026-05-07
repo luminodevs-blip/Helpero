@@ -6,7 +6,14 @@ import 'add_baners_carusel_model.dart';
 export 'add_baners_carusel_model.dart';
 
 class AddBanersCaruselWidget extends StatefulWidget {
-  const AddBanersCaruselWidget({super.key});
+  const AddBanersCaruselWidget({
+    super.key,
+    required this.title,
+    required this.imageUrl,
+  });
+
+  final String? title;
+  final String? imageUrl;
 
   @override
   State<AddBanersCaruselWidget> createState() => _AddBanersCaruselWidgetState();
@@ -59,8 +66,8 @@ class _AddBanersCaruselWidgetState extends State<AddBanersCaruselWidget> {
             ],
             borderRadius: BorderRadius.circular(10.0),
             border: Border.all(
-              color: Color(0x17000000),
-              width: 2.0,
+              color: FlutterFlowTheme.of(context).alternate,
+              width: 1.0,
             ),
           ),
           child: Row(
@@ -78,7 +85,10 @@ class _AddBanersCaruselWidgetState extends State<AddBanersCaruselWidget> {
                     children: [
                       Expanded(
                         child: Text(
-                          'Too lazy to clean the house?',
+                          valueOrDefault<String>(
+                            widget.title,
+                            'Too lazy to clean the house?',
+                          ),
                           textAlign: TextAlign.start,
                           style:
                               FlutterFlowTheme.of(context).bodyMedium.override(
@@ -111,8 +121,7 @@ class _AddBanersCaruselWidgetState extends State<AddBanersCaruselWidget> {
                                     .bodyMedium
                                     .fontStyle,
                               ),
-                              color: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
+                              color: FlutterFlowTheme.of(context).alternate,
                               fontSize: 15.0,
                               letterSpacing: 0.2,
                               fontWeight: FlutterFlowTheme.of(context)
@@ -129,13 +138,14 @@ class _AddBanersCaruselWidgetState extends State<AddBanersCaruselWidget> {
               ),
               ClipRRect(
                 borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(0.0),
-                  bottomRight: Radius.circular(10.0),
-                  topLeft: Radius.circular(0.0),
                   topRight: Radius.circular(10.0),
+                  bottomRight: Radius.circular(10.0),
                 ),
                 child: Image.network(
-                  'https://images.unsplash.com/photo-1713110824336-f78c320dcf8e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NTYyMDF8MHwxfHNlYXJjaHwyM3x8Q0xFQU5JTkd8ZW58MHx8fHwxNzY2MjQwMTAxfDA&ixlib=rb-4.1.0&q=80&w=1080',
+                  valueOrDefault<String>(
+                    widget.imageUrl,
+                    'https://images.unsplash.com/photo-1713110824336-f78c320dcf8e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NTYyMDF8MHwxfHNlYXJjaHwyM3x8Q0xFQU5JTkd8ZW58MHx8fHwxNzY2MjQwMTAxfDA&ixlib=rb-4.1.0&q=80&w=1080',
+                  ),
                   width: 200.0,
                   height: double.infinity,
                   fit: BoxFit.cover,

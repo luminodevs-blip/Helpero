@@ -88,8 +88,6 @@ class _HowDoPlusDiscountsApplyAtCheckoutWidgetState
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -123,7 +121,7 @@ class _HowDoPlusDiscountsApplyAtCheckoutWidgetState
                                           ),
                                           onPressed: () async {
                                             context.goNamed(
-                                              BookingWidget.routeName,
+                                              SubscriptionWidget.routeName,
                                               extra: <String, dynamic>{
                                                 '__transition_info__':
                                                     TransitionInfo(
@@ -486,11 +484,9 @@ class _HowDoPlusDiscountsApplyAtCheckoutWidgetState
                                             color: FlutterFlowTheme.of(context)
                                                 .tertiary,
                                             borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(0.0),
+                                              topRight: Radius.circular(10.0),
                                               bottomRight:
                                                   Radius.circular(10.0),
-                                              topLeft: Radius.circular(0.0),
-                                              topRight: Radius.circular(10.0),
                                             ),
                                           ),
                                           child: Padding(
@@ -502,12 +498,9 @@ class _HowDoPlusDiscountsApplyAtCheckoutWidgetState
                                               decoration: BoxDecoration(
                                                 color: Color(0x8C8CA2F2),
                                                 borderRadius: BorderRadius.only(
-                                                  bottomLeft:
-                                                      Radius.circular(0.0),
-                                                  bottomRight:
-                                                      Radius.circular(10.0),
-                                                  topLeft: Radius.circular(0.0),
                                                   topRight:
+                                                      Radius.circular(10.0),
+                                                  bottomRight:
                                                       Radius.circular(10.0),
                                                 ),
                                                 border: Border.all(
@@ -828,8 +821,20 @@ class _HowDoPlusDiscountsApplyAtCheckoutWidgetState
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           16.0, 0.0, 16.0, 0.0),
                                       child: FFButtonWidget(
-                                        onPressed: () {
-                                          print('Button pressed ...');
+                                        onPressed: () async {
+                                          context.goNamed(
+                                            ConsultantChatWidget.routeName,
+                                            extra: <String, dynamic>{
+                                              '__transition_info__':
+                                                  TransitionInfo(
+                                                hasTransition: true,
+                                                transitionType:
+                                                    PageTransitionType.fade,
+                                                duration:
+                                                    Duration(milliseconds: 0),
+                                              ),
+                                            },
+                                          );
                                         },
                                         text: 'Need more help?',
                                         icon: Icon(

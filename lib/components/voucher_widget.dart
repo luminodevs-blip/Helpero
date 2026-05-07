@@ -80,10 +80,8 @@ class _VoucherWidgetState extends State<VoucherWidget> {
                         decoration: BoxDecoration(
                           color: FlutterFlowTheme.of(context).primary,
                           borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(8.0),
-                            bottomRight: Radius.circular(0.0),
                             topLeft: Radius.circular(8.0),
-                            topRight: Radius.circular(0.0),
+                            bottomLeft: Radius.circular(8.0),
                           ),
                         ),
                       ),

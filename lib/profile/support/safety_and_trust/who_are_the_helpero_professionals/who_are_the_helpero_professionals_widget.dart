@@ -10,7 +10,12 @@ import 'who_are_the_helpero_professionals_model.dart';
 export 'who_are_the_helpero_professionals_model.dart';
 
 class WhoAreTheHelperoProfessionalsWidget extends StatefulWidget {
-  const WhoAreTheHelperoProfessionalsWidget({super.key});
+  const WhoAreTheHelperoProfessionalsWidget({
+    super.key,
+    String? page,
+  }) : this.page = page ?? '';
+
+  final String page;
 
   static String routeName = 'Who_are_the_Helpero_professionals';
   static String routePath = '/whoAreTheHelperoProfessionals';
@@ -87,8 +92,6 @@ class _WhoAreTheHelperoProfessionalsWidgetState
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -121,19 +124,35 @@ class _WhoAreTheHelperoProfessionalsWidgetState
                                             size: 24.0,
                                           ),
                                           onPressed: () async {
-                                            context.goNamed(
-                                              BookingWidget.routeName,
-                                              extra: <String, dynamic>{
-                                                '__transition_info__':
-                                                    TransitionInfo(
-                                                  hasTransition: true,
-                                                  transitionType:
-                                                      PageTransitionType.fade,
-                                                  duration:
-                                                      Duration(milliseconds: 0),
-                                                ),
-                                              },
-                                            );
+                                            if (widget.page == 'FAQ') {
+                                              context.goNamed(
+                                                FaqWidget.routeName,
+                                                extra: <String, dynamic>{
+                                                  '__transition_info__':
+                                                      TransitionInfo(
+                                                    hasTransition: true,
+                                                    transitionType:
+                                                        PageTransitionType.fade,
+                                                    duration: Duration(
+                                                        milliseconds: 0),
+                                                  ),
+                                                },
+                                              );
+                                            } else {
+                                              context.goNamed(
+                                                SafetyAndTrustWidget.routeName,
+                                                extra: <String, dynamic>{
+                                                  '__transition_info__':
+                                                      TransitionInfo(
+                                                    hasTransition: true,
+                                                    transitionType:
+                                                        PageTransitionType.fade,
+                                                    duration: Duration(
+                                                        milliseconds: 0),
+                                                  ),
+                                                },
+                                              );
+                                            }
                                           },
                                         ),
                                       ),
@@ -766,8 +785,20 @@ class _WhoAreTheHelperoProfessionalsWidgetState
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           16.0, 0.0, 16.0, 0.0),
                                       child: FFButtonWidget(
-                                        onPressed: () {
-                                          print('Button pressed ...');
+                                        onPressed: () async {
+                                          context.goNamed(
+                                            ConsultantChatWidget.routeName,
+                                            extra: <String, dynamic>{
+                                              '__transition_info__':
+                                                  TransitionInfo(
+                                                hasTransition: true,
+                                                transitionType:
+                                                    PageTransitionType.fade,
+                                                duration:
+                                                    Duration(milliseconds: 0),
+                                              ),
+                                            },
+                                          );
                                         },
                                         text: 'Need more help?',
                                         icon: Icon(

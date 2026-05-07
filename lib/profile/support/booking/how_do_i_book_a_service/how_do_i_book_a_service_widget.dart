@@ -11,7 +11,12 @@ import 'how_do_i_book_a_service_model.dart';
 export 'how_do_i_book_a_service_model.dart';
 
 class HowDoIBookAServiceWidget extends StatefulWidget {
-  const HowDoIBookAServiceWidget({super.key});
+  const HowDoIBookAServiceWidget({
+    super.key,
+    required this.page,
+  });
+
+  final String? page;
 
   static String routeName = 'How_do_I_book_a_service';
   static String routePath = '/howDoIBookAService';
@@ -87,8 +92,6 @@ class _HowDoIBookAServiceWidgetState extends State<HowDoIBookAServiceWidget> {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -121,19 +124,35 @@ class _HowDoIBookAServiceWidgetState extends State<HowDoIBookAServiceWidget> {
                                             size: 24.0,
                                           ),
                                           onPressed: () async {
-                                            context.goNamed(
-                                              BookingWidget.routeName,
-                                              extra: <String, dynamic>{
-                                                '__transition_info__':
-                                                    TransitionInfo(
-                                                  hasTransition: true,
-                                                  transitionType:
-                                                      PageTransitionType.fade,
-                                                  duration:
-                                                      Duration(milliseconds: 0),
-                                                ),
-                                              },
-                                            );
+                                            if (widget.page == 'FAQ') {
+                                              context.goNamed(
+                                                FaqWidget.routeName,
+                                                extra: <String, dynamic>{
+                                                  '__transition_info__':
+                                                      TransitionInfo(
+                                                    hasTransition: true,
+                                                    transitionType:
+                                                        PageTransitionType.fade,
+                                                    duration: Duration(
+                                                        milliseconds: 0),
+                                                  ),
+                                                },
+                                              );
+                                            } else {
+                                              context.goNamed(
+                                                BookingWidget.routeName,
+                                                extra: <String, dynamic>{
+                                                  '__transition_info__':
+                                                      TransitionInfo(
+                                                    hasTransition: true,
+                                                    transitionType:
+                                                        PageTransitionType.fade,
+                                                    duration: Duration(
+                                                        milliseconds: 0),
+                                                  ),
+                                                },
+                                              );
+                                            }
                                           },
                                         ),
                                       ),
@@ -729,10 +748,8 @@ class _HowDoIBookAServiceWidgetState extends State<HowDoIBookAServiceWidget> {
                                       color:
                                           FlutterFlowTheme.of(context).primary,
                                       borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(0.0),
-                                        bottomRight: Radius.circular(10.0),
-                                        topLeft: Radius.circular(0.0),
                                         topRight: Radius.circular(10.0),
+                                        bottomRight: Radius.circular(10.0),
                                       ),
                                     ),
                                     child: Padding(
@@ -743,10 +760,8 @@ class _HowDoIBookAServiceWidgetState extends State<HowDoIBookAServiceWidget> {
                                         decoration: BoxDecoration(
                                           color: Color(0x8C8CA2F2),
                                           borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(0.0),
-                                            bottomRight: Radius.circular(10.0),
-                                            topLeft: Radius.circular(0.0),
                                             topRight: Radius.circular(10.0),
+                                            bottomRight: Radius.circular(10.0),
                                           ),
                                           border: Border.all(
                                             color: Colors.transparent,
@@ -1059,8 +1074,20 @@ class _HowDoIBookAServiceWidgetState extends State<HowDoIBookAServiceWidget> {
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           16.0, 0.0, 16.0, 0.0),
                                       child: FFButtonWidget(
-                                        onPressed: () {
-                                          print('Button pressed ...');
+                                        onPressed: () async {
+                                          context.goNamed(
+                                            ConsultantChatWidget.routeName,
+                                            extra: <String, dynamic>{
+                                              '__transition_info__':
+                                                  TransitionInfo(
+                                                hasTransition: true,
+                                                transitionType:
+                                                    PageTransitionType.fade,
+                                                duration:
+                                                    Duration(milliseconds: 0),
+                                              ),
+                                            },
+                                          );
                                         },
                                         text: 'Need more help?',
                                         icon: Icon(

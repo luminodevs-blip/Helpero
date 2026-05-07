@@ -14,8 +14,8 @@ class ServiceZonesRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => ServiceZonesTable();
 
-  int get id => getField<int>('id')!;
-  set id(int value) => setField<int>('id', value);
+  int? get id => getField<int>('id');
+  set id(int? value) => setField<int>('id', value);
 
   int? get cityId => getField<int>('city_id');
   set cityId(int? value) => setField<int>('city_id', value);

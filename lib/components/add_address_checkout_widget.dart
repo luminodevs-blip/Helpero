@@ -683,7 +683,11 @@ class _AddAddressCheckoutWidgetState extends State<AddAddressCheckoutWidget> {
                   ),
                 ],
               ),
-            ].addToStart(SizedBox(height: 18.0)),
+            ].addToStart(SizedBox(
+                height: valueOrDefault<double>(
+              isWeb ? 16.0 : 44.0,
+              44.0,
+            ))),
           ),
         ),
         Align(

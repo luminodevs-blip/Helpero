@@ -14,8 +14,8 @@ class ReviewsRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => ReviewsTable();
 
-  String get id => getField<String>('id')!;
-  set id(String value) => setField<String>('id', value);
+  String? get id => getField<String>('id');
+  set id(String? value) => setField<String>('id', value);
 
   int? get orderId => getField<int>('order_id');
   set orderId(int? value) => setField<int>('order_id', value);
@@ -32,8 +32,8 @@ class ReviewsRow extends SupabaseDataRow {
   String? get comment => getField<String>('comment');
   set comment(String? value) => setField<String>('comment', value);
 
-  DateTime get createdAt => getField<DateTime>('created_at')!;
-  set createdAt(DateTime value) => setField<DateTime>('created_at', value);
+  DateTime? get createdAt => getField<DateTime>('created_at');
+  set createdAt(DateTime? value) => setField<DateTime>('created_at', value);
 
   dynamic get photos => getField<dynamic>('photos');
   set photos(dynamic value) => setField<dynamic>('photos', value);

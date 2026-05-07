@@ -6,12 +6,14 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/custom_code/widgets/index.dart' as custom_widgets;
+import '/flutter_flow/custom_functions.dart' as functions;
 import '/flutter_flow/permissions_util.dart';
 import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'pick_on_map_model.dart';
 export 'pick_on_map_model.dart';
 
@@ -43,6 +45,12 @@ class _PickOnMapWidgetState extends State<PickOnMapWidget> {
       await requestPermission(locationPermission);
       _model.latLng = currentUserLocationValue;
       safeSetState(() {});
+      FFAppState().updateStNewAddressDraftStruct(
+        (e) => e
+          ..lat = functions.getLat(currentUserLocationValue)
+          ..lng = functions.getLng(currentUserLocationValue),
+      );
+      safeSetState(() {});
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
@@ -57,6 +65,8 @@ class _PickOnMapWidgetState extends State<PickOnMapWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -92,25 +102,43 @@ class _PickOnMapWidgetState extends State<PickOnMapWidget> {
                                         MediaQuery.sizeOf(context).width * 1.0,
                                     height:
                                         MediaQuery.sizeOf(context).height * 1.0,
-                                    child: custom_widgets.MapboxAnimatedMap(
+                                    child: custom_widgets.GoogleMapsAnimatedMap(
                                       width: MediaQuery.sizeOf(context).width *
                                           1.0,
                                       height:
                                           MediaQuery.sizeOf(context).height *
                                               1.0,
-                                      accessToken:
-                                          'pk.eyJ1IjoibWF4bWloMzg2IiwiYSI6ImNtanl0MHVncDFqc3YzZHM5aG9vZ2dqdTUifQ.x3C6VjgWTVMITzCwwArp_A',
+                                      apiKey:
+                                          'AIzaSyC_tcXVeDFmHjvpPz-ZMZXceu5PSppmXPM',
+                                      androidMapId: '6cb6a40ecec468b75636393f',
+                                      iOSMapId: '6cb6a40ecec468b75636393f',
+                                      webMapId: '6cb6a40ecec468b75636393f',
                                       zoomLevel: 15.0,
                                       allowInteraction: true,
-                                      styleId: 'mapbox/light-v11',
-                                      initialCenter: _model.latLng,
                                       language: 'en',
+                                      initialCenter: functions.combineLatLng(
+                                          valueOrDefault<double>(
+                                            FFAppState().stNewAddressDraft.lat,
+                                            43.6548253,
+                                          ),
+                                          valueOrDefault<double>(
+                                            FFAppState().stNewAddressDraft.lng,
+                                            -79.388447,
+                                          )),
                                       onAddressChanged:
                                           (address, city, lat, lng) async {
                                         _model.address = address;
                                         _model.city = city;
                                         _model.lat = lat;
                                         _model.lng = lng;
+                                        safeSetState(() {});
+                                        FFAppState()
+                                            .updateStNewAddressDraftStruct(
+                                          (e) => e
+                                            ..lat = lat
+                                            ..lng = lng
+                                            ..fullAddress = address,
+                                        );
                                         safeSetState(() {});
                                       },
                                     ),
@@ -119,7 +147,7 @@ class _PickOnMapWidgetState extends State<PickOnMapWidget> {
                                     alignment: AlignmentDirectional(1.0, 1.0),
                                     child: Padding(
                                       padding: EdgeInsetsDirectional.fromSTEB(
-                                          0.0, 0.0, 8.0, 20.0),
+                                          0.0, 0.0, 8.0, 30.0),
                                       child: InkWell(
                                         splashColor: Colors.transparent,
                                         focusColor: Colors.transparent,
@@ -175,7 +203,7 @@ class _PickOnMapWidgetState extends State<PickOnMapWidget> {
                             alignment: AlignmentDirectional(0.0, 1.0),
                             child: Container(
                               width: double.infinity,
-                              height: 288.0,
+                              height: 284.0,
                               decoration: BoxDecoration(
                                 boxShadow: [
                                   BoxShadow(
@@ -188,8 +216,6 @@ class _PickOnMapWidgetState extends State<PickOnMapWidget> {
                                   )
                                 ],
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(0.0),
-                                  bottomRight: Radius.circular(0.0),
                                   topLeft: Radius.circular(10.0),
                                   topRight: Radius.circular(10.0),
                                 ),
@@ -199,8 +225,14 @@ class _PickOnMapWidgetState extends State<PickOnMapWidget> {
                         ],
                       ),
                       Padding(
-                        padding:
-                            EdgeInsetsDirectional.fromSTEB(8.0, 48.0, 0.0, 0.0),
+                        padding: EdgeInsetsDirectional.fromSTEB(
+                            8.0,
+                            valueOrDefault<double>(
+                              isWeb ? 24.0 : 44.0,
+                              44.0,
+                            ),
+                            0.0,
+                            0.0),
                         child: FlutterFlowIconButton(
                           borderRadius: 25.0,
                           buttonSize: 44.0,
@@ -234,8 +266,6 @@ class _PickOnMapWidgetState extends State<PickOnMapWidget> {
                               )
                             ],
                             borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(0.0),
-                              bottomRight: Radius.circular(0.0),
                               topLeft: Radius.circular(10.0),
                               topRight: Radius.circular(10.0),
                             ),
@@ -339,7 +369,9 @@ class _PickOnMapWidgetState extends State<PickOnMapWidget> {
                                             Expanded(
                                               child: Text(
                                                 valueOrDefault<String>(
-                                                  _model.address,
+                                                  FFAppState()
+                                                      .stNewAddressDraft
+                                                      .fullAddress,
                                                   'Toronto, Ontario',
                                                 ),
                                                 style: FlutterFlowTheme.of(
@@ -417,6 +449,15 @@ class _PickOnMapWidgetState extends State<PickOnMapWidget> {
                                       'is_default': true,
                                       'property_type': 'House',
                                     });
+                                    await ProfilesTable().update(
+                                      data: {
+                                        'current_house_id': _model.newHouse?.id,
+                                      },
+                                      matchingRows: (rows) => rows.eqOrNull(
+                                        'id',
+                                        currentUserUid,
+                                      ),
+                                    );
                                     FFAppState().updateSelectedAddressStruct(
                                       (e) => e
                                         ..fullAddress = _model.address
@@ -426,10 +467,28 @@ class _PickOnMapWidgetState extends State<PickOnMapWidget> {
                                         ..isDefault = true
                                         ..id = _model.newHouse?.id,
                                     );
+                                    FFAppState().updateUserProfileStruct(
+                                      (e) => e
+                                        ..updateSavedAddresses(
+                                          (e) => e.add(
+                                              FFAppState().selectedAddress),
+                                        ),
+                                    );
+                                    safeSetState(() {});
+                                    FFAppState().updateUserProfileStruct(
+                                      (e) => e
+                                        ..currentHouseId = _model.newHouse?.id,
+                                    );
                                     safeSetState(() {});
 
                                     context.goNamed(
-                                      CompeteRegistrationWidget.routeName,
+                                      AddPropertyWidget.routeName,
+                                      queryParameters: {
+                                        'address': serializeParam(
+                                          _model.address,
+                                          ParamType.String,
+                                        ),
+                                      }.withoutNulls,
                                       extra: <String, dynamic>{
                                         '__transition_info__': TransitionInfo(
                                           hasTransition: true,
@@ -479,6 +538,23 @@ class _PickOnMapWidgetState extends State<PickOnMapWidget> {
                                   .addToEnd(SizedBox(height: 40.0)),
                             ),
                           ),
+                        ),
+                      ),
+                      Container(
+                        width: double.infinity,
+                        height: 2.0,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 6.0,
+                              color: Color(0x33000000),
+                              offset: Offset(
+                                0.0,
+                                2.0,
+                              ),
+                              spreadRadius: 2.0,
+                            )
+                          ],
                         ),
                       ),
                     ],

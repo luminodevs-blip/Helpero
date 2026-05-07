@@ -1,3 +1,5 @@
+import '/auth/supabase_auth/auth_util.dart';
+import '/backend/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -85,8 +87,6 @@ class _ConfidentiallyWidgetState extends State<ConfidentiallyWidget> {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -281,10 +281,6 @@ class _ConfidentiallyWidgetState extends State<ConfidentiallyWidget> {
                                                   child: ClipRRect(
                                                     borderRadius:
                                                         BorderRadius.only(
-                                                      bottomLeft:
-                                                          Radius.circular(0.0),
-                                                      bottomRight:
-                                                          Radius.circular(0.0),
                                                       topLeft:
                                                           Radius.circular(10.0),
                                                       topRight:
@@ -447,10 +443,6 @@ class _ConfidentiallyWidgetState extends State<ConfidentiallyWidget> {
                                                   child: ClipRRect(
                                                     borderRadius:
                                                         BorderRadius.only(
-                                                      bottomLeft:
-                                                          Radius.circular(0.0),
-                                                      bottomRight:
-                                                          Radius.circular(0.0),
                                                       topLeft:
                                                           Radius.circular(10.0),
                                                       topRight:
@@ -613,10 +605,6 @@ class _ConfidentiallyWidgetState extends State<ConfidentiallyWidget> {
                                                   child: ClipRRect(
                                                     borderRadius:
                                                         BorderRadius.only(
-                                                      bottomLeft:
-                                                          Radius.circular(0.0),
-                                                      bottomRight:
-                                                          Radius.circular(0.0),
                                                       topLeft:
                                                           Radius.circular(10.0),
                                                       topRight:
@@ -853,21 +841,7 @@ class _ConfidentiallyWidgetState extends State<ConfidentiallyWidget> {
                                             size: 24.0,
                                           ),
                                           title: 'Partners advertising ',
-                                          navigateTo: () async {
-                                            context.pushNamed(
-                                              TipsWidget.routeName,
-                                              extra: <String, dynamic>{
-                                                '__transition_info__':
-                                                    TransitionInfo(
-                                                  hasTransition: true,
-                                                  transitionType:
-                                                      PageTransitionType.fade,
-                                                  duration:
-                                                      Duration(milliseconds: 0),
-                                                ),
-                                              },
-                                            );
-                                          },
+                                          navigateTo: () async {},
                                         ),
                                       ),
                                     ),
@@ -929,21 +903,7 @@ class _ConfidentiallyWidgetState extends State<ConfidentiallyWidget> {
                                         size: 24.0,
                                       ),
                                       title: 'Privacy policy',
-                                      navigateTo: () async {
-                                        context.pushNamed(
-                                          TipsWidget.routeName,
-                                          extra: <String, dynamic>{
-                                            '__transition_info__':
-                                                TransitionInfo(
-                                              hasTransition: true,
-                                              transitionType:
-                                                  PageTransitionType.fade,
-                                              duration:
-                                                  Duration(milliseconds: 0),
-                                            ),
-                                          },
-                                        );
-                                      },
+                                      navigateTo: () async {},
                                     ),
                                   ),
                                 ),
@@ -961,21 +921,7 @@ class _ConfidentiallyWidgetState extends State<ConfidentiallyWidget> {
                                         size: 24.0,
                                       ),
                                       title: 'Download my data',
-                                      navigateTo: () async {
-                                        context.pushNamed(
-                                          TipsWidget.routeName,
-                                          extra: <String, dynamic>{
-                                            '__transition_info__':
-                                                TransitionInfo(
-                                              hasTransition: true,
-                                              transitionType:
-                                                  PageTransitionType.fade,
-                                              duration:
-                                                  Duration(milliseconds: 0),
-                                            ),
-                                          },
-                                        );
-                                      },
+                                      navigateTo: () async {},
                                     ),
                                   ),
                                 ),
@@ -983,8 +929,48 @@ class _ConfidentiallyWidgetState extends State<ConfidentiallyWidget> {
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       16.0, 0.0, 16.0, 18.0),
                                   child: FFButtonWidget(
-                                    onPressed: () {
-                                      print('Button pressed ...');
+                                    onPressed: () async {
+                                      var confirmDialogResponse =
+                                          await showDialog<bool>(
+                                                context: context,
+                                                builder: (alertDialogContext) {
+                                                  return AlertDialog(
+                                                    title:
+                                                        Text('Delete Account?'),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                alertDialogContext,
+                                                                false),
+                                                        child: Text('Cancel'),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                alertDialogContext,
+                                                                true),
+                                                        child: Text('Confirm'),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              ) ??
+                                              false;
+                                      await ProfilesTable().delete(
+                                        matchingRows: (rows) => rows.eqOrNull(
+                                          'id',
+                                          currentUserUid,
+                                        ),
+                                      );
+                                      GoRouter.of(context).prepareAuthEvent();
+                                      await authManager.signOut();
+                                      GoRouter.of(context)
+                                          .clearRedirectLocation();
+
+                                      context.goNamedAuth(
+                                          EntryRedirectWidget.routeName,
+                                          context.mounted);
                                     },
                                     text: 'Delete account',
                                     icon: FaIcon(
@@ -1039,7 +1025,11 @@ class _ConfidentiallyWidgetState extends State<ConfidentiallyWidget> {
                             ),
                           ),
                         ),
-                      ].addToStart(SizedBox(height: 4.0)),
+                      ].addToStart(SizedBox(
+                          height: valueOrDefault<double>(
+                        isWeb ? 4.0 : 44.0,
+                        44.0,
+                      ))),
                     ),
                   ),
                 ),

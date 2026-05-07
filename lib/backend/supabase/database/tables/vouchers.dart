@@ -14,8 +14,8 @@ class VouchersRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => VouchersTable();
 
-  int get id => getField<int>('id')!;
-  set id(int value) => setField<int>('id', value);
+  int? get id => getField<int>('id');
+  set id(int? value) => setField<int>('id', value);
 
   String? get code => getField<String>('code');
   set code(String? value) => setField<String>('code', value);

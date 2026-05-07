@@ -14,6 +14,11 @@ class HelperoSupabaseUser extends BaseAuthUser {
   AuthUserInfo get authUserInfo => AuthUserInfo(
         uid: user?.id,
         email: user?.email,
+        displayName: user?.userMetadata?['display_name'] ??
+            user?.userMetadata?['full_name'] ??
+            user?.userMetadata?['name'],
+        photoUrl: user?.userMetadata?['avatar_url'] ??
+            user?.userMetadata?['picture'],
         phoneNumber: user?.phone,
       );
 

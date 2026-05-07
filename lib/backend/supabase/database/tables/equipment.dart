@@ -14,8 +14,8 @@ class EquipmentRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => EquipmentTable();
 
-  String get id => getField<String>('id')!;
-  set id(String value) => setField<String>('id', value);
+  String? get id => getField<String>('id');
+  set id(String? value) => setField<String>('id', value);
 
   String get name => getField<String>('name')!;
   set name(String value) => setField<String>('name', value);

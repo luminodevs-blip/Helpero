@@ -16,8 +16,8 @@ class ServicePackageConfigsRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => ServicePackageConfigsTable();
 
-  int get id => getField<int>('id')!;
-  set id(int value) => setField<int>('id', value);
+  int? get id => getField<int>('id');
+  set id(int? value) => setField<int>('id', value);
 
   int? get serviceId => getField<int>('service_id');
   set serviceId(int? value) => setField<int>('service_id', value);

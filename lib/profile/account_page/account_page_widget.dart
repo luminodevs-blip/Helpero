@@ -6,8 +6,8 @@ import '/components/navbar_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/custom_functions.dart' as functions;
 import '/index.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,7 +38,6 @@ class _AccountPageWidgetState extends State<AccountPageWidget> {
     _model.textController ??= TextEditingController();
     _model.textFieldFocusNode ??= FocusNode();
 
-    _model.switchValue = true;
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
@@ -198,7 +197,14 @@ class _AccountPageWidgetState extends State<AccountPageWidget> {
                                                     padding:
                                                         MediaQuery.viewInsetsOf(
                                                             context),
-                                                    child: CartGeneralWidget(),
+                                                    child: Container(
+                                                      height: MediaQuery.sizeOf(
+                                                                  context)
+                                                              .height *
+                                                          0.95,
+                                                      child:
+                                                          CartGeneralWidget(),
+                                                    ),
                                                   ),
                                                 );
                                               },
@@ -210,12 +216,12 @@ class _AccountPageWidgetState extends State<AccountPageWidget> {
                                             height: 40.0,
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(25.0),
+                                                topRight: Radius.circular(25.0),
                                                 bottomLeft:
                                                     Radius.circular(25.0),
                                                 bottomRight:
                                                     Radius.circular(25.0),
-                                                topLeft: Radius.circular(25.0),
-                                                topRight: Radius.circular(25.0),
                                               ),
                                               shape: BoxShape.rectangle,
                                               border: Border.all(
@@ -266,6 +272,23 @@ class _AccountPageWidgetState extends State<AccountPageWidget> {
                                 child: TextFormField(
                                   controller: _model.textController,
                                   focusNode: _model.textFieldFocusNode,
+                                  onChanged: (_) => EasyDebounce.debounce(
+                                    '_model.textController',
+                                    Duration(milliseconds: 2000),
+                                    () async {
+                                      context.pushNamed(
+                                        SearchWidget.routeName,
+                                        extra: <String, dynamic>{
+                                          '__transition_info__': TransitionInfo(
+                                            hasTransition: true,
+                                            transitionType:
+                                                PageTransitionType.fade,
+                                            duration: Duration(milliseconds: 0),
+                                          ),
+                                        },
+                                      );
+                                    },
+                                  ),
                                   autofocus: false,
                                   enabled: true,
                                   obscureText: false,
@@ -400,8 +423,6 @@ class _AccountPageWidgetState extends State<AccountPageWidget> {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -546,7 +567,7 @@ class _AccountPageWidgetState extends State<AccountPageWidget> {
                                                                         String>(
                                                                   rowProfilesRow
                                                                       ?.lastName,
-                                                                  'Lastname',
+                                                                  'Last',
                                                                 ),
                                                                 style:
                                                                     TextStyle(),
@@ -586,10 +607,16 @@ class _AccountPageWidgetState extends State<AccountPageWidget> {
                                                         Text(
                                                           valueOrDefault<
                                                               String>(
-                                                            functions.formatPhoneNumber(
-                                                                rowProfilesRow
-                                                                    ?.phoneNumber),
-                                                            '+1 (123) 45-67-890',
+                                                            rowProfilesRow?.phoneNumber !=
+                                                                        null &&
+                                                                    rowProfilesRow
+                                                                            ?.phoneNumber !=
+                                                                        ''
+                                                                ? rowProfilesRow
+                                                                    ?.phoneNumber
+                                                                : rowProfilesRow
+                                                                    ?.email,
+                                                            'none',
                                                           ),
                                                           style: FlutterFlowTheme
                                                                   .of(context)
@@ -664,334 +691,246 @@ class _AccountPageWidgetState extends State<AccountPageWidget> {
                                       ],
                                     ),
                                   ),
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 8.0),
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        context.goNamed(
-                                          PaymentMethodWidget.routeName,
-                                          extra: <String, dynamic>{
-                                            '__transition_info__':
-                                                TransitionInfo(
-                                              hasTransition: true,
-                                              transitionType:
-                                                  PageTransitionType.fade,
-                                              duration:
-                                                  Duration(milliseconds: 0),
-                                            ),
+                                  ListView(
+                                    padding: EdgeInsets.zero,
+                                    primary: false,
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.vertical,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            0.0, 0.0, 0.0, 8.0),
+                                        child: InkWell(
+                                          splashColor: Colors.transparent,
+                                          focusColor: Colors.transparent,
+                                          hoverColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          onTap: () async {
+                                            context.goNamed(
+                                              PaymentMethodWidget.routeName,
+                                              extra: <String, dynamic>{
+                                                '__transition_info__':
+                                                    TransitionInfo(
+                                                  hasTransition: true,
+                                                  transitionType:
+                                                      PageTransitionType.fade,
+                                                  duration:
+                                                      Duration(milliseconds: 0),
+                                                ),
+                                              },
+                                            );
                                           },
-                                        );
-                                      },
-                                      child: wrapWithModel(
-                                        model: _model.menuItemModel1,
-                                        updateCallback: () =>
-                                            safeSetState(() {}),
-                                        child: MenuItemWidget(
-                                          title: 'Payments',
-                                          icon: Icon(
-                                            Icons.payment_rounded,
-                                            color: Color(0xFF778693),
-                                            size: 24.0,
+                                          child: wrapWithModel(
+                                            model: _model.menuItemModel1,
+                                            updateCallback: () =>
+                                                safeSetState(() {}),
+                                            child: MenuItemWidget(
+                                              title: 'Payments',
+                                              icon: Icon(
+                                                Icons.payment_rounded,
+                                                color: Color(0xFF778693),
+                                                size: 24.0,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 8.0),
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        context.goNamed(
-                                          VouchersWidget.routeName,
-                                          extra: <String, dynamic>{
-                                            '__transition_info__':
-                                                TransitionInfo(
-                                              hasTransition: true,
-                                              transitionType:
-                                                  PageTransitionType.fade,
-                                              duration:
-                                                  Duration(milliseconds: 0),
-                                            ),
+                                      Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            0.0, 0.0, 0.0, 8.0),
+                                        child: InkWell(
+                                          splashColor: Colors.transparent,
+                                          focusColor: Colors.transparent,
+                                          hoverColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          onTap: () async {
+                                            context.goNamed(
+                                              VouchersWidget.routeName,
+                                              extra: <String, dynamic>{
+                                                '__transition_info__':
+                                                    TransitionInfo(
+                                                  hasTransition: true,
+                                                  transitionType:
+                                                      PageTransitionType.fade,
+                                                  duration:
+                                                      Duration(milliseconds: 0),
+                                                ),
+                                              },
+                                            );
                                           },
-                                        );
-                                      },
-                                      child: wrapWithModel(
-                                        model: _model.menuItemModel2,
-                                        updateCallback: () =>
-                                            safeSetState(() {}),
-                                        child: MenuItemWidget(
-                                          title: 'Vouchers',
-                                          icon: Icon(
-                                            Icons.discount_outlined,
-                                            color: Color(0xFF778693),
-                                            size: 24.0,
+                                          child: wrapWithModel(
+                                            model: _model.menuItemModel2,
+                                            updateCallback: () =>
+                                                safeSetState(() {}),
+                                            child: MenuItemWidget(
+                                              title: 'Vouchers',
+                                              icon: Icon(
+                                                Icons.discount_outlined,
+                                                color: Color(0xFF778693),
+                                                size: 24.0,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 8.0),
-                                    child: wrapWithModel(
-                                      model: _model.menuItemModel3,
-                                      updateCallback: () => safeSetState(() {}),
-                                      child: MenuItemWidget(
-                                        title: 'Subscription',
-                                        icon: Icon(
-                                          Icons.stars_rounded,
-                                          color: Color(0xFF778693),
-                                          size: 22.0,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 8.0),
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        context.goNamed(
-                                          AddressesWidget.routeName,
-                                          extra: <String, dynamic>{
-                                            '__transition_info__':
-                                                TransitionInfo(
-                                              hasTransition: true,
-                                              transitionType:
-                                                  PageTransitionType.fade,
-                                              duration:
-                                                  Duration(milliseconds: 0),
-                                            ),
+                                      Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            0.0, 0.0, 0.0, 8.0),
+                                        child: InkWell(
+                                          splashColor: Colors.transparent,
+                                          focusColor: Colors.transparent,
+                                          hoverColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          onTap: () async {
+                                            context.goNamed(
+                                              AddressesWidget.routeName,
+                                              extra: <String, dynamic>{
+                                                '__transition_info__':
+                                                    TransitionInfo(
+                                                  hasTransition: true,
+                                                  transitionType:
+                                                      PageTransitionType.fade,
+                                                  duration:
+                                                      Duration(milliseconds: 0),
+                                                ),
+                                              },
+                                            );
                                           },
-                                        );
-                                      },
-                                      child: wrapWithModel(
-                                        model: _model.menuItemModel4,
-                                        updateCallback: () =>
-                                            safeSetState(() {}),
-                                        child: MenuItemWidget(
-                                          title: 'Addresses',
-                                          icon: FaIcon(
-                                            FontAwesomeIcons.compass,
-                                            color: Color(0xFF778693),
-                                            size: 22.0,
+                                          child: wrapWithModel(
+                                            model: _model.menuItemModel3,
+                                            updateCallback: () =>
+                                                safeSetState(() {}),
+                                            child: MenuItemWidget(
+                                              title: 'Addresses',
+                                              icon: FaIcon(
+                                                FontAwesomeIcons.compass,
+                                                color: Color(0xFF778693),
+                                                size: 22.0,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 8.0),
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        context.pushNamed(
-                                          SettingsMainWidget.routeName,
-                                          extra: <String, dynamic>{
-                                            '__transition_info__':
-                                                TransitionInfo(
-                                              hasTransition: true,
-                                              transitionType:
-                                                  PageTransitionType.fade,
-                                              duration:
-                                                  Duration(milliseconds: 0),
-                                            ),
+                                      Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            0.0, 0.0, 0.0, 8.0),
+                                        child: InkWell(
+                                          splashColor: Colors.transparent,
+                                          focusColor: Colors.transparent,
+                                          hoverColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          onTap: () async {
+                                            context.pushNamed(
+                                              SupportWidget.routeName,
+                                              extra: <String, dynamic>{
+                                                '__transition_info__':
+                                                    TransitionInfo(
+                                                  hasTransition: true,
+                                                  transitionType:
+                                                      PageTransitionType.fade,
+                                                  duration:
+                                                      Duration(milliseconds: 0),
+                                                ),
+                                              },
+                                            );
                                           },
-                                        );
-                                      },
-                                      child: wrapWithModel(
-                                        model: _model.menuItemModel5,
-                                        updateCallback: () =>
-                                            safeSetState(() {}),
-                                        child: MenuItemWidget(
-                                          title: 'Settings',
-                                          icon: Icon(
-                                            Icons.settings_rounded,
-                                            color: Color(0xFF778693),
-                                            size: 24.0,
+                                          child: wrapWithModel(
+                                            model: _model.menuItemModel4,
+                                            updateCallback: () =>
+                                                safeSetState(() {}),
+                                            child: MenuItemWidget(
+                                              title: 'Support Center',
+                                              icon: Icon(
+                                                Icons.support_agent_rounded,
+                                                color: Color(0xFF778693),
+                                                size: 24.0,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 8.0),
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        context.pushNamed(
-                                          SupportWidget.routeName,
-                                          extra: <String, dynamic>{
-                                            '__transition_info__':
-                                                TransitionInfo(
-                                              hasTransition: true,
-                                              transitionType:
-                                                  PageTransitionType.fade,
-                                              duration:
-                                                  Duration(milliseconds: 0),
-                                            ),
+                                      Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            0.0, 0.0, 0.0, 8.0),
+                                        child: InkWell(
+                                          splashColor: Colors.transparent,
+                                          focusColor: Colors.transparent,
+                                          hoverColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          onTap: () async {
+                                            context.pushNamed(
+                                              SettingsMainWidget.routeName,
+                                              extra: <String, dynamic>{
+                                                '__transition_info__':
+                                                    TransitionInfo(
+                                                  hasTransition: true,
+                                                  transitionType:
+                                                      PageTransitionType.fade,
+                                                  duration:
+                                                      Duration(milliseconds: 0),
+                                                ),
+                                              },
+                                            );
                                           },
-                                        );
-                                      },
-                                      child: wrapWithModel(
-                                        model: _model.menuItemModel6,
-                                        updateCallback: () =>
-                                            safeSetState(() {}),
-                                        child: MenuItemWidget(
-                                          title: 'Support Center',
-                                          icon: Icon(
-                                            Icons.support_agent_rounded,
-                                            color: Color(0xFF778693),
-                                            size: 24.0,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    height: 60.0,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFFF5F7FB),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      border: Border.all(
-                                        color: FlutterFlowTheme.of(context)
-                                            .alternate,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  16.0, 0.0, 0.0, 0.0),
-                                          child: Icon(
-                                            Icons.dark_mode_rounded,
-                                            color: Color(0xFF778693),
-                                            size: 24.0,
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    8.0, 0.0, 0.0, 0.0),
-                                            child: Text(
-                                              'Dark theme',
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .bodyMedium
-                                                  .override(
-                                                    font: GoogleFonts.outfit(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium
-                                                              .fontStyle,
-                                                    ),
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .secondaryText,
-                                                    fontSize: 16.0,
-                                                    letterSpacing: 0.0,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontStyle,
-                                                  ),
+                                          child: wrapWithModel(
+                                            model: _model.menuItemModel5,
+                                            updateCallback: () =>
+                                                safeSetState(() {}),
+                                            child: MenuItemWidget(
+                                              title: 'Settings',
+                                              icon: Icon(
+                                                Icons.settings_rounded,
+                                                color: Color(0xFF778693),
+                                                size: 24.0,
+                                              ),
                                             ),
                                           ),
                                         ),
-                                        Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  0.0, 0.0, 8.0, 0.0),
-                                          child: Switch.adaptive(
-                                            value: _model.switchValue!,
-                                            onChanged: (newValue) async {
-                                              safeSetState(() => _model
-                                                  .switchValue = newValue);
-                                            },
-                                            activeColor:
-                                                FlutterFlowTheme.of(context)
-                                                    .secondaryBackground,
-                                            activeTrackColor:
-                                                FlutterFlowTheme.of(context)
-                                                    .primary,
-                                            inactiveTrackColor:
-                                                FlutterFlowTheme.of(context)
-                                                    .secondaryBackground,
-                                            inactiveThumbColor:
-                                                FlutterFlowTheme.of(context)
-                                                    .primary,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ].divide(SizedBox(height: 2.0)),
                                   ),
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 16.0, 0.0, 0.0),
-                                    child: Text(
-                                      'Demo v.2.1',
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .override(
-                                            font: GoogleFonts.outfit(
+                                  Align(
+                                    alignment: AlignmentDirectional(1.0, 0.0),
+                                    child: Padding(
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          16.0, 16.0, 16.0, 0.0),
+                                      child: Text(
+                                        'Helpero v.1.0.1',
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .override(
+                                              font: GoogleFonts.outfit(
+                                                fontWeight: FontWeight.w500,
+                                                fontStyle:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyMedium
+                                                        .fontStyle,
+                                              ),
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              letterSpacing: 0.0,
                                               fontWeight: FontWeight.w500,
                                               fontStyle:
                                                   FlutterFlowTheme.of(context)
                                                       .bodyMedium
                                                       .fontStyle,
                                             ),
-                                            color: FlutterFlowTheme.of(context)
-                                                .secondaryText,
-                                            letterSpacing: 0.0,
-                                            fontWeight: FontWeight.w500,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                          ),
+                                      ),
                                     ),
                                   ),
                                 ]
                                     .addToStart(SizedBox(height: 24.0))
-                                    .addToEnd(SizedBox(height: 180.0)),
+                                    .addToEnd(SizedBox(height: 140.0)),
                               ),
                             ),
                           ),
                         ),
-                      ].addToStart(SizedBox(height: 48.0)),
+                      ].addToStart(SizedBox(
+                          height: valueOrDefault<double>(
+                        isWeb ? 16.0 : 44.0,
+                        44.0,
+                      ))),
                     ),
                   ),
                 ),

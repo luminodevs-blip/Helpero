@@ -2,6 +2,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'visit_time_component_model.dart';
 export 'visit_time_component_model.dart';
@@ -10,9 +11,15 @@ class VisitTimeComponentWidget extends StatefulWidget {
   const VisitTimeComponentWidget({
     super.key,
     bool? dateSelected,
+    required this.initialDate,
+    required this.initialTimeDisplay,
+    required this.durationText,
   }) : this.dateSelected = dateSelected ?? false;
 
   final bool dateSelected;
+  final DateTime? initialDate;
+  final String? initialTimeDisplay;
+  final String? durationText;
 
   @override
   State<VisitTimeComponentWidget> createState() =>
@@ -33,6 +40,14 @@ class _VisitTimeComponentWidgetState extends State<VisitTimeComponentWidget> {
     super.initState();
     _model = createModel(context, () => VisitTimeComponentModel());
 
+    // On component load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      if (!(_model.selectedDate != null)) {
+        _model.selectedDate = getCurrentTimestamp;
+        safeSetState(() {});
+      }
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
@@ -49,15 +64,15 @@ class _VisitTimeComponentWidgetState extends State<VisitTimeComponentWidget> {
       alignment: AlignmentDirectional(0.0, 1.0),
       child: Container(
         width: double.infinity,
+        height: MediaQuery.sizeOf(context).height * 0.8,
         decoration: BoxDecoration(
           color: FlutterFlowTheme.of(context).secondaryBackground,
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(0.0),
-            bottomRight: Radius.circular(0.0),
-            topLeft: Radius.circular(10.0),
-            topRight: Radius.circular(10.0),
+            topLeft: Radius.circular(14.0),
+            topRight: Radius.circular(14.0),
           ),
         ),
+        alignment: AlignmentDirectional(0.0, -1.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -1466,8 +1481,6 @@ class _VisitTimeComponentWidgetState extends State<VisitTimeComponentWidget> {
               padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 40.0),
               child: FFButtonWidget(
                 onPressed: () async {
-                  _model.dateSelected = true;
-                  safeSetState(() {});
                   Navigator.pop(context);
                 },
                 text: 'Update booking',

@@ -2,23 +2,22 @@ import '/auth/supabase_auth/auth_util.dart';
 import '/backend/api_requests/api_calls.dart';
 import '/backend/schema/structs/index.dart';
 import '/booking_flow/arrival_card/arrival_card_widget.dart';
-import '/booking_flow/arrival_card_loader/arrival_card_loader_widget.dart';
+import '/booking_flow/new/arrival_card_loader/arrival_card_loader_widget.dart';
 import '/booking_flow/price_summary/price_summary_widget.dart';
 import '/booking_flow/service_access_options_bottom/service_access_options_bottom_widget.dart';
 import '/booking_flow/visit_time_component/visit_time_component_widget.dart';
-import '/components/saved_addresses_off_widget.dart';
+import '/components/select_address_booking_widget.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/custom_code/widgets/index.dart' as custom_widgets;
+import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
 import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'planing_model.dart';
@@ -39,7 +38,6 @@ class _PlaningWidgetState extends State<PlaningWidget>
   late PlaningModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  LatLng? currentUserLocationValue;
 
   final animationsMap = <String, AnimationInfo>{};
 
@@ -65,35 +63,40 @@ class _PlaningWidgetState extends State<PlaningWidget>
               .toList()
               .cast<ArrivalOptionStructStruct>();
           _model.isLoadingSlots = false;
+          _model.mapIMG = functions.getStaticMapUrl(
+              FFAppState().activeBookingDraft.address.lat,
+              FFAppState().activeBookingDraft.address.lng);
           safeSetState(() {});
-          FFAppState().updateActiveBookingDraftStruct(
-            (e) => e
-              ..visit = VisitDetailsStruct(
-                mode: functions
-                    .findStandardSlot(CheckAvailabilityCall.slotslist(
-                      (_model.checkAvailability?.jsonBody ?? ''),
-                    )!
-                        .toList())
-                    ?.mode,
-                arrivalTimeSlot: functions
-                    .findStandardSlot(CheckAvailabilityCall.slotslist(
-                      (_model.checkAvailability?.jsonBody ?? ''),
-                    )!
-                        .toList())
-                    ?.timeStart,
-                arrivalDateDisplay: functions
-                    .findStandardSlot(CheckAvailabilityCall.slotslist(
-                      (_model.checkAvailability?.jsonBody ?? ''),
-                    )!
-                        .toList())
-                    ?.displayDate,
-                id: getJsonField(
-                  (_model.checkAvailability?.jsonBody ?? ''),
-                  r'''$.id''',
-                ).toString(),
-              ),
-          );
-          safeSetState(() {});
+          if (!(FFAppState().activeBookingDraft.visit.mode != '')) {
+            FFAppState().updateActiveBookingDraftStruct(
+              (e) => e
+                ..visit = VisitDetailsStruct(
+                  mode: functions
+                      .findStandardSlot(CheckAvailabilityCall.slotslist(
+                        (_model.checkAvailability?.jsonBody ?? ''),
+                      )!
+                          .toList())
+                      ?.mode,
+                  arrivalTimeSlot: functions
+                      .findStandardSlot(CheckAvailabilityCall.slotslist(
+                        (_model.checkAvailability?.jsonBody ?? ''),
+                      )!
+                          .toList())
+                      ?.timeStart,
+                  arrivalDateDisplay: functions
+                      .findStandardSlot(CheckAvailabilityCall.slotslist(
+                        (_model.checkAvailability?.jsonBody ?? ''),
+                      )!
+                          .toList())
+                      ?.displayDate,
+                  id: getJsonField(
+                    (_model.checkAvailability?.jsonBody ?? ''),
+                    r'''$.id''',
+                  ).toString(),
+                ),
+            );
+            safeSetState(() {});
+          }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -111,14 +114,12 @@ class _PlaningWidgetState extends State<PlaningWidget>
 
         await Future.delayed(
           Duration(
-            milliseconds: 300000,
+            milliseconds: 60000,
           ),
         );
       }
     });
 
-    getCurrentUserLocation(defaultLocation: LatLng(0.0, 0.0), cached: true)
-        .then((loc) => safeSetState(() => currentUserLocationValue = loc));
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
         trigger: AnimationTrigger.onPageLoad,
@@ -154,22 +155,6 @@ class _PlaningWidgetState extends State<PlaningWidget>
   @override
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
-    if (currentUserLocationValue == null) {
-      return Container(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        child: Center(
-          child: SizedBox(
-            width: 10.0,
-            height: 10.0,
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(
-                Colors.transparent,
-              ),
-            ),
-          ),
-        ),
-      );
-    }
 
     return GestureDetector(
       onTap: () {
@@ -183,7 +168,7 @@ class _PlaningWidgetState extends State<PlaningWidget>
           alignment: AlignmentDirectional(0.0, -1.0),
           child: Container(
             constraints: BoxConstraints(
-              maxWidth: 450.0,
+              maxWidth: 500.0,
               maxHeight: 1000.0,
             ),
             decoration: BoxDecoration(
@@ -203,19 +188,17 @@ class _PlaningWidgetState extends State<PlaningWidget>
                 ),
                 Align(
                   alignment: AlignmentDirectional(0.0, -1.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        child: Container(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Container(
                           width: double.infinity,
                           height: MediaQuery.sizeOf(context).height * 1.0,
                           decoration: BoxDecoration(
                             color: FlutterFlowTheme.of(context)
                                 .secondaryBackground,
                             borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(0.0),
-                              bottomRight: Radius.circular(0.0),
                               topLeft: Radius.circular(16.0),
                               topRight: Radius.circular(16.0),
                             ),
@@ -246,6 +229,18 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                           size: 24.0,
                                         ),
                                         onPressed: () async {
+                                          await actions.releaseBookingSlot();
+                                          FFAppState()
+                                              .updateActiveBookingDraftStruct(
+                                            (e) => e
+                                              ..visit = null
+                                              ..serverCheckout = null
+                                              ..totalPrice = FFAppState()
+                                                  .activeBookingDraft
+                                                  .basePrice,
+                                          );
+                                          safeSetState(() {});
+
                                           context.pushNamed(
                                             AddOnsWidget.routeName,
                                             extra: <String, dynamic>{
@@ -401,7 +396,7 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                           if (_model.isLoadingSlots == false)
                                             Container(
                                               width: 450.0,
-                                              height: 134.0,
+                                              height: 144.0,
                                               decoration: BoxDecoration(
                                                 color:
                                                     FlutterFlowTheme.of(context)
@@ -415,16 +410,19 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                                       .take(3)
                                                       .toList();
 
-                                                  return MasonryGridView
-                                                      .builder(
-                                                    physics:
-                                                        const NeverScrollableScrollPhysics(),
+                                                  return GridView.builder(
+                                                    padding: EdgeInsets.zero,
                                                     gridDelegate:
-                                                        SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                                                        SliverGridDelegateWithFixedCrossAxisCount(
                                                       crossAxisCount: 3,
+                                                      crossAxisSpacing: 8.0,
+                                                      mainAxisSpacing: 8.0,
+                                                      childAspectRatio: 1.08,
                                                     ),
-                                                    crossAxisSpacing: 6.0,
-                                                    mainAxisSpacing: 4.0,
+                                                    primary: false,
+                                                    shrinkWrap: true,
+                                                    scrollDirection:
+                                                        Axis.vertical,
                                                     itemCount: slotItem.length,
                                                     itemBuilder: (context,
                                                         slotItemIndex) {
@@ -434,9 +432,17 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                                       return ArrivalCardWidget(
                                                         key: Key(
                                                             'Keyk18_${slotItemIndex}_of_${slotItem.length}'),
-                                                        type: slotItemItem.mode,
-                                                        time: slotItemItem
-                                                            .displayTime,
+                                                        type: valueOrDefault<
+                                                            String>(
+                                                          slotItemItem.mode,
+                                                          'Standard',
+                                                        ),
+                                                        time: valueOrDefault<
+                                                            String>(
+                                                          slotItemItem
+                                                              .displayTime,
+                                                          '00:00',
+                                                        ),
                                                         price: valueOrDefault<
                                                             String>(
                                                           slotItemItem.fee
@@ -483,6 +489,23 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                                                         VisitTimeComponentWidget(
                                                                       dateSelected:
                                                                           false,
+                                                                      initialDate: FFAppState()
+                                                                          .activeBookingDraft
+                                                                          .visit
+                                                                          .arrivalDate!,
+                                                                      initialTimeDisplay: FFAppState()
+                                                                          .activeBookingDraft
+                                                                          .visit
+                                                                          .arrivalTimeDisplay,
+                                                                      durationText:
+                                                                          valueOrDefault<
+                                                                              String>(
+                                                                        functions.formatDuration(FFAppState()
+                                                                            .activeBookingDraft
+                                                                            .totalDuration
+                                                                            .toDouble()),
+                                                                        '5 hr 28 min',
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                 );
@@ -526,29 +549,27 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                                             );
                                                             safeSetState(() {});
                                                           } else {
-                                                            FFAppState()
-                                                                .updateActiveBookingDraftStruct(
-                                                              (e) => e
-                                                                ..visit =
-                                                                    VisitDetailsStruct(
-                                                                  mode:
-                                                                      slotItemItem
-                                                                          .mode,
-                                                                  arrivalTimeSlot:
-                                                                      slotItemItem
-                                                                          .timeStart,
-                                                                  arrivalDateDisplay:
-                                                                      slotItemItem
-                                                                          .displayDate,
-                                                                  id: slotItemItem
-                                                                      .id,
-                                                                  arrivalTimeDisplay:
-                                                                      slotItemItem
-                                                                          .displayTime,
-                                                                ),
+                                                            _model.updatedDraftResult =
+                                                                await actions
+                                                                    .updateBookingSlot(
+                                                              FFAppState()
+                                                                  .activeBookingDraft,
+                                                              slotItemItem,
                                                             );
+                                                            await actions
+                                                                .secureBookingSlot(
+                                                              slotItemItem.id,
+                                                              slotItemItem
+                                                                  .timeStart,
+                                                            );
+                                                            FFAppState()
+                                                                    .activeBookingDraft =
+                                                                _model
+                                                                    .updatedDraftResult!;
                                                             safeSetState(() {});
                                                           }
+
+                                                          safeSetState(() {});
                                                         },
                                                       );
                                                     },
@@ -810,10 +831,6 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                                   0.0, 0.0),
                                               child: ClipRRect(
                                                 borderRadius: BorderRadius.only(
-                                                  bottomLeft:
-                                                      Radius.circular(0.0),
-                                                  bottomRight:
-                                                      Radius.circular(0.0),
                                                   topLeft:
                                                       Radius.circular(10.0),
                                                   topRight:
@@ -825,10 +842,6 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                                   decoration: BoxDecoration(
                                                     borderRadius:
                                                         BorderRadius.only(
-                                                      bottomLeft:
-                                                          Radius.circular(0.0),
-                                                      bottomRight:
-                                                          Radius.circular(0.0),
                                                       topLeft:
                                                           Radius.circular(10.0),
                                                       topRight:
@@ -843,54 +856,33 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                                       Container(
                                                         width: double.infinity,
                                                         height: double.infinity,
-                                                        child: custom_widgets
-                                                            .MapboxAnimatedMap(
-                                                          width:
-                                                              double.infinity,
-                                                          height:
-                                                              double.infinity,
-                                                          accessToken:
-                                                              'pk.eyJ1IjoibWF4bWloMzg2IiwiYSI6ImNtanl0MHVncDFqc3YzZHM5aG9vZ2dqdTUifQ.x3C6VjgWTVMITzCwwArp_A',
-                                                          zoomLevel: 16.0,
-                                                          allowInteraction:
-                                                              false,
-                                                          styleId:
-                                                              'mapbox/light-v11',
-                                                          initialCenter:
-                                                              currentUserLocationValue,
-                                                          language: 'en',
-                                                          onAddressChanged:
-                                                              (address,
-                                                                  city,
-                                                                  lat,
-                                                                  lng) async {},
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          image:
+                                                              DecorationImage(
+                                                            fit: BoxFit.cover,
+                                                            image:
+                                                                Image.network(
+                                                              valueOrDefault<
+                                                                  String>(
+                                                                _model.mapIMG,
+                                                                'https://hwgmjlsoeebgounmthmr.supabase.co/storage/v1/object/public/icons/a5c2bf72-0612-431f-9e17-8bc3f575c75c.png',
+                                                              ),
+                                                            ).image,
+                                                          ),
                                                         ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            EdgeInsetsDirectional
-                                                                .fromSTEB(
-                                                                    12.0,
-                                                                    16.0,
-                                                                    12.0,
-                                                                    16.0),
-                                                        child: Column(
-                                                          mainAxisSize:
-                                                              MainAxisSize.max,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Icon(
-                                                              Icons
-                                                                  .location_pin,
-                                                              color: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .primaryText,
-                                                              size: 38.0,
-                                                            ),
-                                                          ].divide(SizedBox(
-                                                              height: 16.0)),
+                                                        child: Align(
+                                                          alignment:
+                                                              AlignmentDirectional(
+                                                                  0.0, 0.0),
+                                                          child: Icon(
+                                                            Icons
+                                                                .location_on_rounded,
+                                                            color: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .primaryText,
+                                                            size: 34.0,
+                                                          ),
                                                         ),
                                                       ),
                                                     ],
@@ -959,9 +951,15 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                                                         context),
                                                                 child:
                                                                     Container(
-                                                                  height: 802.0,
+                                                                  height: MediaQuery.sizeOf(
+                                                                              context)
+                                                                          .height *
+                                                                      0.95,
                                                                   child:
-                                                                      SavedAddressesOffWidget(),
+                                                                      SelectAddressBookingWidget(
+                                                                    callback:
+                                                                        () async {},
+                                                                  ),
                                                                 ),
                                                               ),
                                                             );
@@ -969,6 +967,110 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                                         ).then((value) =>
                                                             safeSetState(
                                                                 () {}));
+
+                                                        _model.checkAvailabilityAddress =
+                                                            await CheckAvailabilityCall
+                                                                .call(
+                                                          houseId: FFAppState()
+                                                              .activeBookingDraft
+                                                              .address
+                                                              .id,
+                                                          serviceId: FFAppState()
+                                                              .activeBookingDraft
+                                                              .serviceId,
+                                                          durationMinutes:
+                                                              FFAppState()
+                                                                  .activeBookingDraft
+                                                                  .totalDuration,
+                                                          targetDate:
+                                                              getCurrentTimestamp
+                                                                  .toString(),
+                                                        );
+
+                                                        if ((_model
+                                                                .checkAvailability
+                                                                ?.succeeded ??
+                                                            true)) {
+                                                          _model.currentSlots =
+                                                              CheckAvailabilityCall
+                                                                      .slotslist(
+                                                            (_model.checkAvailability
+                                                                    ?.jsonBody ??
+                                                                ''),
+                                                          )!
+                                                                  .toList()
+                                                                  .cast<
+                                                                      ArrivalOptionStructStruct>();
+                                                          _model.isLoadingSlots =
+                                                              false;
+                                                          safeSetState(() {});
+                                                          if (!(FFAppState()
+                                                                      .activeBookingDraft
+                                                                      .visit
+                                                                      .mode !=
+                                                                  '')) {
+                                                            FFAppState()
+                                                                .updateActiveBookingDraftStruct(
+                                                              (e) => e
+                                                                ..visit =
+                                                                    VisitDetailsStruct(
+                                                                  mode: functions
+                                                                      .findStandardSlot(CheckAvailabilityCall.slotslist(
+                                                                        (_model.checkAvailability?.jsonBody ??
+                                                                            ''),
+                                                                      )!
+                                                                          .toList())
+                                                                      ?.mode,
+                                                                  arrivalTimeSlot: functions
+                                                                      .findStandardSlot(CheckAvailabilityCall.slotslist(
+                                                                        (_model.checkAvailability?.jsonBody ??
+                                                                            ''),
+                                                                      )!
+                                                                          .toList())
+                                                                      ?.timeStart,
+                                                                  arrivalDateDisplay: functions
+                                                                      .findStandardSlot(CheckAvailabilityCall.slotslist(
+                                                                        (_model.checkAvailability?.jsonBody ??
+                                                                            ''),
+                                                                      )!
+                                                                          .toList())
+                                                                      ?.displayDate,
+                                                                  id: getJsonField(
+                                                                    (_model.checkAvailability
+                                                                            ?.jsonBody ??
+                                                                        ''),
+                                                                    r'''$.id''',
+                                                                  ).toString(),
+                                                                ),
+                                                            );
+                                                            safeSetState(() {});
+                                                          }
+                                                        } else {
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .showSnackBar(
+                                                            SnackBar(
+                                                              content: Text(
+                                                                'Error fetching availability',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .secondaryBackground,
+                                                                ),
+                                                              ),
+                                                              duration: Duration(
+                                                                  milliseconds:
+                                                                      4000),
+                                                              backgroundColor:
+                                                                  FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .error,
+                                                            ),
+                                                          );
+                                                        }
+
+                                                        safeSetState(() {});
                                                       },
                                                       child: Row(
                                                         mainAxisSize:
@@ -1015,7 +1117,14 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                                                         .start,
                                                                 children: [
                                                                   Text(
-                                                                    'Home',
+                                                                    valueOrDefault<
+                                                                        String>(
+                                                                      FFAppState()
+                                                                          .activeBookingDraft
+                                                                          .address
+                                                                          .nameLabel,
+                                                                      'My Home',
+                                                                    ),
                                                                     style: FlutterFlowTheme.of(
                                                                             context)
                                                                         .bodyMedium
@@ -1213,7 +1322,19 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                                                         .start,
                                                                 children: [
                                                                   Text(
-                                                                    'Will you meet at the door?',
+                                                                    valueOrDefault<
+                                                                        String>(
+                                                                      functions.getEntryMethodLabel(
+                                                                          valueOrDefault<
+                                                                              String>(
+                                                                        FFAppState()
+                                                                            .activeBookingDraft
+                                                                            .visit
+                                                                            .entryMethod,
+                                                                        'meet_at_door',
+                                                                      )),
+                                                                      'll be home (Meet at door)',
+                                                                    ),
                                                                     style: FlutterFlowTheme.of(
                                                                             context)
                                                                         .bodyMedium
@@ -1237,7 +1358,14 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                                                         ),
                                                                   ),
                                                                   Text(
-                                                                    '101 College Street',
+                                                                    valueOrDefault<
+                                                                        String>(
+                                                                      FFAppState()
+                                                                          .activeBookingDraft
+                                                                          .visit
+                                                                          .entryNotes,
+                                                                      'Tap to add entry instructions',
+                                                                    ),
                                                                     style: FlutterFlowTheme.of(
                                                                             context)
                                                                         .bodyMedium
@@ -1264,6 +1392,9 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                                                           lineHeight:
                                                                               1.4,
                                                                         ),
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
                                                                   ),
                                                                 ].divide(SizedBox(
                                                                     height:
@@ -1307,26 +1438,19 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                 .addToEnd(SizedBox(height: 60.0)),
                           ),
                         ),
-                      ),
-                    ].addToStart(SizedBox(height: 48.0)),
+                      ].addToStart(SizedBox(
+                          height: valueOrDefault<double>(
+                        isWeb ? 4.0 : 44.0,
+                        44.0,
+                      ))),
+                    ),
                   ),
                 ),
                 Align(
                   alignment: AlignmentDirectional(0.0, 1.0),
                   child: Container(
-                    width: double.infinity,
                     decoration: BoxDecoration(
                       color: FlutterFlowTheme.of(context).secondaryBackground,
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 4.0,
-                          color: Color(0x33000000),
-                          offset: Offset(
-                            0.0,
-                            2.0,
-                          ),
-                        )
-                      ],
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -1350,10 +1474,8 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                   decoration: BoxDecoration(
                                     color: FlutterFlowTheme.of(context).primary,
                                     borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(10.0),
-                                      bottomRight: Radius.circular(0.0),
                                       topLeft: Radius.circular(10.0),
-                                      topRight: Radius.circular(0.0),
+                                      bottomLeft: Radius.circular(10.0),
                                     ),
                                   ),
                                 ).animateOnPageLoad(animationsMap[
@@ -1569,6 +1691,14 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                         .visit
                                         .arrivalTimeSlot,
                                     useBalance: false,
+                                    entryMethod: FFAppState()
+                                        .activeBookingDraft
+                                        .visit
+                                        .entryMethod,
+                                    entryNotes: FFAppState()
+                                        .activeBookingDraft
+                                        .visit
+                                        .entryNotes,
                                   );
 
                                   if ((_model.checkoutResult?.succeeded ??
@@ -1576,56 +1706,65 @@ class _PlaningWidgetState extends State<PlaningWidget>
                                     FFAppState().updateActiveBookingDraftStruct(
                                       (e) => e
                                         ..serverCheckout = ServerCheckoutStruct(
-                                          subtotal: getJsonField(
+                                          subtotal: functions
+                                              .convertToDouble(getJsonField(
                                             (_model.checkoutResult?.jsonBody ??
                                                 ''),
                                             r'''$.subtotal''',
-                                          ),
-                                          visitFee: getJsonField(
+                                          )),
+                                          visitFee: functions
+                                              .convertToDouble(getJsonField(
                                             (_model.checkoutResult?.jsonBody ??
                                                 ''),
                                             r'''$.visit_fee''',
-                                          ),
-                                          totalToPay: getJsonField(
+                                          )),
+                                          totalToPay: functions
+                                              .convertToDouble(getJsonField(
                                             (_model.checkoutResult?.jsonBody ??
                                                 ''),
                                             r'''$.total_to_pay''',
-                                          ),
-                                          bookingFee: getJsonField(
+                                          )),
+                                          bookingFee: functions
+                                              .convertToDouble(getJsonField(
                                             (_model.checkoutResult?.jsonBody ??
                                                 ''),
                                             r'''$.booking_fee''',
-                                          ),
-                                          priorityFee: getJsonField(
+                                          )),
+                                          priorityFee: functions
+                                              .convertToDouble(getJsonField(
                                             (_model.checkoutResult?.jsonBody ??
                                                 ''),
                                             r'''$.priority_fee''',
-                                          ),
-                                          taxAmount: getJsonField(
+                                          )),
+                                          taxAmount: functions
+                                              .convertToDouble(getJsonField(
                                             (_model.checkoutResult?.jsonBody ??
                                                 ''),
                                             r'''$.tax_amount''',
-                                          ),
+                                          )),
                                           taxName: getJsonField(
                                             (_model.checkoutResult?.jsonBody ??
                                                 ''),
                                             r'''$.tax_name''',
                                           ).toString(),
-                                          voucherDiscount: getJsonField(
+                                          voucherDiscount: functions
+                                              .convertToDouble(getJsonField(
                                             (_model.checkoutResult?.jsonBody ??
                                                 ''),
                                             r'''$.voucher_discount''',
-                                          ),
-                                          highDemandFee: getJsonField(
+                                          )),
+                                          highDemandFee: functions
+                                              .convertToDouble(getJsonField(
                                             (_model.checkoutResult?.jsonBody ??
                                                 ''),
                                             r'''$.high_demand_fee''',
-                                          ),
-                                          creditsUsed: getJsonField(
+                                          )),
+                                          creditsUsed: functions
+                                              .convertToDouble(getJsonField(
                                             (_model.checkoutResult?.jsonBody ??
                                                 ''),
                                             r'''$.credits_used''',
-                                          ),
+                                          )),
                                           appliedVoucherTitle: getJsonField(
                                             (_model.checkoutResult?.jsonBody ??
                                                 ''),

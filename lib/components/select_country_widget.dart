@@ -48,7 +48,10 @@ class _SelectCountryWidgetState extends State<SelectCountryWidget> {
         width: double.infinity,
         decoration: BoxDecoration(
           color: FlutterFlowTheme.of(context).secondaryBackground,
-          borderRadius: BorderRadius.circular(0.0),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10.0),
+            topRight: Radius.circular(10.0),
+          ),
           border: Border.all(
             width: 0.0,
           ),

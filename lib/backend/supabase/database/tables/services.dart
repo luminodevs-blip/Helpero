@@ -14,8 +14,8 @@ class ServicesRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => ServicesTable();
 
-  int get id => getField<int>('id')!;
-  set id(int value) => setField<int>('id', value);
+  int? get id => getField<int>('id');
+  set id(int? value) => setField<int>('id', value);
 
   int? get categoryId => getField<int>('category_id');
   set categoryId(int? value) => setField<int>('category_id', value);
@@ -134,4 +134,18 @@ class ServicesRow extends SupabaseDataRow {
   int? get kitchenDurationMinutes => getField<int>('kitchen_duration_minutes');
   set kitchenDurationMinutes(int? value) =>
       setField<int>('kitchen_duration_minutes', value);
+
+  bool? get isTrending => getField<bool>('is_trending');
+  set isTrending(bool? value) => setField<bool>('is_trending', value);
+
+  double? get compareAtPrice => getField<double>('compare_at_price');
+  set compareAtPrice(double? value) =>
+      setField<double>('compare_at_price', value);
+
+  int? get technicalBaseDuration => getField<int>('technical_base_duration');
+  set technicalBaseDuration(int? value) =>
+      setField<int>('technical_base_duration', value);
+
+  dynamic get basePackage => getField<dynamic>('base_package');
+  set basePackage(dynamic value) => setField<dynamic>('base_package', value);
 }

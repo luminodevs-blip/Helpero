@@ -1,10 +1,13 @@
+import '/backend/schema/structs/index.dart';
 import '/booking_flow/service_terms_bottom/service_terms_bottom_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'service_access_options_bottom_model.dart';
 export 'service_access_options_bottom_model.dart';
 
@@ -31,7 +34,27 @@ class _ServiceAccessOptionsBottomWidgetState
     super.initState();
     _model = createModel(context, () => ServiceAccessOptionsBottomModel());
 
-    _model.textController ??= TextEditingController();
+    // On component load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      if (FFAppState().activeBookingDraft.visit.entryMethod != '') {
+        _model.activeChoise = valueOrDefault<String>(
+          FFAppState().activeBookingDraft.visit.entryMethod,
+          'meet_at_door',
+        );
+        _model.entryNotes = FFAppState().activeBookingDraft.visit.entryNotes;
+        safeSetState(() {});
+      } else {
+        FFAppState().updateActiveBookingDraftStruct(
+          (e) => e
+            ..visit = VisitDetailsStruct(
+              entryMethod: 'meet_at_door',
+            ),
+        );
+        safeSetState(() {});
+      }
+    });
+
+    _model.textController ??= TextEditingController(text: _model.entryNotes);
     _model.textFieldFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
@@ -46,6 +69,8 @@ class _ServiceAccessOptionsBottomWidgetState
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -56,7 +81,14 @@ class _ServiceAccessOptionsBottomWidgetState
         mainAxisSize: MainAxisSize.max,
         children: [
           Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(16.0, 48.0, 16.0, 0.0),
+            padding: EdgeInsetsDirectional.fromSTEB(
+                16.0,
+                valueOrDefault<double>(
+                  isWeb ? 24.0 : 44.0,
+                  44.0,
+                ),
+                16.0,
+                0.0),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -169,14 +201,14 @@ class _ServiceAccessOptionsBottomWidgetState
                     hoverColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     onTap: () async {
-                      _model.activeChoise = 1;
+                      _model.activeChoise = 'meet_at_door';
                       safeSetState(() {});
                     },
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: valueOrDefault<Color>(
-                          _model.activeChoise == 1
+                          _model.activeChoise == 'meet_at_door'
                               ? FlutterFlowTheme.of(context).primaryBackground
                               : FlutterFlowTheme.of(context)
                                   .secondaryBackground,
@@ -279,7 +311,7 @@ class _ServiceAccessOptionsBottomWidgetState
                                   height: 22.0,
                                   decoration: BoxDecoration(
                                     color: valueOrDefault<Color>(
-                                      _model.activeChoise == 1
+                                      _model.activeChoise == 'meet_at_door'
                                           ? FlutterFlowTheme.of(context).primary
                                           : FlutterFlowTheme.of(context)
                                               .secondaryBackground,
@@ -300,7 +332,7 @@ class _ServiceAccessOptionsBottomWidgetState
                                       height: 6.0,
                                       decoration: BoxDecoration(
                                         color: valueOrDefault<Color>(
-                                          _model.activeChoise == 1
+                                          _model.activeChoise == 'meet_at_door'
                                               ? FlutterFlowTheme.of(context)
                                                   .primaryBackground
                                               : FlutterFlowTheme.of(context)
@@ -329,14 +361,14 @@ class _ServiceAccessOptionsBottomWidgetState
                     hoverColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     onTap: () async {
-                      _model.activeChoise = 2;
+                      _model.activeChoise = 'leave_with_concierge';
                       safeSetState(() {});
                     },
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: valueOrDefault<Color>(
-                          _model.activeChoise == 2
+                          _model.activeChoise == 'leave_with_concierge'
                               ? FlutterFlowTheme.of(context).primaryBackground
                               : FlutterFlowTheme.of(context)
                                   .secondaryBackground,
@@ -434,7 +466,8 @@ class _ServiceAccessOptionsBottomWidgetState
                                   height: 22.0,
                                   decoration: BoxDecoration(
                                     color: valueOrDefault<Color>(
-                                      _model.activeChoise == 2
+                                      _model.activeChoise ==
+                                              'leave_with_concierge'
                                           ? FlutterFlowTheme.of(context).primary
                                           : FlutterFlowTheme.of(context)
                                               .secondaryBackground,
@@ -455,7 +488,8 @@ class _ServiceAccessOptionsBottomWidgetState
                                       height: 6.0,
                                       decoration: BoxDecoration(
                                         color: valueOrDefault<Color>(
-                                          _model.activeChoise == 2
+                                          _model.activeChoise ==
+                                                  'leave_with_concierge'
                                               ? FlutterFlowTheme.of(context)
                                                   .primaryBackground
                                               : FlutterFlowTheme.of(context)
@@ -484,14 +518,14 @@ class _ServiceAccessOptionsBottomWidgetState
                     hoverColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     onTap: () async {
-                      _model.activeChoise = 3;
+                      _model.activeChoise = 'door_code';
                       safeSetState(() {});
                     },
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: valueOrDefault<Color>(
-                          _model.activeChoise == 3
+                          _model.activeChoise == 'door_code'
                               ? FlutterFlowTheme.of(context).primaryBackground
                               : FlutterFlowTheme.of(context)
                                   .secondaryBackground,
@@ -589,7 +623,7 @@ class _ServiceAccessOptionsBottomWidgetState
                                   height: 22.0,
                                   decoration: BoxDecoration(
                                     color: valueOrDefault<Color>(
-                                      _model.activeChoise == 3
+                                      _model.activeChoise == 'door_code'
                                           ? FlutterFlowTheme.of(context).primary
                                           : FlutterFlowTheme.of(context)
                                               .secondaryBackground,
@@ -610,7 +644,7 @@ class _ServiceAccessOptionsBottomWidgetState
                                       height: 6.0,
                                       decoration: BoxDecoration(
                                         color: valueOrDefault<Color>(
-                                          _model.activeChoise == 3
+                                          _model.activeChoise == 'door_code'
                                               ? FlutterFlowTheme.of(context)
                                                   .primaryBackground
                                               : FlutterFlowTheme.of(context)
@@ -639,14 +673,14 @@ class _ServiceAccessOptionsBottomWidgetState
                     hoverColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     onTap: () async {
-                      _model.activeChoise = 4;
+                      _model.activeChoise = 'key_in_lockbox';
                       safeSetState(() {});
                     },
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: valueOrDefault<Color>(
-                          _model.activeChoise == 4
+                          _model.activeChoise == 'key_in_lockbox'
                               ? FlutterFlowTheme.of(context).primaryBackground
                               : FlutterFlowTheme.of(context)
                                   .secondaryBackground,
@@ -744,7 +778,7 @@ class _ServiceAccessOptionsBottomWidgetState
                                   height: 22.0,
                                   decoration: BoxDecoration(
                                     color: valueOrDefault<Color>(
-                                      _model.activeChoise == 4
+                                      _model.activeChoise == 'key_in_lockbox'
                                           ? FlutterFlowTheme.of(context).primary
                                           : FlutterFlowTheme.of(context)
                                               .secondaryBackground,
@@ -765,7 +799,8 @@ class _ServiceAccessOptionsBottomWidgetState
                                       height: 6.0,
                                       decoration: BoxDecoration(
                                         color: valueOrDefault<Color>(
-                                          _model.activeChoise == 4
+                                          _model.activeChoise ==
+                                                  'key_in_lockbox'
                                               ? FlutterFlowTheme.of(context)
                                                   .primaryBackground
                                               : FlutterFlowTheme.of(context)
@@ -817,6 +852,10 @@ class _ServiceAccessOptionsBottomWidgetState
                     child: TextFormField(
                       controller: _model.textController,
                       focusNode: _model.textFieldFocusNode,
+                      onFieldSubmitted: (_) async {
+                        _model.entryNotes = _model.textController.text;
+                        safeSetState(() {});
+                      },
                       autofocus: false,
                       enabled: true,
                       obscureText: false,
@@ -934,6 +973,14 @@ class _ServiceAccessOptionsBottomWidgetState
                       EdgeInsetsDirectional.fromSTEB(16.0, 22.0, 16.0, 50.0),
                   child: FFButtonWidget(
                     onPressed: () async {
+                      FFAppState().updateActiveBookingDraftStruct(
+                        (e) => e
+                          ..visit = VisitDetailsStruct(
+                            entryMethod: _model.activeChoise,
+                            entryNotes: _model.textController.text,
+                          ),
+                      );
+                      safeSetState(() {});
                       Navigator.pop(context);
                     },
                     text: 'Update Booking',

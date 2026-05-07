@@ -50,7 +50,7 @@ class VerifyPhoneOTPCall {
 {
   "phone": "${escapeStringForJson(phone)}",
   "token": "${escapeStringForJson(token)}",
-  "type": "sms"
+  "type": "phone_change"
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'VerifyPhoneOTP',
@@ -127,6 +127,7 @@ class GoogleMapsAutocompleteCall {
 class MapboxAutocompleteCall {
   static Future<ApiCallResponse> call({
     String? query = '',
+    String? proximity = '-79.38,43.65',
   }) async {
     return ApiManager.instance.makeApiCall(
       callName: 'MapboxAutocomplete',
@@ -137,10 +138,11 @@ class MapboxAutocompleteCall {
         'access_token':
             "pk.eyJ1IjoibWF4bWloMzg2IiwiYSI6ImNtanl0MHVncDFqc3YzZHM5aG9vZ2dqdTUifQ.x3C6VjgWTVMITzCwwArp_A",
         'language': "en",
-        'autocomplet': "true",
+        'autocomplete': "true",
         'limit': "10",
-        'types': "address,poi,place",
-        'country': "ca,gb",
+        'types': "address,poi",
+        'country': "ca",
+        'proximity': proximity,
       },
       returnBody: true,
       encodeBodyUtf8: false,
@@ -332,42 +334,6 @@ class GetWeeklyAvailabilityCall {
   }
 }
 
-class CreatePaymentIntentCall {
-  static Future<ApiCallResponse> call({
-    double? amount,
-    String? orderId = '',
-    String? email = '',
-  }) async {
-    final ffApiRequestBody = '''
-{
-  "amount": ${amount},
-  "currency": "cad",
-  "order_id": "${escapeStringForJson(orderId)}",
-  "customer_email": "${escapeStringForJson(email)}"
-}''';
-    return ApiManager.instance.makeApiCall(
-      callName: 'CreatePaymentIntent',
-      apiUrl:
-          'https://hwgmjlsoeebgounmthmr.functions.supabase.co/process_payment',
-      callType: ApiCallType.POST,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh3Z21qbHNvZWViZ291bm10aG1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MjExMzUsImV4cCI6MjA4MjA5NzEzNX0.SOn3uvZKOZvy0xmg46oXIhGHiOVpPjRXG7cTfXcqqR4',
-      },
-      params: {},
-      body: ffApiRequestBody,
-      bodyType: BodyType.JSON,
-      returnBody: true,
-      encodeBodyUtf8: false,
-      decodeUtf8: false,
-      cache: false,
-      isStreamingApi: false,
-      alwaysAllowBody: false,
-    );
-  }
-}
-
 class SyncCartCall {
   static Future<ApiCallResponse> call({
     String? cartId = '',
@@ -414,17 +380,20 @@ class CalculateCheckoutCall {
     String? slotStart = '',
     String? voucherId = '',
     bool? useBalance,
+    String? entryMethod = '',
+    String? entryNotes = '',
   }) async {
     final ffApiRequestBody = '''
 {
   "cart_id": "${escapeStringForJson(cartId)}",
   "house_id": ${houseId},
   "arrival_mode_id": "${escapeStringForJson(arrivalModeId)}",
+  "entry_method": "${escapeStringForJson(entryMethod)}",
+  "entry_notes": "${escapeStringForJson(entryNotes)}",
   "slot_start": "${escapeStringForJson(slotStart)}",
   "voucher_id": "${escapeStringForJson(voucherId)}",
   "use_balance": ${useBalance}
-}
-''';
+}''';
     return ApiManager.instance.makeApiCall(
       callName: 'CalculateCheckout',
       apiUrl:
@@ -459,17 +428,24 @@ class ProcessPaymentCall {
     String? voucherId = '',
     bool? useBalance,
     String? customerEmail = '',
+    String? paymentMethod = '',
+    String? entryMethod = '',
+    String? entryNotes = '',
   }) async {
     final ffApiRequestBody = '''
 {
   "cart_id": "${escapeStringForJson(cartId)}",
   "house_id": ${houseId},
   "arrival_mode_id": "${escapeStringForJson(arrivalModeId)}",
+  "entry_method": "${escapeStringForJson(entryMethod)}",
+  "entry_notes": "${escapeStringForJson(entryNotes)}",
   "slot_start": "${escapeStringForJson(slotStart)}",
   "voucher_id": "${escapeStringForJson(voucherId)}",
   "use_balance": ${useBalance},
-  "customer_email": "${escapeStringForJson(customerEmail)}"
-}''';
+  "customer_email": "${escapeStringForJson(customerEmail)}",
+  "payment_method": "${escapeStringForJson(paymentMethod)}"
+}
+''';
     return ApiManager.instance.makeApiCall(
       callName: 'ProcessPayment',
       apiUrl:
@@ -602,12 +578,10 @@ class GetPromotionsCall {
 class CancelpaymentCall {
   static Future<ApiCallResponse> call({
     String? authToken = '',
-    String? paymentIntentId = '',
     int? orderId,
   }) async {
     final ffApiRequestBody = '''
 {
-  "payment_intent_id": "${escapeStringForJson(paymentIntentId)}",
   "order_id": ${orderId}
 }''';
     return ApiManager.instance.makeApiCall(
@@ -616,6 +590,131 @@ class CancelpaymentCall {
           'https://hwgmjlsoeebgounmthmr.supabase.co/functions/v1/cancel-payment',
       callType: ApiCallType.POST,
       headers: {
+        'Authorization': 'Bearer ${authToken}',
+        'Content-Type': 'application/json',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
+
+class SearchServicesRPCCall {
+  static Future<ApiCallResponse> call({
+    String? query = '',
+  }) async {
+    final ffApiRequestBody = '''
+{
+  "query": "${escapeStringForJson(query)}"
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'SearchServicesRPC',
+      apiUrl:
+          'https://hwgmjlsoeebgounmthmr.supabase.co/rest/v1/rpc/search_services',
+      callType: ApiCallType.POST,
+      headers: {
+        'apikey':
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh3Z21qbHNvZWViZ291bm10aG1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MjExMzUsImV4cCI6MjA4MjA5NzEzNX0.SOn3uvZKOZvy0xmg46oXIhGHiOVpPjRXG7cTfXcqqR4',
+        'Authorization':
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh3Z21qbHNvZWViZ291bm10aG1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MjExMzUsImV4cCI6MjA4MjA5NzEzNX0.SOn3uvZKOZvy0xmg46oXIhGHiOVpPjRXG7cTfXcqqR4',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
+
+class ManageHouseCall {
+  static Future<ApiCallResponse> call({
+    String? authToken = '',
+    String? fullAddress = '',
+    double? lat,
+    double? lng,
+    String? city = '',
+    String? propertyType = '',
+    String? unitNumber = '',
+    String? floor = '',
+    String? intercomCode = '',
+    String? gateCode = '',
+    String? companyName = '',
+    String? instructions = '',
+    bool? isDefault = true,
+    String? nameLabel = '',
+    String? houseId = '',
+  }) async {
+    final ffApiRequestBody = '''
+{
+  "house_id": ${escapeStringForJson(houseId)},
+  "full_address": "${escapeStringForJson(fullAddress)}",
+  "lat": ${lat},
+  "lng": ${lng},
+  "city": "${escapeStringForJson(city)}",
+  "property_type": "${escapeStringForJson(propertyType)}",
+  "unit_number": "${escapeStringForJson(unitNumber)}",
+  "floor": "${escapeStringForJson(floor)}",
+  "intercom_code": "${escapeStringForJson(intercomCode)}",
+  "gate_code": "${escapeStringForJson(gateCode)}",
+  "company_name": "${escapeStringForJson(companyName)}",
+  "instructions": "${escapeStringForJson(instructions)}",
+  "is_default": ${isDefault},
+  "name_label": "${escapeStringForJson(nameLabel)}"
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'ManageHouse',
+      apiUrl:
+          'https://hwgmjlsoeebgounmthmr.supabase.co/functions/v1/manage-house',
+      callType: ApiCallType.POST,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${authToken}',
+        'apikey': 'sb_publishable_rMBv5OqFHteduubfPF5wlQ_BADKqzY_',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
+
+class UpdateUserPhoneCall {
+  static Future<ApiCallResponse> call({
+    String? authToken = '',
+    String? phoneNumber = '',
+    String? countryCode = '',
+  }) async {
+    final ffApiRequestBody = '''
+{
+  "phone": "${escapeStringForJson(phoneNumber)}",
+  "country_code": "${escapeStringForJson(countryCode)}"
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'UpdateUserPhone',
+      apiUrl:
+          'https://hwgmjlsoeebgounmthmr.supabase.co/functions/v1/update-user-phone',
+      callType: ApiCallType.POST,
+      headers: {
+        'apikey':
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh3Z21qbHNvZWViZ291bm10aG1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY1MjExMzUsImV4cCI6MjA4MjA5NzEzNX0.SOn3uvZKOZvy0xmg46oXIhGHiOVpPjRXG7cTfXcqqR4',
         'Authorization': 'Bearer ${authToken}',
         'Content-Type': 'application/json',
       },

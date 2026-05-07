@@ -3,6 +3,7 @@ import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -22,6 +23,8 @@ class AddressAutocompleteWidget extends StatefulWidget {
 class _AddressAutocompleteWidgetState extends State<AddressAutocompleteWidget>
     with TickerProviderStateMixin {
   late AddressAutocompleteModel _model;
+
+  LatLng? currentUserLocationValue;
 
   final animationsMap = <String, AnimationInfo>{};
 
@@ -234,6 +237,10 @@ class _AddressAutocompleteWidgetState extends State<AddressAutocompleteWidget>
                                       '_model.textController',
                                       Duration(milliseconds: 2000),
                                       () async {
+                                        currentUserLocationValue =
+                                            await getCurrentUserLocation(
+                                                defaultLocation:
+                                                    LatLng(0.0, 0.0));
                                         await Future.delayed(
                                           Duration(
                                             milliseconds: 150,
@@ -242,6 +249,8 @@ class _AddressAutocompleteWidgetState extends State<AddressAutocompleteWidget>
                                         _model.mapboxAutocomplete =
                                             await MapboxAutocompleteCall.call(
                                           query: _model.textController.text,
+                                          proximity: functions.formatLatLng(
+                                              currentUserLocationValue),
                                         );
 
                                         _model.searchResults = getJsonField(
@@ -432,8 +441,6 @@ class _AddressAutocompleteWidgetState extends State<AddressAutocompleteWidget>
                       decoration: BoxDecoration(
                         color: FlutterFlowTheme.of(context).secondaryBackground,
                         borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(0.0),
-                          bottomRight: Radius.circular(0.0),
                           topLeft: Radius.circular(16.0),
                           topRight: Radius.circular(16.0),
                         ),
@@ -526,6 +533,31 @@ class _AddressAutocompleteWidgetState extends State<AddressAutocompleteWidget>
                                             placeItemItem,
                                             r'''$.place_name''',
                                           ).toString();
+                                          safeSetState(() {});
+                                          FFAppState()
+                                              .updateStNewAddressDraftStruct(
+                                            (e) => e
+                                              ..fullAddress = getJsonField(
+                                                placeItemItem,
+                                                r'''$.place_name''',
+                                              ).toString()
+                                              ..lat = getJsonField(
+                                                placeItemItem,
+                                                r'''$.center[1]''',
+                                              )
+                                              ..lng = getJsonField(
+                                                placeItemItem,
+                                                r'''$.center[0]''',
+                                              )
+                                              ..city = getJsonField(
+                                                placeItemItem,
+                                                r'''$.context[0].text''',
+                                              ).toString()
+                                              ..zipCode = getJsonField(
+                                                placeItemItem,
+                                                r'''$.context[4].text''',
+                                              ).toString(),
+                                          );
                                           safeSetState(() {});
                                           Navigator.pop(context);
                                         },
@@ -682,7 +714,11 @@ class _AddressAutocompleteWidgetState extends State<AddressAutocompleteWidget>
                       ),
                     ),
                   ),
-                ].addToStart(SizedBox(height: 16.0)),
+                ].addToStart(SizedBox(
+                    height: valueOrDefault<double>(
+                  isWeb ? 16.0 : 44.0,
+                  44.0,
+                ))),
               ),
             ),
           ],

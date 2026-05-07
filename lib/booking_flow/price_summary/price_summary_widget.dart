@@ -68,8 +68,6 @@ class _PriceSummaryWidgetState extends State<PriceSummaryWidget> {
                   decoration: BoxDecoration(
                     color: FlutterFlowTheme.of(context).secondaryBackground,
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(0.0),
-                      bottomRight: Radius.circular(0.0),
                       topLeft: Radius.circular(10.0),
                       topRight: Radius.circular(10.0),
                     ),
@@ -134,8 +132,6 @@ class _PriceSummaryWidgetState extends State<PriceSummaryWidget> {
                             )
                           ],
                           borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(0.0),
-                            bottomRight: Radius.circular(0.0),
                             topLeft: Radius.circular(8.0),
                             topRight: Radius.circular(8.0),
                           ),
@@ -758,6 +754,8 @@ class _PriceSummaryWidgetState extends State<PriceSummaryWidget> {
                                                               .unitDuration,
                                                           'remove',
                                                           'upsell',
+                                                          selectedAddonsItem
+                                                              .minSpecialists,
                                                         );
                                                         FFAppState()
                                                                 .activeBookingDraft =
@@ -860,6 +858,8 @@ class _PriceSummaryWidgetState extends State<PriceSummaryWidget> {
                                                               .unitDuration,
                                                           'add',
                                                           'upsell',
+                                                          selectedAddonsItem
+                                                              .minSpecialists,
                                                         );
                                                         FFAppState()
                                                                 .activeBookingDraft =

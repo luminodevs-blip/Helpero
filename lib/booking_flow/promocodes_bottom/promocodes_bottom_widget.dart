@@ -79,8 +79,6 @@ class _PromocodesBottomWidgetState extends State<PromocodesBottomWidget> {
         decoration: BoxDecoration(
           color: FlutterFlowTheme.of(context).secondaryBackground,
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(0.0),
-            bottomRight: Radius.circular(0.0),
             topLeft: Radius.circular(10.0),
             topRight: Radius.circular(10.0),
           ),
@@ -104,7 +102,7 @@ class _PromocodesBottomWidgetState extends State<PromocodesBottomWidget> {
               child: Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 20.0),
                 child: Text(
-                  'Apply Vaucher',
+                  'Apply Promo',
                   style: FlutterFlowTheme.of(context).bodyMedium.override(
                         font: GoogleFonts.outfit(
                           fontWeight: FontWeight.w600,
@@ -877,10 +875,8 @@ class _PromocodesBottomWidgetState extends State<PromocodesBottomWidget> {
                                           .secondaryBackground,
                                     ),
                                     borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(0.0),
-                                      bottomRight: Radius.circular(8.0),
-                                      topLeft: Radius.circular(0.0),
                                       topRight: Radius.circular(8.0),
+                                      bottomRight: Radius.circular(8.0),
                                     ),
                                   ),
                                   child: Padding(

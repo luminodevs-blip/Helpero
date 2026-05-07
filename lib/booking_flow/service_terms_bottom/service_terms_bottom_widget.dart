@@ -47,10 +47,8 @@ class _ServiceTermsBottomWidgetState extends State<ServiceTermsBottomWidget> {
         decoration: BoxDecoration(
           color: FlutterFlowTheme.of(context).secondaryBackground,
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(0.0),
-            bottomRight: Radius.circular(0.0),
-            topLeft: Radius.circular(10.0),
-            topRight: Radius.circular(10.0),
+            topLeft: Radius.circular(14.0),
+            topRight: Radius.circular(14.0),
           ),
         ),
         child: Column(
@@ -117,7 +115,7 @@ class _ServiceTermsBottomWidgetState extends State<ServiceTermsBottomWidget> {
               ),
             ),
             Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 50.0),
+              padding: EdgeInsetsDirectional.fromSTEB(16.0, 34.0, 16.0, 40.0),
               child: FFButtonWidget(
                 onPressed: () async {
                   Navigator.pop(context);
@@ -125,7 +123,7 @@ class _ServiceTermsBottomWidgetState extends State<ServiceTermsBottomWidget> {
                 text: 'Got it',
                 options: FFButtonOptions(
                   width: double.infinity,
-                  height: 56.0,
+                  height: 50.0,
                   padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                   iconPadding:
                       EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
@@ -147,7 +145,7 @@ class _ServiceTermsBottomWidgetState extends State<ServiceTermsBottomWidget> {
                             FlutterFlowTheme.of(context).titleSmall.fontStyle,
                       ),
                   elevation: 0.0,
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
               ),
             ),

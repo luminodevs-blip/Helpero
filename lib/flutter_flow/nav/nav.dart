@@ -112,11 +112,13 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: AccountPageWidget.routeName,
           path: AccountPageWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => AccountPageWidget(),
         ),
         FFRoute(
           name: PlaningWidget.routeName,
           path: PlaningWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => PlaningWidget(),
         ),
         FFRoute(
@@ -133,11 +135,13 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: PickOnMapWidget.routeName,
           path: PickOnMapWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => PickOnMapWidget(),
         ),
         FFRoute(
           name: OrderHistoryWidget.routeName,
           path: OrderHistoryWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => OrderHistoryWidget(),
         ),
         FFRoute(
@@ -148,6 +152,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: PaymentMethodWidget.routeName,
           path: PaymentMethodWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => PaymentMethodWidget(),
         ),
         FFRoute(
@@ -163,6 +168,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: AddressesWidget.routeName,
           path: AddressesWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => AddressesWidget(),
         ),
         FFRoute(
@@ -178,7 +184,13 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: AddPropertyWidget.routeName,
           path: AddPropertyWidget.routePath,
-          builder: (context, params) => AddPropertyWidget(),
+          requireAuth: true,
+          builder: (context, params) => AddPropertyWidget(
+            address: params.getParam(
+              'address',
+              ParamType.String,
+            ),
+          ),
         ),
         FFRoute(
           name: SupportWidget.routeName,
@@ -198,6 +210,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: SearchWidget.routeName,
           path: SearchWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => SearchWidget(),
         ),
         FFRoute(
@@ -209,10 +222,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: MasterFinderMapBoxWidget.routeName,
           path: MasterFinderMapBoxWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => MasterFinderMapBoxWidget(
             orderId: params.getParam(
               'orderId',
-              ParamType.String,
+              ParamType.int,
             ),
           ),
         ),
@@ -262,6 +276,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: ServicePageWidget.routeName,
           path: ServicePageWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => ServicePageWidget(
             category: params.getParam(
               'category',
@@ -274,6 +289,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: TipsWidget.routeName,
           path: TipsWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => TipsWidget(),
         ),
         FFRoute(
@@ -284,6 +300,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: SettingsMainWidget.routeName,
           path: SettingsMainWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => SettingsMainWidget(),
         ),
         FFRoute(
@@ -294,6 +311,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: CompletedEntriesWidget.routeName,
           path: CompletedEntriesWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => CompletedEntriesWidget(),
         ),
         FFRoute(
@@ -305,56 +323,67 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: ConfidentiallyWidget.routeName,
           path: ConfidentiallyWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => ConfidentiallyWidget(),
         ),
         FFRoute(
           name: SavedAddressesOffPageWidget.routeName,
           path: SavedAddressesOffPageWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => SavedAddressesOffPageWidget(),
         ),
         FFRoute(
           name: SavedAddressesOnPageWidget.routeName,
           path: SavedAddressesOnPageWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => SavedAddressesOnPageWidget(),
         ),
         FFRoute(
           name: SpecialFeaturesWidget.routeName,
           path: SpecialFeaturesWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => SpecialFeaturesWidget(),
         ),
         FFRoute(
           name: CommunicationWidget.routeName,
           path: CommunicationWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => CommunicationWidget(),
         ),
         FFRoute(
           name: SecuritySettingsWidget.routeName,
           path: SecuritySettingsWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => SecuritySettingsWidget(),
         ),
         FFRoute(
           name: TrustedContactsOffWidget.routeName,
           path: TrustedContactsOffWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => TrustedContactsOffWidget(),
         ),
         FFRoute(
           name: TrustedContactsOnWidget.routeName,
           path: TrustedContactsOnWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => TrustedContactsOnWidget(),
         ),
         FFRoute(
           name: ContactInfoWidget.routeName,
           path: ContactInfoWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => ContactInfoWidget(),
         ),
         FFRoute(
           name: PasskeyWidget.routeName,
           path: PasskeyWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => PasskeyWidget(),
         ),
         FFRoute(
           name: ChangeNameWidget.routeName,
           path: ChangeNameWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => ChangeNameWidget(),
         ),
         FFRoute(
@@ -375,32 +404,32 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: IndividualOffersWidget.routeName,
           path: IndividualOffersWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => IndividualOffersWidget(),
         ),
         FFRoute(
           name: GenderWidget.routeName,
           path: GenderWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => GenderWidget(),
         ),
         FFRoute(
           name: YourSuggestionsWidget.routeName,
           path: YourSuggestionsWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => YourSuggestionsWidget(),
         ),
         FFRoute(
           name: EmailWidget.routeName,
           path: EmailWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => EmailWidget(),
         ),
         FFRoute(
           name: PartnersAdvertisingWidget.routeName,
           path: PartnersAdvertisingWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => PartnersAdvertisingWidget(),
-        ),
-        FFRoute(
-          name: PaymentSuccessPageWidget.routeName,
-          path: PaymentSuccessPageWidget.routePath,
-          builder: (context, params) => PaymentSuccessPageWidget(),
         ),
         FFRoute(
           name: VoucherscopyyWidget.routeName,
@@ -410,27 +439,28 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: VouchersWidget.routeName,
           path: VouchersWidget.routePath,
+          requireAuth: true,
           builder: (context, params) => VouchersWidget(),
-        ),
-        FFRoute(
-          name: ActiveOrderTrackingWidget.routeName,
-          path: ActiveOrderTrackingWidget.routePath,
-          builder: (context, params) => ActiveOrderTrackingWidget(
-            orderId: params.getParam(
-              'orderId',
-              ParamType.int,
-            ),
-          ),
         ),
         FFRoute(
           name: HowDoIBookAServiceWidget.routeName,
           path: HowDoIBookAServiceWidget.routePath,
-          builder: (context, params) => HowDoIBookAServiceWidget(),
+          builder: (context, params) => HowDoIBookAServiceWidget(
+            page: params.getParam(
+              'page',
+              ParamType.String,
+            ),
+          ),
         ),
         FFRoute(
           name: CanICancelOrRescheduleMyBookingWidget.routeName,
           path: CanICancelOrRescheduleMyBookingWidget.routePath,
-          builder: (context, params) => CanICancelOrRescheduleMyBookingWidget(),
+          builder: (context, params) => CanICancelOrRescheduleMyBookingWidget(
+            page: params.getParam(
+              'page',
+              ParamType.String,
+            ),
+          ),
         ),
         FFRoute(
           name: FaqWidget.routeName,
@@ -476,7 +506,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: WhatIsTheRefundPolicyWidget.routeName,
           path: WhatIsTheRefundPolicyWidget.routePath,
-          builder: (context, params) => WhatIsTheRefundPolicyWidget(),
+          builder: (context, params) => WhatIsTheRefundPolicyWidget(
+            page: params.getParam(
+              'page',
+              ParamType.String,
+            ),
+          ),
         ),
         FFRoute(
           name: HowDoIUseAPromoCodeOrDiscountWidget.routeName,
@@ -491,7 +526,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: WhoAreTheHelperoProfessionalsWidget.routeName,
           path: WhoAreTheHelperoProfessionalsWidget.routePath,
-          builder: (context, params) => WhoAreTheHelperoProfessionalsWidget(),
+          builder: (context, params) => WhoAreTheHelperoProfessionalsWidget(
+            page: params.getParam(
+              'page',
+              ParamType.String,
+            ),
+          ),
         ),
         FFRoute(
           name: AmICoveredIfSomethingIsDamagedWidget.routeName,
@@ -558,7 +598,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: WhatIsHelperoPlusWidget.routeName,
           path: WhatIsHelperoPlusWidget.routePath,
-          builder: (context, params) => WhatIsHelperoPlusWidget(),
+          builder: (context, params) => WhatIsHelperoPlusWidget(
+            page: params.getParam(
+              'page',
+              ParamType.String,
+            ),
+          ),
         ),
         FFRoute(
           name: HowDoIDeleteMyAccountWidget.routeName,
@@ -569,6 +614,21 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: ConsultantChatWidget.routeName,
           path: ConsultantChatWidget.routePath,
           builder: (context, params) => ConsultantChatWidget(),
+        ),
+        FFRoute(
+          name: ActiveOrderWidget.routeName,
+          path: ActiveOrderWidget.routePath,
+          builder: (context, params) => ActiveOrderWidget(),
+        ),
+        FFRoute(
+          name: ChatWithMasterWidget.routeName,
+          path: ChatWithMasterWidget.routePath,
+          builder: (context, params) => ChatWithMasterWidget(),
+        ),
+        FFRoute(
+          name: ServiceSupportChatWidget.routeName,
+          path: ServiceSupportChatWidget.routePath,
+          builder: (context, params) => ServiceSupportChatWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
       observers: [routeObserver],

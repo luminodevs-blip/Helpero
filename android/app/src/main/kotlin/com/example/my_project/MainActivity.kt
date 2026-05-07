@@ -1,4 +1,4 @@
-package com.mycompany.helpero
+package com.helpero.app
 
 import io.flutter.embedding.android.FlutterActivity
 

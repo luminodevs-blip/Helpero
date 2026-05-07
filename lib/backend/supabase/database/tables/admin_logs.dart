@@ -14,8 +14,8 @@ class AdminLogsRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => AdminLogsTable();
 
-  int get id => getField<int>('id')!;
-  set id(int value) => setField<int>('id', value);
+  int? get id => getField<int>('id');
+  set id(int? value) => setField<int>('id', value);
 
   String? get adminId => getField<String>('admin_id');
   set adminId(String? value) => setField<String>('admin_id', value);

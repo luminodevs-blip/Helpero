@@ -6,6 +6,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/index.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -72,8 +73,14 @@ class _EmailAUTHWidgetState extends State<EmailAUTHWidget> {
                 Align(
                   alignment: AlignmentDirectional(-1.0, 0.0),
                   child: Padding(
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(8.0, 48.0, 0.0, 34.0),
+                    padding: EdgeInsetsDirectional.fromSTEB(
+                        8.0,
+                        valueOrDefault<double>(
+                          isWeb ? 24.0 : 44.0,
+                          44.0,
+                        ),
+                        0.0,
+                        34.0),
                     child: FlutterFlowIconButton(
                       borderRadius: 10.0,
                       buttonSize: 44.0,
@@ -285,11 +292,9 @@ class _EmailAUTHWidgetState extends State<EmailAUTHWidget> {
                                               width: 1.0,
                                             ),
                                             borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(0.0),
+                                              topRight: Radius.circular(10.0),
                                               bottomRight:
                                                   Radius.circular(10.0),
-                                              topLeft: Radius.circular(0.0),
-                                              topRight: Radius.circular(10.0),
                                             ),
                                           ),
                                           focusedBorder: OutlineInputBorder(
@@ -298,11 +303,9 @@ class _EmailAUTHWidgetState extends State<EmailAUTHWidget> {
                                               width: 1.0,
                                             ),
                                             borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(0.0),
+                                              topRight: Radius.circular(10.0),
                                               bottomRight:
                                                   Radius.circular(10.0),
-                                              topLeft: Radius.circular(0.0),
-                                              topRight: Radius.circular(10.0),
                                             ),
                                           ),
                                           errorBorder: OutlineInputBorder(
@@ -313,11 +316,9 @@ class _EmailAUTHWidgetState extends State<EmailAUTHWidget> {
                                               width: 1.0,
                                             ),
                                             borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(0.0),
+                                              topRight: Radius.circular(10.0),
                                               bottomRight:
                                                   Radius.circular(10.0),
-                                              topLeft: Radius.circular(0.0),
-                                              topRight: Radius.circular(10.0),
                                             ),
                                           ),
                                           focusedErrorBorder:
@@ -329,11 +330,9 @@ class _EmailAUTHWidgetState extends State<EmailAUTHWidget> {
                                               width: 1.0,
                                             ),
                                             borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(0.0),
+                                              topRight: Radius.circular(10.0),
                                               bottomRight:
                                                   Radius.circular(10.0),
-                                              topLeft: Radius.circular(0.0),
-                                              topRight: Radius.circular(10.0),
                                             ),
                                           ),
                                           filled: true,
@@ -549,71 +548,114 @@ class _EmailAUTHWidgetState extends State<EmailAUTHWidget> {
                                 ),
                               ),
                               Expanded(
-                                child: Container(
-                                  width: 100.0,
-                                  height: 60.0,
-                                  decoration: BoxDecoration(
-                                    color: FlutterFlowTheme.of(context)
-                                        .primaryBackground,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        blurRadius: 4.0,
+                                child: InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () async {
+                                    await showDialog(
+                                      context: context,
+                                      builder: (alertDialogContext) {
+                                        return AlertDialog(
+                                          title: Text('Feature in development'),
+                                          content: Text(
+                                              'This functionality will be available in upcoming releases.'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () => Navigator.pop(
+                                                  alertDialogContext),
+                                              child: Text('Ok'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 100.0,
+                                    height: 60.0,
+                                    decoration: BoxDecoration(
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryBackground,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          blurRadius: 4.0,
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryBackground,
+                                          offset: Offset(
+                                            0.0,
+                                            2.0,
+                                          ),
+                                        )
+                                      ],
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      border: Border.all(
                                         color: FlutterFlowTheme.of(context)
-                                            .primaryBackground,
-                                        offset: Offset(
-                                          0.0,
-                                          2.0,
-                                        ),
-                                      )
-                                    ],
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    border: Border.all(
-                                      color: FlutterFlowTheme.of(context)
-                                          .alternate,
+                                            .alternate,
+                                      ),
                                     ),
-                                  ),
-                                  child: Align(
-                                    alignment: AlignmentDirectional(0.0, 0.0),
-                                    child: Icon(
-                                      Icons.lock_person,
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryText,
-                                      size: 28.0,
+                                    child: Align(
+                                      alignment: AlignmentDirectional(0.0, 0.0),
+                                      child: Icon(
+                                        Icons.lock_person,
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryText,
+                                        size: 28.0,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                               Expanded(
-                                child: Container(
-                                  width: 100.0,
-                                  height: 60.0,
-                                  decoration: BoxDecoration(
-                                    color: FlutterFlowTheme.of(context)
-                                        .primaryBackground,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        blurRadius: 4.0,
+                                child: InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () async {
+                                    GoRouter.of(context).prepareAuthEvent();
+                                    final user = await authManager
+                                        .signInWithApple(context);
+                                    if (user == null) {
+                                      return;
+                                    }
+
+                                    context.goNamedAuth(
+                                        LoginRedirectWidget.routeName,
+                                        context.mounted);
+                                  },
+                                  child: Container(
+                                    width: 100.0,
+                                    height: 60.0,
+                                    decoration: BoxDecoration(
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryBackground,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          blurRadius: 4.0,
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryBackground,
+                                          offset: Offset(
+                                            0.0,
+                                            2.0,
+                                          ),
+                                        )
+                                      ],
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      border: Border.all(
                                         color: FlutterFlowTheme.of(context)
-                                            .primaryBackground,
-                                        offset: Offset(
-                                          0.0,
-                                          2.0,
-                                        ),
-                                      )
-                                    ],
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    border: Border.all(
-                                      color: FlutterFlowTheme.of(context)
-                                          .alternate,
+                                            .alternate,
+                                      ),
                                     ),
-                                  ),
-                                  child: Align(
-                                    alignment: AlignmentDirectional(0.0, 0.0),
-                                    child: FaIcon(
-                                      FontAwesomeIcons.apple,
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryText,
-                                      size: 30.0,
+                                    child: Align(
+                                      alignment: AlignmentDirectional(0.0, 0.0),
+                                      child: FaIcon(
+                                        FontAwesomeIcons.apple,
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryText,
+                                        size: 30.0,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -680,8 +722,23 @@ class _EmailAUTHWidgetState extends State<EmailAUTHWidget> {
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text:
-                                    'You agree to receive notifications and to the transfer of personal data to Helpero\'s business partners in accordance with the ',
+                                text: 'By continuing, you agree to our ',
+                                style: TextStyle(),
+                              ),
+                              TextSpan(
+                                text: 'Terms and Conditions',
+                                style: TextStyle(
+                                  color: FlutterFlowTheme.of(context).primary,
+                                ),
+                                mouseCursor: SystemMouseCursors.click,
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () async {
+                                    await launchURL(
+                                        'helpero.ca/pages/terms.html');
+                                  },
+                              ),
+                              TextSpan(
+                                text: ' and ',
                                 style: TextStyle(),
                               ),
                               TextSpan(
@@ -690,10 +747,16 @@ class _EmailAUTHWidgetState extends State<EmailAUTHWidget> {
                                   color: FlutterFlowTheme.of(context).primary,
                                   fontWeight: FontWeight.w500,
                                 ),
+                                mouseCursor: SystemMouseCursors.click,
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () async {
+                                    await launchURL(
+                                        'helpero.ca/pages/privacy.html');
+                                  },
                               ),
                               TextSpan(
                                 text:
-                                    '. You can unsubscribe from notifications in your profile settings.',
+                                    '. You\'ll receive notifications, which you can manage in your profile settings.',
                                 style: TextStyle(),
                               )
                             ],
@@ -711,6 +774,7 @@ class _EmailAUTHWidgetState extends State<EmailAUTHWidget> {
                                   fontStyle: FlutterFlowTheme.of(context)
                                       .bodyMedium
                                       .fontStyle,
+                                  lineHeight: 1.4,
                                 ),
                           ),
                           textAlign: TextAlign.center,

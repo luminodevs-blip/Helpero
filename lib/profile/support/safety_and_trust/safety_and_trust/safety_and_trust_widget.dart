@@ -84,8 +84,6 @@ class _SafetyAndTrustWidgetState extends State<SafetyAndTrustWidget> {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -244,6 +242,12 @@ class _SafetyAndTrustWidgetState extends State<SafetyAndTrustWidget> {
                                     context.goNamed(
                                       WhoAreTheHelperoProfessionalsWidget
                                           .routeName,
+                                      queryParameters: {
+                                        'page': serializeParam(
+                                          'Safety and trust',
+                                          ParamType.String,
+                                        ),
+                                      }.withoutNulls,
                                       extra: <String, dynamic>{
                                         '__transition_info__': TransitionInfo(
                                           hasTransition: true,

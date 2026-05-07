@@ -61,13 +61,17 @@ class _AddressesWidgetState extends State<AddressesWidget> {
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(10.0),
                     bottomRight: Radius.circular(10.0),
-                    topLeft: Radius.circular(0.0),
-                    topRight: Radius.circular(0.0),
                   ),
                 ),
                 child: Padding(
-                  padding:
-                      EdgeInsetsDirectional.fromSTEB(16.0, 48.0, 16.0, 0.0),
+                  padding: EdgeInsetsDirectional.fromSTEB(
+                      16.0,
+                      valueOrDefault<double>(
+                        isWeb ? 24.0 : 44.0,
+                        44.0,
+                      ),
+                      16.0,
+                      0.0),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

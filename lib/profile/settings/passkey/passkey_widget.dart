@@ -82,8 +82,6 @@ class _PasskeyWidgetState extends State<PasskeyWidget> {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -159,12 +157,7 @@ class _PasskeyWidgetState extends State<PasskeyWidget> {
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         0.0, 0.0, 0.0, 20.0),
                                     child: ClipRRect(
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(0.0),
-                                        bottomRight: Radius.circular(0.0),
-                                        topLeft: Radius.circular(0.0),
-                                        topRight: Radius.circular(0.0),
-                                      ),
+                                      borderRadius: BorderRadius.only(),
                                       child: Image.asset(
                                         'assets/images/ChatGPT_Image_Feb_18,_2026,_08_00_43_PM.png',
                                         width: double.infinity,
@@ -431,7 +424,11 @@ class _PasskeyWidgetState extends State<PasskeyWidget> {
                             ),
                           ),
                         ),
-                      ].addToStart(SizedBox(height: 4.0)),
+                      ].addToStart(SizedBox(
+                          height: valueOrDefault<double>(
+                        isWeb ? 4.0 : 44.0,
+                        44.0,
+                      ))),
                     ),
                   ),
                 ),

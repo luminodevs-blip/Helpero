@@ -1,6 +1,6 @@
 import '/backend/api_requests/api_calls.dart';
 import '/backend/schema/structs/index.dart';
-import '/booking_flow/arrival_card_loader/arrival_card_loader_widget.dart';
+import '/booking_flow/new/arrival_card_loader/arrival_card_loader_widget.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/index.dart';
 import 'planing_widget.dart' show PlaningWidget;
@@ -27,12 +27,18 @@ class PlaningModel extends FlutterFlowModel<PlaningWidget> {
 
   bool isLoadingSlots = true;
 
+  String? mapIMG;
+
   ///  State fields for stateful widgets in this page.
 
   // Stores action output result for [Backend Call - API (CheckAvailability)] action in Planing widget.
   ApiCallResponse? checkAvailability;
+  // Stores action output result for [Custom Action - updateBookingSlot] action in ArrivalCard widget.
+  BookingDraftStruct? updatedDraftResult;
   // Model for ArrivalCard_Loader component.
   late ArrivalCardLoaderModel arrivalCardLoaderModel;
+  // Stores action output result for [Backend Call - API (CheckAvailability)] action in Row widget.
+  ApiCallResponse? checkAvailabilityAddress;
   // Stores action output result for [Backend Call - API (CalculateCheckout)] action in Button widget.
   ApiCallResponse? checkoutResult;
 

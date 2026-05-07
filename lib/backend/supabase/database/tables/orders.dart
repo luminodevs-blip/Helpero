@@ -14,8 +14,8 @@ class OrdersRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => OrdersTable();
 
-  int get id => getField<int>('id')!;
-  set id(int value) => setField<int>('id', value);
+  int? get id => getField<int>('id');
+  set id(int? value) => setField<int>('id', value);
 
   String? get userId => getField<String>('user_id');
   set userId(String? value) => setField<String>('user_id', value);
@@ -25,9 +25,6 @@ class OrdersRow extends SupabaseDataRow {
 
   int? get regionId => getField<int>('region_id');
   set regionId(int? value) => setField<int>('region_id', value);
-
-  String? get status => getField<String>('status');
-  set status(String? value) => setField<String>('status', value);
 
   double get totalItemsPrice => getField<double>('total_items_price')!;
   set totalItemsPrice(double value) =>
@@ -90,4 +87,51 @@ class OrdersRow extends SupabaseDataRow {
 
   String? get cartId => getField<String>('cart_id');
   set cartId(String? value) => setField<String>('cart_id', value);
+
+  String? get securePin => getField<String>('secure_pin');
+  set securePin(String? value) => setField<String>('secure_pin', value);
+
+  String? get status => getField<String>('status');
+  set status(String? value) => setField<String>('status', value);
+
+  String? get paymentStatus => getField<String>('payment_status');
+  set paymentStatus(String? value) => setField<String>('payment_status', value);
+
+  DateTime? get paidAt => getField<DateTime>('paid_at');
+  set paidAt(DateTime? value) => setField<DateTime>('paid_at', value);
+
+  double? get bookingFee => getField<double>('booking_fee');
+  set bookingFee(double? value) => setField<double>('booking_fee', value);
+
+  double? get discountAmount => getField<double>('discount_amount');
+  set discountAmount(double? value) =>
+      setField<double>('discount_amount', value);
+
+  int? get appliedVoucherId => getField<int>('applied_voucher_id');
+  set appliedVoucherId(int? value) =>
+      setField<int>('applied_voucher_id', value);
+
+  String? get userVoucherId => getField<String>('user_voucher_id');
+  set userVoucherId(String? value) =>
+      setField<String>('user_voucher_id', value);
+
+  String? get promoCode => getField<String>('promo_code');
+  set promoCode(String? value) => setField<String>('promo_code', value);
+
+  String? get lastMessageText => getField<String>('last_message_text');
+  set lastMessageText(String? value) =>
+      setField<String>('last_message_text', value);
+
+  DateTime? get lastMessageAt => getField<DateTime>('last_message_at');
+  set lastMessageAt(DateTime? value) =>
+      setField<DateTime>('last_message_at', value);
+
+  DateTime? get startedAt => getField<DateTime>('started_at');
+  set startedAt(DateTime? value) => setField<DateTime>('started_at', value);
+
+  DateTime? get finishedAt => getField<DateTime>('finished_at');
+  set finishedAt(DateTime? value) => setField<DateTime>('finished_at', value);
+
+  int? get experienceRating => getField<int>('experience_rating');
+  set experienceRating(int? value) => setField<int>('experience_rating', value);
 }

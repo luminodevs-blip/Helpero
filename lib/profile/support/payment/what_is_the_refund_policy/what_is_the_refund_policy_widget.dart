@@ -10,7 +10,12 @@ import 'what_is_the_refund_policy_model.dart';
 export 'what_is_the_refund_policy_model.dart';
 
 class WhatIsTheRefundPolicyWidget extends StatefulWidget {
-  const WhatIsTheRefundPolicyWidget({super.key});
+  const WhatIsTheRefundPolicyWidget({
+    super.key,
+    String? page,
+  }) : this.page = page ?? '';
+
+  final String page;
 
   static String routeName = 'What_is_the_refund_policy';
   static String routePath = '/whatIsTheRefundPolicy';
@@ -87,8 +92,6 @@ class _WhatIsTheRefundPolicyWidgetState
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -121,19 +124,35 @@ class _WhatIsTheRefundPolicyWidgetState
                                             size: 24.0,
                                           ),
                                           onPressed: () async {
-                                            context.goNamed(
-                                              BookingWidget.routeName,
-                                              extra: <String, dynamic>{
-                                                '__transition_info__':
-                                                    TransitionInfo(
-                                                  hasTransition: true,
-                                                  transitionType:
-                                                      PageTransitionType.fade,
-                                                  duration:
-                                                      Duration(milliseconds: 0),
-                                                ),
-                                              },
-                                            );
+                                            if (widget.page == 'FAQ') {
+                                              context.goNamed(
+                                                FaqWidget.routeName,
+                                                extra: <String, dynamic>{
+                                                  '__transition_info__':
+                                                      TransitionInfo(
+                                                    hasTransition: true,
+                                                    transitionType:
+                                                        PageTransitionType.fade,
+                                                    duration: Duration(
+                                                        milliseconds: 0),
+                                                  ),
+                                                },
+                                              );
+                                            } else {
+                                              context.goNamed(
+                                                PaymentWidget.routeName,
+                                                extra: <String, dynamic>{
+                                                  '__transition_info__':
+                                                      TransitionInfo(
+                                                    hasTransition: true,
+                                                    transitionType:
+                                                        PageTransitionType.fade,
+                                                    duration: Duration(
+                                                        milliseconds: 0),
+                                                  ),
+                                                },
+                                              );
+                                            }
                                           },
                                         ),
                                       ),
@@ -573,11 +592,9 @@ class _WhatIsTheRefundPolicyWidgetState
                                             color: FlutterFlowTheme.of(context)
                                                 .tertiary,
                                             borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(0.0),
+                                              topRight: Radius.circular(10.0),
                                               bottomRight:
                                                   Radius.circular(10.0),
-                                              topLeft: Radius.circular(0.0),
-                                              topRight: Radius.circular(10.0),
                                             ),
                                           ),
                                           child: Padding(
@@ -589,12 +606,9 @@ class _WhatIsTheRefundPolicyWidgetState
                                               decoration: BoxDecoration(
                                                 color: Color(0x8C8CA2F2),
                                                 borderRadius: BorderRadius.only(
-                                                  bottomLeft:
-                                                      Radius.circular(0.0),
-                                                  bottomRight:
-                                                      Radius.circular(10.0),
-                                                  topLeft: Radius.circular(0.0),
                                                   topRight:
+                                                      Radius.circular(10.0),
+                                                  bottomRight:
                                                       Radius.circular(10.0),
                                                 ),
                                                 border: Border.all(
@@ -989,8 +1003,20 @@ class _WhatIsTheRefundPolicyWidgetState
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           16.0, 0.0, 16.0, 0.0),
                                       child: FFButtonWidget(
-                                        onPressed: () {
-                                          print('Button pressed ...');
+                                        onPressed: () async {
+                                          context.goNamed(
+                                            ConsultantChatWidget.routeName,
+                                            extra: <String, dynamic>{
+                                              '__transition_info__':
+                                                  TransitionInfo(
+                                                hasTransition: true,
+                                                transitionType:
+                                                    PageTransitionType.fade,
+                                                duration:
+                                                    Duration(milliseconds: 0),
+                                              ),
+                                            },
+                                          );
                                         },
                                         text: 'Need more help?',
                                         icon: Icon(

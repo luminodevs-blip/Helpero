@@ -22,10 +22,6 @@ class AccountPageModel extends FlutterFlowModel<AccountPageWidget> {
   late MenuItemModel menuItemModel4;
   // Model for menuItem component.
   late MenuItemModel menuItemModel5;
-  // Model for menuItem component.
-  late MenuItemModel menuItemModel6;
-  // State field(s) for Switch widget.
-  bool? switchValue;
   // Model for navbar component.
   late NavbarModel navbarModel;
 
@@ -36,7 +32,6 @@ class AccountPageModel extends FlutterFlowModel<AccountPageWidget> {
     menuItemModel3 = createModel(context, () => MenuItemModel());
     menuItemModel4 = createModel(context, () => MenuItemModel());
     menuItemModel5 = createModel(context, () => MenuItemModel());
-    menuItemModel6 = createModel(context, () => MenuItemModel());
     navbarModel = createModel(context, () => NavbarModel());
   }
 
@@ -50,7 +45,6 @@ class AccountPageModel extends FlutterFlowModel<AccountPageWidget> {
     menuItemModel3.dispose();
     menuItemModel4.dispose();
     menuItemModel5.dispose();
-    menuItemModel6.dispose();
     navbarModel.dispose();
   }
 }

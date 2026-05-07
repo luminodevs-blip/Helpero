@@ -14,8 +14,8 @@ class HousesRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => HousesTable();
 
-  int get id => getField<int>('id')!;
-  set id(int value) => setField<int>('id', value);
+  int? get id => getField<int>('id');
+  set id(int? value) => setField<int>('id', value);
 
   String? get userId => getField<String>('user_id');
   set userId(String? value) => setField<String>('user_id', value);
@@ -55,4 +55,22 @@ class HousesRow extends SupabaseDataRow {
 
   int? get numBathrooms => getField<int>('num_bathrooms');
   set numBathrooms(int? value) => setField<int>('num_bathrooms', value);
+
+  String? get unitNumber => getField<String>('unit_number');
+  set unitNumber(String? value) => setField<String>('unit_number', value);
+
+  String? get floor => getField<String>('floor');
+  set floor(String? value) => setField<String>('floor', value);
+
+  String? get intercomCode => getField<String>('intercom_code');
+  set intercomCode(String? value) => setField<String>('intercom_code', value);
+
+  String? get gateCode => getField<String>('gate_code');
+  set gateCode(String? value) => setField<String>('gate_code', value);
+
+  String? get companyName => getField<String>('company_name');
+  set companyName(String? value) => setField<String>('company_name', value);
+
+  String? get instructions => getField<String>('instructions');
+  set instructions(String? value) => setField<String>('instructions', value);
 }

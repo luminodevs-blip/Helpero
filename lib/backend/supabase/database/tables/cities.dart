@@ -14,8 +14,8 @@ class CitiesRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => CitiesTable();
 
-  int get id => getField<int>('id')!;
-  set id(int value) => setField<int>('id', value);
+  int? get id => getField<int>('id');
+  set id(int? value) => setField<int>('id', value);
 
   int? get countryId => getField<int>('country_id');
   set countryId(int? value) => setField<int>('country_id', value);

@@ -33,6 +33,7 @@ class BookingDraftStruct extends BaseStruct {
     String? currentCartId,
     ServerCheckoutStruct? serverCheckout,
     String? selectedVoucherId,
+    int? specialistsCount,
   })  : _categoryId = categoryId,
         _serviceId = serviceId,
         _serviceName = serviceName,
@@ -50,7 +51,8 @@ class BookingDraftStruct extends BaseStruct {
         _visit = visit,
         _currentCartId = currentCartId,
         _serverCheckout = serverCheckout,
-        _selectedVoucherId = selectedVoucherId;
+        _selectedVoucherId = selectedVoucherId,
+        _specialistsCount = specialistsCount;
 
   // "categoryId" field.
   ServiceCategoryStruct? _categoryId;
@@ -220,6 +222,16 @@ class BookingDraftStruct extends BaseStruct {
 
   bool hasSelectedVoucherId() => _selectedVoucherId != null;
 
+  // "specialistsCount" field.
+  int? _specialistsCount;
+  int get specialistsCount => _specialistsCount ?? 0;
+  set specialistsCount(int? val) => _specialistsCount = val;
+
+  void incrementSpecialistsCount(int amount) =>
+      specialistsCount = specialistsCount + amount;
+
+  bool hasSpecialistsCount() => _specialistsCount != null;
+
   static BookingDraftStruct fromMap(Map<String, dynamic> data) =>
       BookingDraftStruct(
         categoryId: data['categoryId'] is ServiceCategoryStruct
@@ -251,6 +263,7 @@ class BookingDraftStruct extends BaseStruct {
             ? data['serverCheckout']
             : ServerCheckoutStruct.maybeFromMap(data['serverCheckout']),
         selectedVoucherId: data['selectedVoucherId'] as String?,
+        specialistsCount: castToType<int>(data['specialistsCount']),
       );
 
   static BookingDraftStruct? maybeFromMap(dynamic data) => data is Map
@@ -276,6 +289,7 @@ class BookingDraftStruct extends BaseStruct {
         'currentCartId': _currentCartId,
         'serverCheckout': _serverCheckout?.toMap(),
         'selectedVoucherId': _selectedVoucherId,
+        'specialistsCount': _specialistsCount,
       }.withoutNulls;
 
   @override
@@ -352,6 +366,10 @@ class BookingDraftStruct extends BaseStruct {
         'selectedVoucherId': serializeParam(
           _selectedVoucherId,
           ParamType.String,
+        ),
+        'specialistsCount': serializeParam(
+          _specialistsCount,
+          ParamType.int,
         ),
       }.withoutNulls;
 
@@ -452,6 +470,11 @@ class BookingDraftStruct extends BaseStruct {
           ParamType.String,
           false,
         ),
+        specialistsCount: deserializeParam(
+          data['specialistsCount'],
+          ParamType.int,
+          false,
+        ),
       );
 
   @override
@@ -478,7 +501,8 @@ class BookingDraftStruct extends BaseStruct {
         visit == other.visit &&
         currentCartId == other.currentCartId &&
         serverCheckout == other.serverCheckout &&
-        selectedVoucherId == other.selectedVoucherId;
+        selectedVoucherId == other.selectedVoucherId &&
+        specialistsCount == other.specialistsCount;
   }
 
   @override
@@ -500,7 +524,8 @@ class BookingDraftStruct extends BaseStruct {
         visit,
         currentCartId,
         serverCheckout,
-        selectedVoucherId
+        selectedVoucherId,
+        specialistsCount
       ]);
 }
 
@@ -522,6 +547,7 @@ BookingDraftStruct createBookingDraftStruct({
   String? currentCartId,
   ServerCheckoutStruct? serverCheckout,
   String? selectedVoucherId,
+  int? specialistsCount,
 }) =>
     BookingDraftStruct(
       categoryId: categoryId ?? ServiceCategoryStruct(),
@@ -541,4 +567,5 @@ BookingDraftStruct createBookingDraftStruct({
       currentCartId: currentCartId,
       serverCheckout: serverCheckout ?? ServerCheckoutStruct(),
       selectedVoucherId: selectedVoucherId,
+      specialistsCount: specialistsCount,
     );

@@ -7,13 +7,12 @@ export '/auth_flow/general/general_widget.dart' show GeneralWidget;
 export '/profile/account_page/account_page_widget.dart' show AccountPageWidget;
 export '/booking_flow/planing/planing_widget.dart' show PlaningWidget;
 export '/booking_flow/checkout/checkout_widget.dart' show CheckoutWidget;
-export '/updates_folder/add_address/add_address_widget.dart'
+export '/profile/updates_folder/add_address/add_address_widget.dart'
     show AddAddressWidget;
 export '/auth_flow/pick_on_map/pick_on_map_widget.dart' show PickOnMapWidget;
-export '/auth_flow/pages/order_history/order_history_widget.dart'
+export '/auth_flow/order_history/order_history_widget.dart'
     show OrderHistoryWidget;
-export '/profile/support/order_help/order_help_widget.dart'
-    show OrderHelpWidget;
+export '/profile/order_help/order_help_widget.dart' show OrderHelpWidget;
 export '/profile/payment_method/payment_method_widget.dart'
     show PaymentMethodWidget;
 export '/profile/edit_profile/edit_profile_widget.dart' show EditProfileWidget;
@@ -21,12 +20,12 @@ export '/profile/addresses/addresses_widget.dart' show AddressesWidget;
 export '/auth_flow/otp/otp_widget.dart' show OtpWidget;
 export '/auth_flow/email_a_u_t_h/email_a_u_t_h_widget.dart'
     show EmailAUTHWidget;
-export '/updates_folder/add_property/add_property_widget.dart'
+export '/profile/updates_folder/add_property/add_property_widget.dart'
     show AddPropertyWidget;
 export '/profile/support/support/support_widget.dart' show SupportWidget;
-export '/updates_folder/support_chat/support_chat_widget.dart'
+export '/profile/updates_folder/support_chat/support_chat_widget.dart'
     show SupportChatWidget;
-export '/updates_folder/notifications/notifications_widget.dart'
+export '/profile/updates_folder/notifications/notifications_widget.dart'
     show NotificationsWidget;
 export '/auth_flow/search/search_widget.dart' show SearchWidget;
 export '/booking_flow/customize_step/customize_step_widget.dart'
@@ -43,16 +42,16 @@ export '/auth_flow/pages/general_entry_first/general_entry_first_widget.dart'
 export '/booking_flow/add_ons/add_ons_widget.dart' show AddOnsWidget;
 export '/auth_flow/onboarding/entry_redirect/entry_redirect_widget.dart'
     show EntryRedirectWidget;
-export '/auth_flow/onboarding/login_redirect/login_redirect_widget.dart'
+export '/auth_flow/login_redirect/login_redirect_widget.dart'
     show LoginRedirectWidget;
 export '/booking_flow/service_page/service_page_widget.dart'
     show ServicePageWidget;
 export '/tips/tips_widget.dart' show TipsWidget;
-export '/updates_folder/checkout_flow/checkout_flow_widget.dart'
+export '/profile/updates_folder/checkout_flow/checkout_flow_widget.dart'
     show CheckoutFlowWidget;
 export '/profile/settings/settings_main/settings_main_widget.dart'
     show SettingsMainWidget;
-export '/updates_folder/account_center/account_center_widget.dart'
+export '/profile/updates_folder/account_center/account_center_widget.dart'
     show AccountCenterWidget;
 export '/profile/settings/completed_entries/completed_entries_widget.dart'
     show CompletedEntriesWidget;
@@ -87,19 +86,15 @@ export '/profile/settings/marketing_settings/s_m_s_mailing/s_m_s_mailing_widget.
     show SMSMailingWidget;
 export '/profile/settings/confidentiality/individual_offers/individual_offers_widget.dart'
     show IndividualOffersWidget;
-export '/profile/settings/gender/gender_widget.dart' show GenderWidget;
+export '/profile/gender/gender_widget.dart' show GenderWidget;
 export '/profile/settings/your_suggestions/your_suggestions_widget.dart'
     show YourSuggestionsWidget;
 export '/profile/settings/email/email_widget.dart' show EmailWidget;
 export '/profile/settings/confidentiality/partners_advertising/partners_advertising_widget.dart'
     show PartnersAdvertisingWidget;
-export '/payment_success_page/payment_success_page_widget.dart'
-    show PaymentSuccessPageWidget;
-export '/updates_folder/voucherscopyy/voucherscopyy_widget.dart'
+export '/profile/updates_folder/voucherscopyy/voucherscopyy_widget.dart'
     show VoucherscopyyWidget;
 export '/profile/vouchers/vouchers_widget.dart' show VouchersWidget;
-export '/active_order_tracking/active_order_tracking_widget.dart'
-    show ActiveOrderTrackingWidget;
 export '/profile/support/booking/how_do_i_book_a_service/how_do_i_book_a_service_widget.dart'
     show HowDoIBookAServiceWidget;
 export '/profile/support/booking/can_i_cancel_or_reschedule_my_booking/can_i_cancel_or_reschedule_my_booking_widget.dart'
@@ -157,3 +152,9 @@ export '/profile/support/my_account/how_do_i_delete_my_account/how_do_i_delete_m
     show HowDoIDeleteMyAccountWidget;
 export '/profile/support/consultant_chat/consultant_chat_widget.dart'
     show ConsultantChatWidget;
+export '/auth_flow/active_order/active_order_widget.dart'
+    show ActiveOrderWidget;
+export '/profile/support/chat_with_master/chat_with_master_widget.dart'
+    show ChatWithMasterWidget;
+export '/profile/support/service_support_chat/service_support_chat_widget.dart'
+    show ServiceSupportChatWidget;

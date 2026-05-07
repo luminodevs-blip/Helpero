@@ -15,8 +15,8 @@ class ServiceAddonsRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => ServiceAddonsTable();
 
-  String get id => getField<String>('id')!;
-  set id(String value) => setField<String>('id', value);
+  String? get id => getField<String>('id');
+  set id(String? value) => setField<String>('id', value);
 
   int get serviceId => getField<int>('service_id')!;
   set serviceId(int value) => setField<int>('service_id', value);
@@ -27,14 +27,14 @@ class ServiceAddonsRow extends SupabaseDataRow {
   String? get description => getField<String>('description');
   set description(String? value) => setField<String>('description', value);
 
-  double get price => getField<double>('price')!;
-  set price(double value) => setField<double>('price', value);
+  double? get price => getField<double>('price');
+  set price(double? value) => setField<double>('price', value);
 
   int? get durationMinutes => getField<int>('duration_minutes');
   set durationMinutes(int? value) => setField<int>('duration_minutes', value);
 
-  DateTime get createdAt => getField<DateTime>('created_at')!;
-  set createdAt(DateTime value) => setField<DateTime>('created_at', value);
+  DateTime? get createdAt => getField<DateTime>('created_at');
+  set createdAt(DateTime? value) => setField<DateTime>('created_at', value);
 
   dynamic get translations => getField<dynamic>('translations');
   set translations(dynamic value) => setField<dynamic>('translations', value);
@@ -71,4 +71,7 @@ class ServiceAddonsRow extends SupabaseDataRow {
 
   int? get sectionIndex => getField<int>('section_index');
   set sectionIndex(int? value) => setField<int>('section_index', value);
+
+  int? get minSpecialists => getField<int>('min_specialists');
+  set minSpecialists(int? value) => setField<int>('min_specialists', value);
 }

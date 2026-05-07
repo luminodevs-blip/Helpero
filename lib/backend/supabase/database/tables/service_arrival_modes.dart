@@ -15,8 +15,8 @@ class ServiceArrivalModesRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => ServiceArrivalModesTable();
 
-  String get id => getField<String>('id')!;
-  set id(String value) => setField<String>('id', value);
+  String? get id => getField<String>('id');
+  set id(String? value) => setField<String>('id', value);
 
   String get name => getField<String>('name')!;
   set name(String value) => setField<String>('name', value);

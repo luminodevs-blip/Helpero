@@ -7,11 +7,11 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/index.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'authentificate_model.dart';
 export 'authentificate_model.dart';
@@ -187,12 +187,17 @@ class _AuthentificateWidgetState extends State<AuthentificateWidget>
                           ),
                           child: Align(
                             alignment: AlignmentDirectional(0.0, 1.0),
-                            child: Lottie.asset(
-                              'assets/jsons/Helpero_HeroAnimation.json',
-                              width: MediaQuery.sizeOf(context).width * 1.0,
-                              height: 600.0,
-                              fit: BoxFit.contain,
-                              animate: true,
+                            child: Padding(
+                              padding: EdgeInsetsDirectional.fromSTEB(
+                                  24.0, 0.0, 0.0, 0.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: Image.asset(
+                                  'assets/images/Handyman_and_cleaner_in_harmony.png',
+                                  height: 260.0,
+                                  fit: BoxFit.fitHeight,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -396,8 +401,6 @@ class _AuthentificateWidgetState extends State<AuthentificateWidget>
                             )
                           ],
                           borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(0.0),
-                            bottomRight: Radius.circular(0.0),
                             topLeft: Radius.circular(10.0),
                             topRight: Radius.circular(10.0),
                           ),
@@ -465,7 +468,13 @@ class _AuthentificateWidgetState extends State<AuthentificateWidget>
                                                 padding:
                                                     MediaQuery.viewInsetsOf(
                                                         context),
-                                                child: SelectCountryWidget(),
+                                                child: Container(
+                                                  height:
+                                                      MediaQuery.sizeOf(context)
+                                                              .height *
+                                                          0.95,
+                                                  child: SelectCountryWidget(),
+                                                ),
                                               ),
                                             );
                                           },
@@ -520,7 +529,9 @@ class _AuthentificateWidgetState extends State<AuthentificateWidget>
                                                               .countryFlag,
                                                           '🇨🇦',
                                                         ),
-                                                        style: TextStyle(),
+                                                        style: TextStyle(
+                                                          fontSize: 18.0,
+                                                        ),
                                                       ),
                                                       TextSpan(
                                                         text: '  ',
@@ -988,77 +999,127 @@ class _AuthentificateWidgetState extends State<AuthentificateWidget>
                                       ),
                                     ),
                                     Expanded(
-                                      child: Container(
-                                        width: 100.0,
-                                        height: 60.0,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .primaryBackground,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              blurRadius: 4.0,
+                                      child: InkWell(
+                                        splashColor: Colors.transparent,
+                                        focusColor: Colors.transparent,
+                                        hoverColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        onTap: () async {
+                                          await showDialog(
+                                            context: context,
+                                            builder: (alertDialogContext) {
+                                              return AlertDialog(
+                                                title: Text(
+                                                    'Feature in development'),
+                                                content: Text(
+                                                    'This functionality will be available in upcoming releases.'),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(
+                                                            alertDialogContext),
+                                                    child: Text('Ok'),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
+                                        child: Container(
+                                          width: 100.0,
+                                          height: 60.0,
+                                          decoration: BoxDecoration(
+                                            color: FlutterFlowTheme.of(context)
+                                                .primaryBackground,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                blurRadius: 4.0,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
+                                                offset: Offset(
+                                                  0.0,
+                                                  2.0,
+                                                ),
+                                              )
+                                            ],
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            border: Border.all(
                                               color:
                                                   FlutterFlowTheme.of(context)
-                                                      .primaryBackground,
-                                              offset: Offset(
-                                                0.0,
-                                                2.0,
-                                              ),
-                                            )
-                                          ],
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          border: Border.all(
-                                            color: FlutterFlowTheme.of(context)
-                                                .alternate,
+                                                      .alternate,
+                                            ),
                                           ),
-                                        ),
-                                        child: Align(
-                                          alignment:
-                                              AlignmentDirectional(0.0, 0.0),
-                                          child: Icon(
-                                            Icons.lock_person,
-                                            color: FlutterFlowTheme.of(context)
-                                                .primaryText,
-                                            size: 28.0,
+                                          child: Align(
+                                            alignment:
+                                                AlignmentDirectional(0.0, 0.0),
+                                            child: Icon(
+                                              Icons.lock_person,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .primaryText,
+                                              size: 28.0,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
                                     Expanded(
-                                      child: Container(
-                                        width: 100.0,
-                                        height: 60.0,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .primaryBackground,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              blurRadius: 4.0,
+                                      child: InkWell(
+                                        splashColor: Colors.transparent,
+                                        focusColor: Colors.transparent,
+                                        hoverColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        onTap: () async {
+                                          GoRouter.of(context)
+                                              .prepareAuthEvent();
+                                          final user = await authManager
+                                              .signInWithApple(context);
+                                          if (user == null) {
+                                            return;
+                                          }
+
+                                          context.goNamedAuth(
+                                              LoginRedirectWidget.routeName,
+                                              context.mounted);
+                                        },
+                                        child: Container(
+                                          width: 100.0,
+                                          height: 60.0,
+                                          decoration: BoxDecoration(
+                                            color: FlutterFlowTheme.of(context)
+                                                .primaryBackground,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                blurRadius: 4.0,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
+                                                offset: Offset(
+                                                  0.0,
+                                                  2.0,
+                                                ),
+                                              )
+                                            ],
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            border: Border.all(
                                               color:
                                                   FlutterFlowTheme.of(context)
-                                                      .primaryBackground,
-                                              offset: Offset(
-                                                0.0,
-                                                2.0,
-                                              ),
-                                            )
-                                          ],
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          border: Border.all(
-                                            color: FlutterFlowTheme.of(context)
-                                                .alternate,
+                                                      .alternate,
+                                            ),
                                           ),
-                                        ),
-                                        child: Align(
-                                          alignment:
-                                              AlignmentDirectional(0.0, 0.0),
-                                          child: FaIcon(
-                                            FontAwesomeIcons.apple,
-                                            color: FlutterFlowTheme.of(context)
-                                                .primaryText,
-                                            size: 30.0,
+                                          child: Align(
+                                            alignment:
+                                                AlignmentDirectional(0.0, 0.0),
+                                            child: FaIcon(
+                                              FontAwesomeIcons.apple,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .primaryText,
+                                              size: 30.0,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -1132,8 +1193,24 @@ class _AuthentificateWidgetState extends State<AuthentificateWidget>
                                 text: TextSpan(
                                   children: [
                                     TextSpan(
-                                      text:
-                                          'You agree to receive notifications and to the transfer of personal data to Helpero\'s business partners in accordance with the ',
+                                      text: 'By continuing, you agree to our ',
+                                      style: TextStyle(),
+                                    ),
+                                    TextSpan(
+                                      text: 'Terms and Conditions',
+                                      style: TextStyle(
+                                        color: FlutterFlowTheme.of(context)
+                                            .primary,
+                                      ),
+                                      mouseCursor: SystemMouseCursors.click,
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () async {
+                                          await launchURL(
+                                              'https://helpero.ca/terms');
+                                        },
+                                    ),
+                                    TextSpan(
+                                      text: ' and ',
                                       style: TextStyle(),
                                     ),
                                     TextSpan(
@@ -1143,10 +1220,16 @@ class _AuthentificateWidgetState extends State<AuthentificateWidget>
                                             .primary,
                                         fontWeight: FontWeight.w500,
                                       ),
+                                      mouseCursor: SystemMouseCursors.click,
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () async {
+                                          await launchURL(
+                                              'https://helpero.ca/privacy');
+                                        },
                                     ),
                                     TextSpan(
                                       text:
-                                          '. You can unsubscribe from notifications in your profile settings.',
+                                          '. You\'ll receive notifications, which you can manage in your profile settings.',
                                       style: TextStyle(),
                                     )
                                   ],
@@ -1180,7 +1263,11 @@ class _AuthentificateWidgetState extends State<AuthentificateWidget>
                           animationsMap['containerOnPageLoadAnimation5']!),
                     ),
                   ),
-                ].addToStart(SizedBox(height: 16.0)),
+                ].addToStart(SizedBox(
+                    height: valueOrDefault<double>(
+                  isWeb ? 0.0 : 44.0,
+                  44.0,
+                ))),
               ),
             ),
           ),

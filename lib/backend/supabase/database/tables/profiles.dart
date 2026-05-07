@@ -56,4 +56,7 @@ class ProfilesRow extends SupabaseDataRow {
 
   String? get gender => getField<String>('gender');
   set gender(String? value) => setField<String>('gender', value);
+
+  String? get onesignalId => getField<String>('onesignal_id');
+  set onesignalId(String? value) => setField<String>('onesignal_id', value);
 }

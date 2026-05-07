@@ -11,12 +11,16 @@ import 'package:flutter/material.dart';
 // Begin custom widget code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
+import 'index.dart';
+import '/custom_code/actions/index.dart';
+import '/flutter_flow/custom_functions.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gmaps;
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
-import 'dart:io' show Platform;
+import 'dart:ui' as ui;
 
 class GoogleMapsAnimatedMap extends StatefulWidget {
   const GoogleMapsAnimatedMap({
@@ -27,11 +31,12 @@ class GoogleMapsAnimatedMap extends StatefulWidget {
     required this.androidMapId,
     required this.iOSMapId,
     required this.webMapId,
-    this.initialCenter, // Это LatLng от FlutterFlow
+    this.initialCenter,
     required this.zoomLevel,
     required this.allowInteraction,
     this.onAddressChanged,
     this.searchTerm,
+    this.language = 'en',
   }) : super(key: key);
 
   final double? width;
@@ -40,29 +45,33 @@ class GoogleMapsAnimatedMap extends StatefulWidget {
   final String androidMapId;
   final String iOSMapId;
   final String webMapId;
-  final LatLng? initialCenter; // LatLng от FlutterFlow
+  final LatLng? initialCenter;
   final double zoomLevel;
   final bool allowInteraction;
   final String? searchTerm;
+  final String language;
 
-  final Future<dynamic> Function(String address, double lat, double lng)?
-      onAddressChanged;
+  final Future<dynamic> Function(
+      String address, String city, double lat, double lng)? onAddressChanged;
 
   @override
   _GoogleMapsAnimatedMapState createState() => _GoogleMapsAnimatedMapState();
 }
 
-class _GoogleMapsAnimatedMapState extends State<GoogleMapsAnimatedMap> {
-  // Используем gmaps. типы
+class _GoogleMapsAnimatedMapState extends State<GoogleMapsAnimatedMap>
+    with TickerProviderStateMixin {
   final Completer<gmaps.GoogleMapController> _controller = Completer();
   gmaps.GoogleMapController? _mapController;
   Timer? _debounce;
   String _lastSearchedTerm = '';
 
-  // Константа тоже должна быть gmaps.LatLng
-  static const gmaps.LatLng _defaultLocation = gmaps.LatLng(43.6532, -79.3832);
-  gmaps.LatLng _currentCenter = _defaultLocation;
+  // Анимация пина
+  late AnimationController _pinController;
+  late Animation<double> _pinAnimation;
+  bool _isMoving = false;
 
+  static const gmaps.LatLng _defaultLocation = gmaps.LatLng(43.6532, -79.3832);
+  late gmaps.LatLng _currentCenter;
   String _currentMapId = '';
 
   @override
@@ -70,27 +79,26 @@ class _GoogleMapsAnimatedMapState extends State<GoogleMapsAnimatedMap> {
     super.initState();
     _currentCenter = _getInitialCenter();
     _currentMapId = _getMapIdForPlatform();
-  }
 
-  String _getMapIdForPlatform() {
-    if (kIsWeb) {
-      return widget.webMapId;
-    } else if (Platform.isAndroid) {
-      return widget.androidMapId;
-    } else if (Platform.isIOS) {
-      return widget.iOSMapId;
-    }
-    return '';
+    // Настройка анимации прыжка
+    _pinController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _pinAnimation = Tween<double>(begin: 0, end: 15).animate(
+      CurvedAnimation(parent: _pinController, curve: Curves.easeOut),
+    );
+
+    // Блок с dart:html удален для обеспечения успешной сборки на Android/iOS
   }
 
   @override
   void dispose() {
     _debounce?.cancel();
-    _mapController?.dispose();
+    _pinController.dispose();
     super.dispose();
   }
 
-  // Конвертируем FlutterFlow LatLng в Google Maps LatLng
   gmaps.LatLng _getInitialCenter() {
     if (widget.initialCenter != null) {
       return gmaps.LatLng(
@@ -99,32 +107,77 @@ class _GoogleMapsAnimatedMapState extends State<GoogleMapsAnimatedMap> {
     return _defaultLocation;
   }
 
+  String _getMapIdForPlatform() {
+    String id = '';
+    if (kIsWeb) {
+      id = widget.webMapId;
+    } else if (defaultTargetPlatform == TargetPlatform.android) {
+      id = widget.androidMapId;
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      id = widget.iOSMapId;
+    }
+
+    if (id.isEmpty || id.toLowerCase() == 'string') {
+      return '51e65d1a42c6dcc2d42df44f';
+    }
+    return id;
+  }
+
+  String get _currentLanguage {
+    return (widget.language.isNotEmpty && widget.language.length <= 5)
+        ? widget.language
+        : 'en';
+  }
+
   Future<void> _fetchAddress(double lat, double lng) async {
     final url =
-        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=${widget.apiKey}&language=ru';
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=${widget.apiKey}&language=$_currentLanguage';
 
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['results'] != null && data['results'].isNotEmpty) {
-          String address = data['results'][0]['formatted_address'];
+          final result = data['results'][0];
+          String address = result['formatted_address'] ?? '';
+
+          String city = '';
+          if (result['address_components'] != null) {
+            for (var component in result['address_components']) {
+              List types = component['types'];
+              if (types.contains('locality')) {
+                city = component['long_name'] ?? '';
+                break;
+              }
+            }
+            if (city.isEmpty) {
+              for (var component in result['address_components']) {
+                List types = component['types'];
+                if (types.contains('administrative_area_level_2')) {
+                  city = component['long_name'] ?? '';
+                  break;
+                }
+              }
+            }
+          }
+
           if (widget.onAddressChanged != null) {
-            widget.onAddressChanged!(address, lat, lng);
+            widget.onAddressChanged!(
+                address, city, lat.toDouble(), lng.toDouble());
           }
         }
       }
     } catch (e) {
-      print('Google Maps Geocoding Error: $e');
+      debugPrint('Geocoding Error: $e');
     }
   }
 
   Future<void> _searchByText(String text) async {
-    if (text.isEmpty) return;
+    if (text.isEmpty || _mapController == null) return;
 
     final encodedText = Uri.encodeComponent(text);
     final url =
-        'https://maps.googleapis.com/maps/api/geocode/json?address=$encodedText&key=${widget.apiKey}&language=ru';
+        'https://maps.googleapis.com/maps/api/geocode/json?address=$encodedText&key=${widget.apiKey}&language=$_currentLanguage';
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -132,21 +185,17 @@ class _GoogleMapsAnimatedMapState extends State<GoogleMapsAnimatedMap> {
         final data = json.decode(response.body);
         if (data['results'] != null && data['results'].isNotEmpty) {
           final location = data['results'][0]['geometry']['location'];
-          double lat = location['lat'];
-          double lng = location['lng'];
+          double lat = (location['lat'] as num).toDouble();
+          double lng = (location['lng'] as num).toDouble();
 
-          final gmaps.GoogleMapController controller = await _controller.future;
-          controller.animateCamera(gmaps.CameraUpdate.newLatLngZoom(
-              gmaps.LatLng(lat, lng), widget.zoomLevel));
-
-          String formattedAddress = data['results'][0]['formatted_address'];
-          if (widget.onAddressChanged != null) {
-            widget.onAddressChanged!(formattedAddress, lat, lng);
-          }
+          _mapController!.animateCamera(
+            gmaps.CameraUpdate.newLatLngZoom(
+                gmaps.LatLng(lat, lng), widget.zoomLevel),
+          );
         }
       }
     } catch (e) {
-      print('Search Error: $e');
+      debugPrint('Search Error: $e');
     }
   }
 
@@ -164,80 +213,133 @@ class _GoogleMapsAnimatedMapState extends State<GoogleMapsAnimatedMap> {
 
     if (oldWidget.initialCenter != widget.initialCenter &&
         widget.initialCenter != null) {
-      // При изменении параметра нужно сконвертировать координаты
-      _moveCamera(gmaps.LatLng(
-          widget.initialCenter!.latitude, widget.initialCenter!.longitude));
+      _mapController?.animateCamera(
+        gmaps.CameraUpdate.newLatLng(gmaps.LatLng(
+            widget.initialCenter!.latitude, widget.initialCenter!.longitude)),
+      );
     }
   }
 
-  Future<void> _moveCamera(gmaps.LatLng pos) async {
-    final gmaps.GoogleMapController controller = await _controller.future;
-    controller.animateCamera(gmaps.CameraUpdate.newLatLng(pos));
+  void _onCameraIdle() {
+    if (_mapController == null) return;
+    _fetchAddress(_currentCenter.latitude, _currentCenter.longitude);
   }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(
-          width: widget.width ?? MediaQuery.of(context).size.width,
-          height: widget.height ?? 400,
-          child: gmaps.GoogleMap(
-            // Используем префикс
-            cloudMapId: _currentMapId,
-
-            mapType: gmaps.MapType.normal,
-            initialCameraPosition: gmaps.CameraPosition(
-              target: _getInitialCenter(),
-              zoom: widget.zoomLevel,
-            ),
-            onMapCreated: (gmaps.GoogleMapController controller) {
-              _controller.complete(controller);
-              _mapController = controller;
-              if (widget.initialCenter != null) {
-                _fetchAddress(widget.initialCenter!.latitude,
-                    widget.initialCenter!.longitude);
-              }
-            },
-
-            // --- НАСТРОЙКИ UI: ОТКЛЮЧАЕМ ВСЁ ЛИШНЕЕ ---
-            zoomControlsEnabled: false, // Кнопки +/-
-            mapToolbarEnabled: false, // Панель снизу (Маршрут/Карты) на Android
-            myLocationButtonEnabled: false, // Кнопка "Где я"
-            compassEnabled: false, // Компас
-            trafficEnabled: false, // Слой пробок
-
-            // Управление жестами (зависит от allowInteraction)
-            rotateGesturesEnabled: widget.allowInteraction,
-            scrollGesturesEnabled: widget.allowInteraction,
-            zoomGesturesEnabled: widget.allowInteraction,
-            tiltGesturesEnabled: widget.allowInteraction,
-            myLocationEnabled:
-                true, // Синяя точка "Я" остается, но кнопка скрыта
-
-            // Логика движения
-            onCameraMove: (gmaps.CameraPosition position) {
-              _currentCenter = position.target;
-              if (_debounce?.isActive ?? false) _debounce?.cancel();
-            },
-            onCameraIdle: () {
-              _debounce = Timer(const Duration(milliseconds: 800), () {
-                _fetchAddress(
-                    _currentCenter.latitude, _currentCenter.longitude);
-              });
-            },
+        gmaps.GoogleMap(
+          mapType: gmaps.MapType.normal,
+          cloudMapId: _currentMapId,
+          initialCameraPosition: gmaps.CameraPosition(
+            target: _currentCenter,
+            zoom: widget.zoomLevel,
           ),
+          onMapCreated: (gmaps.GoogleMapController controller) {
+            _controller.complete(controller);
+            _mapController = controller;
+
+            if (widget.searchTerm != null && widget.searchTerm!.isNotEmpty) {
+              _searchByText(widget.searchTerm!);
+            } else {
+              _fetchAddress(_currentCenter.latitude, _currentCenter.longitude);
+            }
+          },
+          onCameraMove: (gmaps.CameraPosition position) {
+            _currentCenter = position.target;
+            if (!_isMoving) {
+              setState(() => _isMoving = true);
+              _pinController.forward();
+            }
+          },
+          onCameraIdle: () {
+            if (_isMoving) {
+              setState(() => _isMoving = false);
+              _pinController.reverse();
+            }
+            _onCameraIdle();
+          },
+          myLocationEnabled: false,
+          myLocationButtonEnabled: false,
+          zoomControlsEnabled: false,
+          mapToolbarEnabled: false,
+          compassEnabled: false,
+          indoorViewEnabled: false,
+          trafficEnabled: false,
+          rotateGesturesEnabled: widget.allowInteraction,
+          scrollGesturesEnabled: widget.allowInteraction,
+          tiltGesturesEnabled: widget.allowInteraction,
+          zoomGesturesEnabled: widget.allowInteraction,
         ),
         if (widget.allowInteraction)
           IgnorePointer(
             child: Center(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 35),
-                child: Icon(
-                  Icons.location_on,
-                  size: 40,
-                  color: FlutterFlowTheme.of(context).primary,
-                ),
+              child: AnimatedBuilder(
+                animation: _pinAnimation,
+                builder: (context, child) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Пин в стиле Uber
+                      Transform.translate(
+                        offset: Offset(0, -_pinAnimation.value - 24),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          clipBehavior: Clip.none,
+                          children: [
+                            Positioned(
+                              bottom: -10,
+                              child: Container(
+                                width: 4.0,
+                                height: 16,
+                                decoration: const BoxDecoration(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Colors.black,
+                                shape: BoxShape.circle,
+                                border:
+                                    Border.all(color: Colors.white, width: 2.5),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 3),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Container(
+                              width: 10,
+                              height: 10,
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      // Тень
+                      Container(
+                        width: 18 - (_pinAnimation.value / 2),
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.15),
+                          borderRadius:
+                              BorderRadius.all(Radius.elliptical(18, 5)),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ),

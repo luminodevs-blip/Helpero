@@ -15,8 +15,8 @@ class SpecialistServicesRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => SpecialistServicesTable();
 
-  int get id => getField<int>('id')!;
-  set id(int value) => setField<int>('id', value);
+  int? get id => getField<int>('id');
+  set id(int? value) => setField<int>('id', value);
 
   String? get specialistId => getField<String>('specialist_id');
   set specialistId(String? value) => setField<String>('specialist_id', value);

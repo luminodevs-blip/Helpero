@@ -6,13 +6,13 @@ import '/backend/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'email_auth.dart';
 import 'google_auth.dart';
-
+import 'apple_auth.dart';
 import 'supabase_user_provider.dart';
 
 export '/auth/base_auth_user_provider.dart';
 
 class SupabaseAuthManager extends AuthManager
-    with EmailSignInManager, GoogleSignInManager {
+    with EmailSignInManager, GoogleSignInManager, AppleSignInManager {
   @override
   Future signOut() {
     return SupaFlow.client.auth.signOut();
@@ -26,10 +26,12 @@ class SupabaseAuthManager extends AuthManager
         return;
       }
       await currentUser?.delete();
-    } on AuthException catch (e) {
+    } on AuthException {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.message}')),
+        SnackBar(
+            content: Text(
+                'Oops! That login doesn\'t seem right. Please check your details and try again.')),
       );
     }
   }
@@ -45,15 +47,19 @@ class SupabaseAuthManager extends AuthManager
         return;
       }
       await currentUser?.updateEmail(email);
-    } on AuthException catch (e) {
+    } on AuthException {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.message}')),
+        SnackBar(
+            content: Text(
+                'Oops! That login doesn\'t seem right. Please check your details and try again.')),
       );
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Email change confirmation email sent')),
+      SnackBar(
+          content: Text(
+              'We\'ve sent a confirmation link to your new email. Please check your inbox!')),
     );
   }
 
@@ -68,15 +74,19 @@ class SupabaseAuthManager extends AuthManager
         return;
       }
       await currentUser?.updatePassword(newPassword);
-    } on AuthException catch (e) {
+    } on AuthException {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.message}')),
+        SnackBar(
+            content: Text(
+                'Oops! That login doesn\'t seem right. Please check your details and try again.')),
       );
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Password updated successfully')),
+      SnackBar(
+          content: Text(
+              'We\'ve sent a confirmation link to your new email. Please check your inbox!')),
     );
   }
 
@@ -89,15 +99,19 @@ class SupabaseAuthManager extends AuthManager
     try {
       await SupaFlow.client.auth
           .resetPasswordForEmail(email, redirectTo: redirectTo);
-    } on AuthException catch (e) {
+    } on AuthException {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.message}')),
+        SnackBar(
+            content: Text(
+                'Oops! That login doesn\'t seem right. Please check your details and try again.')),
       );
       return null;
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Password reset email sent')),
+      SnackBar(
+          content: Text(
+              'Check your inbox! We\'ve sent you instructions to reset your password.')),
     );
   }
 
@@ -127,6 +141,10 @@ class SupabaseAuthManager extends AuthManager
   Future<BaseAuthUser?> signInWithGoogle(BuildContext context) =>
       _signInOrCreateAccount(context, googleSignInFunc);
 
+  @override
+  Future<BaseAuthUser?> signInWithApple(BuildContext context) =>
+      _signInOrCreateAccount(context, appleSignInFunc);
+
   /// Tries to sign in or create an account using Supabase Auth.
   /// Returns the User object if sign in was successful.
   Future<BaseAuthUser?> _signInOrCreateAccount(
@@ -148,8 +166,8 @@ class SupabaseAuthManager extends AuthManager
       return authUser;
     } on AuthException catch (e) {
       final errorMsg = e.message.contains('User already registered')
-          ? 'Error: The email is already in use by a different account'
-          : 'Error: ${e.message}';
+          ? 'Looks like this email is already registered. Try logging in instead!'
+          : 'Oops! That login doesn\'t seem right. Please check your details and try again.';
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(errorMsg)),

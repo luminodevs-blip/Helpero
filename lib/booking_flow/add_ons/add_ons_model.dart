@@ -23,9 +23,9 @@ class AddOnsModel extends FlutterFlowModel<AddOnsWidget> {
   ///  State fields for stateful widgets in this page.
 
   // Stores action output result for [Custom Action - updateBookingAddon] action in Container widget.
-  BookingDraftStruct? updatedDraftMinus1;
+  BookingDraftStruct? updatedDraftMinusGrid;
   // Stores action output result for [Custom Action - updateBookingAddon] action in Container widget.
-  BookingDraftStruct? updatedDraftPlus1;
+  BookingDraftStruct? updatedDraftPlusGrid;
   // Stores action output result for [Backend Call - API (SyncCart)] action in Button widget.
   ApiCallResponse? syncCart;
 

@@ -16,8 +16,8 @@ class RegionalPackageItemPricesRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => RegionalPackageItemPricesTable();
 
-  int get id => getField<int>('id')!;
-  set id(int value) => setField<int>('id', value);
+  int? get id => getField<int>('id');
+  set id(int? value) => setField<int>('id', value);
 
   int? get regionId => getField<int>('region_id');
   set regionId(int? value) => setField<int>('region_id', value);

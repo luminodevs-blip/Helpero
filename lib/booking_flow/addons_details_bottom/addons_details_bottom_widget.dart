@@ -63,8 +63,6 @@ class _AddonsDetailsBottomWidgetState extends State<AddonsDetailsBottomWidget> {
               alignment: AlignmentDirectional(0.0, 1.0),
               child: ClipRRect(
                 borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(0.0),
-                  bottomRight: Radius.circular(0.0),
                   topLeft: Radius.circular(10.0),
                   topRight: Radius.circular(10.0),
                 ),
@@ -73,8 +71,6 @@ class _AddonsDetailsBottomWidgetState extends State<AddonsDetailsBottomWidget> {
                   decoration: BoxDecoration(
                     color: FlutterFlowTheme.of(context).secondaryBackground,
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(0.0),
-                      bottomRight: Radius.circular(0.0),
                       topLeft: Radius.circular(10.0),
                       topRight: Radius.circular(10.0),
                     ),
@@ -84,8 +80,6 @@ class _AddonsDetailsBottomWidgetState extends State<AddonsDetailsBottomWidget> {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(0.0),
-                          bottomRight: Radius.circular(0.0),
                           topLeft: Radius.circular(10.0),
                           topRight: Radius.circular(10.0),
                         ),
@@ -102,8 +96,6 @@ class _AddonsDetailsBottomWidgetState extends State<AddonsDetailsBottomWidget> {
                               ).image,
                             ),
                             borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(0.0),
-                              bottomRight: Radius.circular(0.0),
                               topLeft: Radius.circular(10.0),
                               topRight: Radius.circular(10.0),
                             ),
@@ -408,13 +400,14 @@ class _AddonsDetailsBottomWidgetState extends State<AddonsDetailsBottomWidget> {
                                                 await actions
                                                     .updateBookingAddon(
                                               FFAppState().activeBookingDraft,
-                                              widget.addon!.id,
+                                              widget.addon!.id!,
                                               widget.addon!.name,
-                                              widget.addon!.price,
+                                              widget.addon!.price!,
                                               widget.addon?.compareAtPrice,
                                               widget.addon!.durationMinutes!,
                                               'remove',
                                               'upsell',
+                                              widget.addon?.minSpecialists,
                                             );
                                             FFAppState().activeBookingDraft =
                                                 _model.updatedDraftMinus1!;
@@ -453,7 +446,7 @@ class _AddonsDetailsBottomWidgetState extends State<AddonsDetailsBottomWidget> {
                                                         .activeBookingDraft
                                                         .selectedAddons
                                                         .toList(),
-                                                    widget.addon!.id)
+                                                    widget.addon!.id!)
                                                 .toString(),
                                             '0',
                                           ),
@@ -487,13 +480,14 @@ class _AddonsDetailsBottomWidgetState extends State<AddonsDetailsBottomWidget> {
                                                 await actions
                                                     .updateBookingAddon(
                                               FFAppState().activeBookingDraft,
-                                              widget.addon!.id,
+                                              widget.addon!.id!,
                                               widget.addon!.name,
-                                              widget.addon!.price,
+                                              widget.addon!.price!,
                                               widget.addon?.compareAtPrice,
                                               widget.addon!.durationMinutes!,
                                               'add',
                                               'upsell',
+                                              widget.addon?.minSpecialists,
                                             );
                                             FFAppState().activeBookingDraft =
                                                 _model.updatedDraftPlus1!;
@@ -621,7 +615,7 @@ class _AddonsDetailsBottomWidgetState extends State<AddonsDetailsBottomWidget> {
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 16.0, 0.0, 0.0, 2.0),
                             child: Text(
-                              'What\'s included:',
+                              'What you get:',
                               style: FlutterFlowTheme.of(context)
                                   .bodyMedium
                                   .override(
@@ -715,7 +709,7 @@ class _AddonsDetailsBottomWidgetState extends State<AddonsDetailsBottomWidget> {
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 16.0, 0.0, 0.0, 2.0),
                             child: Text(
-                              'What\'s excluded:',
+                              'Not included:',
                               style: FlutterFlowTheme.of(context)
                                   .bodyMedium
                                   .override(
@@ -816,10 +810,13 @@ class _AddonsDetailsBottomWidgetState extends State<AddonsDetailsBottomWidget> {
                     duration: Duration(milliseconds: 100),
                     curve: Curves.linear,
                     width: double.infinity,
-                    height:
-                        widget.addon!.compareAtPrice! > widget.addon!.price
-                            ? 32.0
-                            : 0.0,
+                    height: valueOrDefault<double>(
+                              FFAppState().activeBookingDraft.totalSavings,
+                              0.00,
+                            ) >
+                            0.0
+                        ? 32.0
+                        : 0.0,
                     decoration: BoxDecoration(
                       color: FlutterFlowTheme.of(context).primary,
                     ),
@@ -876,8 +873,9 @@ class _AddonsDetailsBottomWidgetState extends State<AddonsDetailsBottomWidget> {
                                 TextSpan(
                                   text: valueOrDefault<String>(
                                     formatNumber(
-                                      (widget.addon!.compareAtPrice!) -
-                                          widget.addon!.price,
+                                      FFAppState()
+                                          .activeBookingDraft
+                                          .totalSavings,
                                       formatType: FormatType.decimal,
                                       decimalType: DecimalType.automatic,
                                     ),

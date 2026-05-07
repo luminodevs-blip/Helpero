@@ -3,6 +3,7 @@ import '/backend/schema/structs/index.dart';
 import '/backend/supabase/supabase.dart';
 import '/booking_flow/new/category_card/category_card_widget.dart';
 import '/components/add_baners_carusel_widget.dart';
+import '/components/banner1_skeleton_widget.dart';
 import '/components/category_card_loader_widget.dart';
 import '/components/information_block_widget.dart';
 import '/components/navbar_widget.dart';
@@ -10,11 +11,13 @@ import '/components/select_address_component_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/custom_code/actions/index.dart' as actions;
+import '/index.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'general_model.dart';
@@ -72,6 +75,7 @@ class _GeneralWidgetState extends State<GeneralWidget> {
           ..currencySymbol = _model.loadedCountry?.firstOrNull?.currencySymbol,
       );
       safeSetState(() {});
+      await actions.manualOneSignalLogin();
     });
 
     _model.textController ??= TextEditingController();
@@ -189,8 +193,14 @@ class _GeneralWidgetState extends State<GeneralWidget> {
                                                               padding: MediaQuery
                                                                   .viewInsetsOf(
                                                                       context),
-                                                              child:
-                                                                  SelectAddressComponentWidget(),
+                                                              child: Container(
+                                                                height: MediaQuery.sizeOf(
+                                                                            context)
+                                                                        .height *
+                                                                    0.85,
+                                                                child:
+                                                                    SelectAddressComponentWidget(),
+                                                              ),
                                                             ),
                                                           );
                                                         },
@@ -262,13 +272,9 @@ class _GeneralWidgetState extends State<GeneralWidget> {
                                                                             0.0),
                                                                 child:
                                                                     AutoSizeText(
-                                                                  valueOrDefault<
-                                                                      String>(
-                                                                    FFAppState()
-                                                                        .selectedAddress
-                                                                        .fullAddress,
-                                                                    '100 Bloor St W, Toronto, ON M5S 1M4',
-                                                                  ),
+                                                                  FFAppState()
+                                                                      .selectedAddress
+                                                                      .fullAddress,
                                                                   minFontSize:
                                                                       16.0,
                                                                   style: FlutterFlowTheme.of(
@@ -352,7 +358,14 @@ class _GeneralWidgetState extends State<GeneralWidget> {
                                                     padding:
                                                         MediaQuery.viewInsetsOf(
                                                             context),
-                                                    child: CartGeneralWidget(),
+                                                    child: Container(
+                                                      height: MediaQuery.sizeOf(
+                                                                  context)
+                                                              .height *
+                                                          0.95,
+                                                      child:
+                                                          CartGeneralWidget(),
+                                                    ),
                                                   ),
                                                 );
                                               },
@@ -364,12 +377,12 @@ class _GeneralWidgetState extends State<GeneralWidget> {
                                             height: 40.0,
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(25.0),
+                                                topRight: Radius.circular(25.0),
                                                 bottomLeft:
                                                     Radius.circular(25.0),
                                                 bottomRight:
                                                     Radius.circular(25.0),
-                                                topLeft: Radius.circular(25.0),
-                                                topRight: Radius.circular(25.0),
                                               ),
                                               shape: BoxShape.rectangle,
                                               border: Border.all(
@@ -420,6 +433,23 @@ class _GeneralWidgetState extends State<GeneralWidget> {
                                 child: TextFormField(
                                   controller: _model.textController,
                                   focusNode: _model.textFieldFocusNode,
+                                  onChanged: (_) => EasyDebounce.debounce(
+                                    '_model.textController',
+                                    Duration(milliseconds: 2000),
+                                    () async {
+                                      context.pushNamed(
+                                        SearchWidget.routeName,
+                                        extra: <String, dynamic>{
+                                          '__transition_info__': TransitionInfo(
+                                            hasTransition: true,
+                                            transitionType:
+                                                PageTransitionType.fade,
+                                            duration: Duration(milliseconds: 0),
+                                          ),
+                                        },
+                                      );
+                                    },
+                                  ),
                                   autofocus: false,
                                   enabled: true,
                                   obscureText: false,
@@ -554,8 +584,6 @@ class _GeneralWidgetState extends State<GeneralWidget> {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -587,7 +615,7 @@ class _GeneralWidgetState extends State<GeneralWidget> {
                                                           .bodyMedium
                                                           .fontStyle,
                                                 ),
-                                                fontSize: 18.0,
+                                                fontSize: 17.0,
                                                 letterSpacing: 0.2,
                                                 fontWeight: FontWeight.w600,
                                                 fontStyle:
@@ -625,11 +653,13 @@ class _GeneralWidgetState extends State<GeneralWidget> {
                                         16.0, 0.0, 16.0, 20.0),
                                     child: FutureBuilder<
                                         List<ServiceCategoriesRow>>(
-                                      future:
-                                          ServiceCategoriesTable().queryRows(
-                                        queryFn: (q) => q.order('sort_order',
-                                            ascending: true),
-                                        limit: 4,
+                                      future: FFAppState().serviceCategories(
+                                        requestFn: () =>
+                                            ServiceCategoriesTable().queryRows(
+                                          queryFn: (q) => q.order('sort_order',
+                                              ascending: true),
+                                          limit: 4,
+                                        ),
                                       ),
                                       builder: (context, snapshot) {
                                         // Customize what your widget looks like when it's loading.
@@ -637,66 +667,68 @@ class _GeneralWidgetState extends State<GeneralWidget> {
                                           return CategoryCardLoaderWidget();
                                         }
                                         List<ServiceCategoriesRow>
-                                            staggeredViewServiceCategoriesRowList =
+                                            gridViewServiceCategoriesRowList =
                                             snapshot.data!;
 
-                                        return MasonryGridView.builder(
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
+                                        return GridView.builder(
+                                          padding: EdgeInsets.zero,
                                           gridDelegate:
-                                              SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                                              SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 4,
+                                            crossAxisSpacing: 8.0,
+                                            mainAxisSpacing: 8.0,
+                                            childAspectRatio: 0.77,
                                           ),
-                                          crossAxisSpacing: 8.0,
-                                          mainAxisSpacing: 8.0,
+                                          primary: false,
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.vertical,
                                           itemCount:
-                                              staggeredViewServiceCategoriesRowList
+                                              gridViewServiceCategoriesRowList
                                                   .length,
                                           itemBuilder:
-                                              (context, staggeredViewIndex) {
-                                            final staggeredViewServiceCategoriesRow =
-                                                staggeredViewServiceCategoriesRowList[
-                                                    staggeredViewIndex];
+                                              (context, gridViewIndex) {
+                                            final gridViewServiceCategoriesRow =
+                                                gridViewServiceCategoriesRowList[
+                                                    gridViewIndex];
                                             return wrapWithModel(
                                               model: _model.categoryCardModels
                                                   .getModel(
-                                                staggeredViewServiceCategoriesRow
-                                                    .id
+                                                gridViewServiceCategoriesRow.id!
                                                     .toString(),
-                                                staggeredViewIndex,
+                                                gridViewIndex,
                                               ),
                                               updateCallback: () =>
                                                   safeSetState(() {}),
                                               child: CategoryCardWidget(
                                                 key: Key(
-                                                  'Keyaze_${staggeredViewServiceCategoriesRow.id.toString()}',
+                                                  'Keyaze_${gridViewServiceCategoriesRow.id!.toString()}',
                                                 ),
                                                 category: ServiceCategoryStruct(
-                                                  id: staggeredViewServiceCategoriesRow
+                                                  id: gridViewServiceCategoriesRow
                                                       .id,
                                                   name:
-                                                      staggeredViewServiceCategoriesRow
+                                                      gridViewServiceCategoriesRow
                                                           .name,
                                                   slug:
-                                                      staggeredViewServiceCategoriesRow
+                                                      gridViewServiceCategoriesRow
                                                           .slug,
                                                   imageUrl:
-                                                      staggeredViewServiceCategoriesRow
+                                                      gridViewServiceCategoriesRow
                                                           .imageUrl,
                                                   videoUrl:
-                                                      staggeredViewServiceCategoriesRow
+                                                      gridViewServiceCategoriesRow
                                                           .videoUrl,
                                                   rating:
-                                                      staggeredViewServiceCategoriesRow
+                                                      gridViewServiceCategoriesRow
                                                           .rating,
                                                   bookingsCount:
-                                                      staggeredViewServiceCategoriesRow
+                                                      gridViewServiceCategoriesRow
                                                           .bookingsCount,
                                                   packageHeader:
-                                                      staggeredViewServiceCategoriesRow
+                                                      gridViewServiceCategoriesRow
                                                           .packageHeader,
                                                   miniHeader:
-                                                      staggeredViewServiceCategoriesRow
+                                                      gridViewServiceCategoriesRow
                                                           .miniHeader,
                                                 ),
                                               ),
@@ -731,7 +763,7 @@ class _GeneralWidgetState extends State<GeneralWidget> {
                                                           .bodyMedium
                                                           .fontStyle,
                                                 ),
-                                                fontSize: 18.0,
+                                                fontSize: 17.0,
                                                 letterSpacing: 0.2,
                                                 fontWeight: FontWeight.w600,
                                                 fontStyle:
@@ -747,46 +779,77 @@ class _GeneralWidgetState extends State<GeneralWidget> {
                                 Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       0.0, 0.0, 0.0, 20.0),
-                                  child: Container(
-                                    width: double.infinity,
-                                    height: 160.0,
-                                    child: CarouselSlider(
-                                      items: [
-                                        wrapWithModel(
-                                          model: _model.addBanersCaruselModel1,
-                                          updateCallback: () =>
-                                              safeSetState(() {}),
-                                          child: AddBanersCaruselWidget(),
-                                        ),
-                                        wrapWithModel(
-                                          model: _model.addBanersCaruselModel2,
-                                          updateCallback: () =>
-                                              safeSetState(() {}),
-                                          child: AddBanersCaruselWidget(),
-                                        ),
-                                        wrapWithModel(
-                                          model: _model.addBanersCaruselModel3,
-                                          updateCallback: () =>
-                                              safeSetState(() {}),
-                                          child: AddBanersCaruselWidget(),
-                                        ),
-                                      ],
-                                      carouselController:
-                                          _model.carouselController1 ??=
-                                              CarouselSliderController(),
-                                      options: CarouselOptions(
-                                        initialPage: 0,
-                                        viewportFraction: 0.92,
-                                        disableCenter: true,
-                                        enlargeCenterPage: true,
-                                        enlargeFactor: 0.18,
-                                        enableInfiniteScroll: false,
-                                        scrollDirection: Axis.horizontal,
-                                        autoPlay: false,
-                                        onPageChanged: (index, _) => _model
-                                            .carouselCurrentIndex1 = index,
+                                  child: FutureBuilder<List<AppBannersRow>>(
+                                    future: FFAppState().banner1(
+                                      requestFn: () =>
+                                          AppBannersTable().queryRows(
+                                        queryFn: (q) => q
+                                            .eqOrNull(
+                                              'is_active',
+                                              true,
+                                            )
+                                            .eqOrNull(
+                                              'section_id',
+                                              'near_for_you',
+                                            )
+                                            .order('sort_order',
+                                                ascending: true),
+                                        limit: 3,
                                       ),
                                     ),
+                                    builder: (context, snapshot) {
+                                      // Customize what your widget looks like when it's loading.
+                                      if (!snapshot.hasData) {
+                                        return Banner1SkeletonWidget();
+                                      }
+                                      List<AppBannersRow>
+                                          carouselAppBannersRowList =
+                                          snapshot.data!;
+
+                                      return Container(
+                                        width: double.infinity,
+                                        height: 160.0,
+                                        child: CarouselSlider.builder(
+                                          itemCount:
+                                              carouselAppBannersRowList.length,
+                                          itemBuilder:
+                                              (context, carouselIndex, _) {
+                                            final carouselAppBannersRow =
+                                                carouselAppBannersRowList[
+                                                    carouselIndex];
+                                            return AddBanersCaruselWidget(
+                                              key: Key(
+                                                  'Key5ke_${carouselIndex}_of_${carouselAppBannersRowList.length}'),
+                                              title:
+                                                  carouselAppBannersRow.title,
+                                              imageUrl: carouselAppBannersRow
+                                                  .imageUrl!,
+                                            );
+                                          },
+                                          carouselController:
+                                              _model.carouselController1 ??=
+                                                  CarouselSliderController(),
+                                          options: CarouselOptions(
+                                            initialPage: max(
+                                                0,
+                                                min(
+                                                    0,
+                                                    carouselAppBannersRowList
+                                                            .length -
+                                                        1)),
+                                            viewportFraction: 0.92,
+                                            disableCenter: true,
+                                            enlargeCenterPage: true,
+                                            enlargeFactor: 0.18,
+                                            enableInfiniteScroll: false,
+                                            scrollDirection: Axis.horizontal,
+                                            autoPlay: false,
+                                            onPageChanged: (index, _) => _model
+                                                .carouselCurrentIndex1 = index,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
                                 Padding(
@@ -813,7 +876,7 @@ class _GeneralWidgetState extends State<GeneralWidget> {
                                                           .bodyMedium
                                                           .fontStyle,
                                                 ),
-                                                fontSize: 18.0,
+                                                fontSize: 17.0,
                                                 letterSpacing: 0.2,
                                                 fontWeight: FontWeight.w600,
                                                 fontStyle:
@@ -861,10 +924,6 @@ class _GeneralWidgetState extends State<GeneralWidget> {
                                                       0.0, 0.0, 0.0, 16.0),
                                               child: ClipRRect(
                                                 borderRadius: BorderRadius.only(
-                                                  bottomLeft:
-                                                      Radius.circular(0.0),
-                                                  bottomRight:
-                                                      Radius.circular(0.0),
                                                   topLeft:
                                                       Radius.circular(10.0),
                                                   topRight:
@@ -1013,12 +1072,9 @@ class _GeneralWidgetState extends State<GeneralWidget> {
                                                   FlutterFlowTheme.of(context)
                                                       .primary,
                                               borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(10.0),
                                                 bottomLeft:
                                                     Radius.circular(10.0),
-                                                bottomRight:
-                                                    Radius.circular(0.0),
-                                                topLeft: Radius.circular(0.0),
-                                                topRight: Radius.circular(10.0),
                                               ),
                                             ),
                                             child: Row(
@@ -1107,48 +1163,98 @@ class _GeneralWidgetState extends State<GeneralWidget> {
                                   child: Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         0.0, 0.0, 0.0, 20.0),
-                                    child: Container(
-                                      width: double.infinity,
-                                      child: CarouselSlider(
-                                        items: [
-                                          wrapWithModel(
-                                            model:
-                                                _model.informationBlockModel1,
-                                            updateCallback: () =>
-                                                safeSetState(() {}),
-                                            child: InformationBlockWidget(),
-                                          ),
-                                          wrapWithModel(
-                                            model:
-                                                _model.informationBlockModel2,
-                                            updateCallback: () =>
-                                                safeSetState(() {}),
-                                            child: InformationBlockWidget(),
-                                          ),
-                                          wrapWithModel(
-                                            model:
-                                                _model.informationBlockModel3,
-                                            updateCallback: () =>
-                                                safeSetState(() {}),
-                                            child: InformationBlockWidget(),
-                                          ),
-                                        ],
-                                        carouselController:
-                                            _model.carouselController2 ??=
-                                                CarouselSliderController(),
-                                        options: CarouselOptions(
-                                          initialPage: 0,
-                                          viewportFraction: 0.92,
-                                          disableCenter: true,
-                                          enlargeCenterPage: true,
-                                          enlargeFactor: 0.18,
-                                          enableInfiniteScroll: false,
-                                          scrollDirection: Axis.horizontal,
-                                          autoPlay: false,
-                                          onPageChanged: (index, _) => _model
-                                              .carouselCurrentIndex2 = index,
-                                        ),
+                                    child: FutureBuilder<List<AppBannersRow>>(
+                                      future: AppBannersTable().queryRows(
+                                        queryFn: (q) => q
+                                            .eqOrNull(
+                                              'is_active',
+                                              true,
+                                            )
+                                            .eqOrNull(
+                                              'section_id',
+                                              'more_about_us',
+                                            )
+                                            .order('sort_order',
+                                                ascending: true),
+                                        limit: 3,
                                       ),
+                                      builder: (context, snapshot) {
+                                        // Customize what your widget looks like when it's loading.
+                                        if (!snapshot.hasData) {
+                                          return Center(
+                                            child: SizedBox(
+                                              width: 10.0,
+                                              height: 10.0,
+                                              child: CircularProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                        Color>(
+                                                  Colors.transparent,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                        List<AppBannersRow>
+                                            carouselAppBannersRowList =
+                                            snapshot.data!;
+
+                                        return Container(
+                                          width: double.infinity,
+                                          child: CarouselSlider.builder(
+                                            itemCount: carouselAppBannersRowList
+                                                .length,
+                                            itemBuilder:
+                                                (context, carouselIndex, _) {
+                                              final carouselAppBannersRow =
+                                                  carouselAppBannersRowList[
+                                                      carouselIndex];
+                                              return InformationBlockWidget(
+                                                key: Key(
+                                                    'Keyajc_${carouselIndex}_of_${carouselAppBannersRowList.length}'),
+                                                imageUrl:
+                                                    valueOrDefault<String>(
+                                                  carouselAppBannersRow
+                                                      .imageUrl,
+                                                  'https://img.freepik.com/premium-photo/id-card-with-magnifying-glass-scanning-green-shield-with-check-mark-authentication-success_903752-16157.jpg?semt=ais_hybrid&w=740&q=80',
+                                                ),
+                                                title: valueOrDefault<String>(
+                                                  carouselAppBannersRow.title,
+                                                  'Verified Proffessionals Only',
+                                                ),
+                                                description:
+                                                    valueOrDefault<String>(
+                                                  carouselAppBannersRow
+                                                      .bodyText,
+                                                  'Every pro on our team undergoes a rigorous background check. Your home and safety are in good hands.',
+                                                ),
+                                              );
+                                            },
+                                            carouselController:
+                                                _model.carouselController2 ??=
+                                                    CarouselSliderController(),
+                                            options: CarouselOptions(
+                                              initialPage: max(
+                                                  0,
+                                                  min(
+                                                      0,
+                                                      carouselAppBannersRowList
+                                                              .length -
+                                                          1)),
+                                              viewportFraction: 0.92,
+                                              disableCenter: true,
+                                              enlargeCenterPage: true,
+                                              enlargeFactor: 0.18,
+                                              enableInfiniteScroll: false,
+                                              scrollDirection: Axis.horizontal,
+                                              autoPlay: false,
+                                              onPageChanged: (index, _) =>
+                                                  _model.carouselCurrentIndex2 =
+                                                      index,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ),
                                 ),
@@ -1158,7 +1264,11 @@ class _GeneralWidgetState extends State<GeneralWidget> {
                             ),
                           ),
                         ),
-                      ].addToStart(SizedBox(height: 48.0)),
+                      ].addToStart(SizedBox(
+                          height: valueOrDefault<double>(
+                        isWeb ? 16.0 : 44.0,
+                        44.0,
+                      ))),
                     ),
                   ),
                 ),

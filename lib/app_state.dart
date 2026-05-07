@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'flutter_flow/request_manager.dart';
 import '/backend/schema/structs/index.dart';
+import '/backend/api_requests/api_manager.dart';
+import 'backend/supabase/supabase.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:csv/csv.dart';
 import 'package:synchronized/synchronized.dart';
@@ -173,6 +176,18 @@ class FFAppState extends ChangeNotifier {
         }
       }
     });
+    await _safeInitAsync(() async {
+      if (await secureStorage.read(key: 'ff_stNewAddressDraft') != null) {
+        try {
+          final serializedData =
+              await secureStorage.getString('ff_stNewAddressDraft') ?? '{}';
+          _stNewAddressDraft = AddressStructStruct.fromSerializableMap(
+              jsonDecode(serializedData));
+        } catch (e) {
+          print("Can't decode persisted data type. Error: $e.");
+        }
+      }
+    });
   }
 
   void update(VoidCallback callback) {
@@ -270,7 +285,7 @@ class FFAppState extends ChangeNotifier {
     _sliderTest = value;
   }
 
-  bool _FirstEntry = true;
+  bool _FirstEntry = false;
   bool get FirstEntry => _FirstEntry;
   set FirstEntry(bool value) {
     _FirstEntry = value;
@@ -426,7 +441,8 @@ class FFAppState extends ChangeNotifier {
   }
 
   /// Текущий выбранный адрес доставки.
-  AddressStructStruct _selectedAddress = AddressStructStruct();
+  AddressStructStruct _selectedAddress =
+      AddressStructStruct.fromSerializableMap(jsonDecode('{}'));
   AddressStructStruct get selectedAddress => _selectedAddress;
   set selectedAddress(AddressStructStruct value) {
     _selectedAddress = value;
@@ -576,6 +592,171 @@ class FFAppState extends ChangeNotifier {
     secureStorage.setString(
         'ff_currentActiveOrder', _currentActiveOrder.serialize());
   }
+
+  bool _textField = false;
+  bool get textField => _textField;
+  set textField(bool value) {
+    _textField = value;
+  }
+
+  AddressStructStruct _stNewAddressDraft = AddressStructStruct();
+  AddressStructStruct get stNewAddressDraft => _stNewAddressDraft;
+  set stNewAddressDraft(AddressStructStruct value) {
+    _stNewAddressDraft = value;
+    secureStorage.setString('ff_stNewAddressDraft', value.serialize());
+  }
+
+  void deleteStNewAddressDraft() {
+    secureStorage.delete(key: 'ff_stNewAddressDraft');
+  }
+
+  void updateStNewAddressDraftStruct(Function(AddressStructStruct) updateFn) {
+    updateFn(_stNewAddressDraft);
+    secureStorage.setString(
+        'ff_stNewAddressDraft', _stNewAddressDraft.serialize());
+  }
+
+  bool _testActive = false;
+  bool get testActive => _testActive;
+  set testActive(bool value) {
+    _testActive = value;
+  }
+
+  final _housesManager = FutureRequestManager<List<HousesRow>>();
+  Future<List<HousesRow>> houses({
+    String? uniqueQueryKey,
+    bool? overrideCache,
+    required Future<List<HousesRow>> Function() requestFn,
+  }) =>
+      _housesManager.performRequest(
+        uniqueQueryKey: uniqueQueryKey,
+        overrideCache: overrideCache,
+        requestFn: requestFn,
+      );
+  void clearHousesCache() => _housesManager.clear();
+  void clearHousesCacheKey(String? uniqueKey) =>
+      _housesManager.clearRequest(uniqueKey);
+
+  final _serviceCategoriesManager =
+      FutureRequestManager<List<ServiceCategoriesRow>>();
+  Future<List<ServiceCategoriesRow>> serviceCategories({
+    String? uniqueQueryKey,
+    bool? overrideCache,
+    required Future<List<ServiceCategoriesRow>> Function() requestFn,
+  }) =>
+      _serviceCategoriesManager.performRequest(
+        uniqueQueryKey: uniqueQueryKey,
+        overrideCache: overrideCache,
+        requestFn: requestFn,
+      );
+  void clearServiceCategoriesCache() => _serviceCategoriesManager.clear();
+  void clearServiceCategoriesCacheKey(String? uniqueKey) =>
+      _serviceCategoriesManager.clearRequest(uniqueKey);
+
+  final _getPromotionsManager = FutureRequestManager<ApiCallResponse>();
+  Future<ApiCallResponse> getPromotions({
+    String? uniqueQueryKey,
+    bool? overrideCache,
+    required Future<ApiCallResponse> Function() requestFn,
+  }) =>
+      _getPromotionsManager.performRequest(
+        uniqueQueryKey: uniqueQueryKey,
+        overrideCache: overrideCache,
+        requestFn: requestFn,
+      );
+  void clearGetPromotionsCache() => _getPromotionsManager.clear();
+  void clearGetPromotionsCacheKey(String? uniqueKey) =>
+      _getPromotionsManager.clearRequest(uniqueKey);
+
+  final _servicesManager = FutureRequestManager<List<ServicesRow>>();
+  Future<List<ServicesRow>> services({
+    String? uniqueQueryKey,
+    bool? overrideCache,
+    required Future<List<ServicesRow>> Function() requestFn,
+  }) =>
+      _servicesManager.performRequest(
+        uniqueQueryKey: uniqueQueryKey,
+        overrideCache: overrideCache,
+        requestFn: requestFn,
+      );
+  void clearServicesCache() => _servicesManager.clear();
+  void clearServicesCacheKey(String? uniqueKey) =>
+      _servicesManager.clearRequest(uniqueKey);
+
+  final _servicesMiniManager = FutureRequestManager<List<ServicesRow>>();
+  Future<List<ServicesRow>> servicesMini({
+    String? uniqueQueryKey,
+    bool? overrideCache,
+    required Future<List<ServicesRow>> Function() requestFn,
+  }) =>
+      _servicesMiniManager.performRequest(
+        uniqueQueryKey: uniqueQueryKey,
+        overrideCache: overrideCache,
+        requestFn: requestFn,
+      );
+  void clearServicesMiniCache() => _servicesMiniManager.clear();
+  void clearServicesMiniCacheKey(String? uniqueKey) =>
+      _servicesMiniManager.clearRequest(uniqueKey);
+
+  final _customize1Manager = FutureRequestManager<List<ServiceAddonsRow>>();
+  Future<List<ServiceAddonsRow>> customize1({
+    String? uniqueQueryKey,
+    bool? overrideCache,
+    required Future<List<ServiceAddonsRow>> Function() requestFn,
+  }) =>
+      _customize1Manager.performRequest(
+        uniqueQueryKey: uniqueQueryKey,
+        overrideCache: overrideCache,
+        requestFn: requestFn,
+      );
+  void clearCustomize1Cache() => _customize1Manager.clear();
+  void clearCustomize1CacheKey(String? uniqueKey) =>
+      _customize1Manager.clearRequest(uniqueKey);
+
+  final _customize2Manager = FutureRequestManager<List<ServiceAddonsRow>>();
+  Future<List<ServiceAddonsRow>> customize2({
+    String? uniqueQueryKey,
+    bool? overrideCache,
+    required Future<List<ServiceAddonsRow>> Function() requestFn,
+  }) =>
+      _customize2Manager.performRequest(
+        uniqueQueryKey: uniqueQueryKey,
+        overrideCache: overrideCache,
+        requestFn: requestFn,
+      );
+  void clearCustomize2Cache() => _customize2Manager.clear();
+  void clearCustomize2CacheKey(String? uniqueKey) =>
+      _customize2Manager.clearRequest(uniqueKey);
+
+  final _addonsManager = FutureRequestManager<List<ServiceAddonsRow>>();
+  Future<List<ServiceAddonsRow>> addons({
+    String? uniqueQueryKey,
+    bool? overrideCache,
+    required Future<List<ServiceAddonsRow>> Function() requestFn,
+  }) =>
+      _addonsManager.performRequest(
+        uniqueQueryKey: uniqueQueryKey,
+        overrideCache: overrideCache,
+        requestFn: requestFn,
+      );
+  void clearAddonsCache() => _addonsManager.clear();
+  void clearAddonsCacheKey(String? uniqueKey) =>
+      _addonsManager.clearRequest(uniqueKey);
+
+  final _banner1Manager = FutureRequestManager<List<AppBannersRow>>();
+  Future<List<AppBannersRow>> banner1({
+    String? uniqueQueryKey,
+    bool? overrideCache,
+    required Future<List<AppBannersRow>> Function() requestFn,
+  }) =>
+      _banner1Manager.performRequest(
+        uniqueQueryKey: uniqueQueryKey,
+        overrideCache: overrideCache,
+        requestFn: requestFn,
+      );
+  void clearBanner1Cache() => _banner1Manager.clear();
+  void clearBanner1CacheKey(String? uniqueKey) =>
+      _banner1Manager.clearRequest(uniqueKey);
 }
 
 void _safeInit(Function() initializeField) {

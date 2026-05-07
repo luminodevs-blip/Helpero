@@ -10,7 +10,12 @@ import 'what_is_helpero_plus_model.dart';
 export 'what_is_helpero_plus_model.dart';
 
 class WhatIsHelperoPlusWidget extends StatefulWidget {
-  const WhatIsHelperoPlusWidget({super.key});
+  const WhatIsHelperoPlusWidget({
+    super.key,
+    String? page,
+  }) : this.page = page ?? '';
+
+  final String page;
 
   static String routeName = 'What_is_Helpero_Plus';
   static String routePath = '/whatIsHelperoPlus';
@@ -86,8 +91,6 @@ class _WhatIsHelperoPlusWidgetState extends State<WhatIsHelperoPlusWidget> {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -120,19 +123,35 @@ class _WhatIsHelperoPlusWidgetState extends State<WhatIsHelperoPlusWidget> {
                                             size: 24.0,
                                           ),
                                           onPressed: () async {
-                                            context.goNamed(
-                                              BookingWidget.routeName,
-                                              extra: <String, dynamic>{
-                                                '__transition_info__':
-                                                    TransitionInfo(
-                                                  hasTransition: true,
-                                                  transitionType:
-                                                      PageTransitionType.fade,
-                                                  duration:
-                                                      Duration(milliseconds: 0),
-                                                ),
-                                              },
-                                            );
+                                            if (widget.page == 'FAQ') {
+                                              context.goNamed(
+                                                FaqWidget.routeName,
+                                                extra: <String, dynamic>{
+                                                  '__transition_info__':
+                                                      TransitionInfo(
+                                                    hasTransition: true,
+                                                    transitionType:
+                                                        PageTransitionType.fade,
+                                                    duration: Duration(
+                                                        milliseconds: 0),
+                                                  ),
+                                                },
+                                              );
+                                            } else {
+                                              context.goNamed(
+                                                MyAccountWidget.routeName,
+                                                extra: <String, dynamic>{
+                                                  '__transition_info__':
+                                                      TransitionInfo(
+                                                    hasTransition: true,
+                                                    transitionType:
+                                                        PageTransitionType.fade,
+                                                    duration: Duration(
+                                                        milliseconds: 0),
+                                                  ),
+                                                },
+                                              );
+                                            }
                                           },
                                         ),
                                       ),
@@ -886,8 +905,20 @@ class _WhatIsHelperoPlusWidgetState extends State<WhatIsHelperoPlusWidget> {
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           16.0, 0.0, 16.0, 0.0),
                                       child: FFButtonWidget(
-                                        onPressed: () {
-                                          print('Button pressed ...');
+                                        onPressed: () async {
+                                          context.goNamed(
+                                            ConsultantChatWidget.routeName,
+                                            extra: <String, dynamic>{
+                                              '__transition_info__':
+                                                  TransitionInfo(
+                                                hasTransition: true,
+                                                transitionType:
+                                                    PageTransitionType.fade,
+                                                duration:
+                                                    Duration(milliseconds: 0),
+                                              ),
+                                            },
+                                          );
                                         },
                                         text: 'Need more help?',
                                         icon: Icon(

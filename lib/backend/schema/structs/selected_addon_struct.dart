@@ -22,6 +22,7 @@ class SelectedAddonStruct extends BaseStruct {
     /// *Суммарная длительность (qty × unitDuration)*
     int? totalDuration,
     String? displayStage,
+    int? minSpecialists,
   })  : _id = id,
         _name = name,
         _qty = qty,
@@ -30,7 +31,8 @@ class SelectedAddonStruct extends BaseStruct {
         _totalPrice = totalPrice,
         _unitDuration = unitDuration,
         _totalDuration = totalDuration,
-        _displayStage = displayStage;
+        _displayStage = displayStage,
+        _minSpecialists = minSpecialists;
 
   // "id" field.
   String? _id;
@@ -110,6 +112,16 @@ class SelectedAddonStruct extends BaseStruct {
 
   bool hasDisplayStage() => _displayStage != null;
 
+  // "minSpecialists" field.
+  int? _minSpecialists;
+  int get minSpecialists => _minSpecialists ?? 0;
+  set minSpecialists(int? val) => _minSpecialists = val;
+
+  void incrementMinSpecialists(int amount) =>
+      minSpecialists = minSpecialists + amount;
+
+  bool hasMinSpecialists() => _minSpecialists != null;
+
   static SelectedAddonStruct fromMap(Map<String, dynamic> data) =>
       SelectedAddonStruct(
         id: data['id'] as String?,
@@ -121,6 +133,7 @@ class SelectedAddonStruct extends BaseStruct {
         unitDuration: castToType<int>(data['unitDuration']),
         totalDuration: castToType<int>(data['totalDuration']),
         displayStage: data['displayStage'] as String?,
+        minSpecialists: castToType<int>(data['minSpecialists']),
       );
 
   static SelectedAddonStruct? maybeFromMap(dynamic data) => data is Map
@@ -137,6 +150,7 @@ class SelectedAddonStruct extends BaseStruct {
         'unitDuration': _unitDuration,
         'totalDuration': _totalDuration,
         'displayStage': _displayStage,
+        'minSpecialists': _minSpecialists,
       }.withoutNulls;
 
   @override
@@ -176,6 +190,10 @@ class SelectedAddonStruct extends BaseStruct {
         'displayStage': serializeParam(
           _displayStage,
           ParamType.String,
+        ),
+        'minSpecialists': serializeParam(
+          _minSpecialists,
+          ParamType.int,
         ),
       }.withoutNulls;
 
@@ -226,6 +244,11 @@ class SelectedAddonStruct extends BaseStruct {
           ParamType.String,
           false,
         ),
+        minSpecialists: deserializeParam(
+          data['minSpecialists'],
+          ParamType.int,
+          false,
+        ),
       );
 
   @override
@@ -242,7 +265,8 @@ class SelectedAddonStruct extends BaseStruct {
         totalPrice == other.totalPrice &&
         unitDuration == other.unitDuration &&
         totalDuration == other.totalDuration &&
-        displayStage == other.displayStage;
+        displayStage == other.displayStage &&
+        minSpecialists == other.minSpecialists;
   }
 
   @override
@@ -255,7 +279,8 @@ class SelectedAddonStruct extends BaseStruct {
         totalPrice,
         unitDuration,
         totalDuration,
-        displayStage
+        displayStage,
+        minSpecialists
       ]);
 }
 
@@ -269,6 +294,7 @@ SelectedAddonStruct createSelectedAddonStruct({
   int? unitDuration,
   int? totalDuration,
   String? displayStage,
+  int? minSpecialists,
 }) =>
     SelectedAddonStruct(
       id: id,
@@ -280,4 +306,5 @@ SelectedAddonStruct createSelectedAddonStruct({
       unitDuration: unitDuration,
       totalDuration: totalDuration,
       displayStage: displayStage,
+      minSpecialists: minSpecialists,
     );

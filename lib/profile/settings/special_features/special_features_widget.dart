@@ -83,8 +83,6 @@ class _SpecialFeaturesWidgetState extends State<SpecialFeaturesWidget> {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -517,7 +515,11 @@ class _SpecialFeaturesWidgetState extends State<SpecialFeaturesWidget> {
                             ),
                           ),
                         ),
-                      ].addToStart(SizedBox(height: 4.0)),
+                      ].addToStart(SizedBox(
+                          height: valueOrDefault<double>(
+                        isWeb ? 4.0 : 44.0,
+                        44.0,
+                      ))),
                     ),
                   ),
                 ),

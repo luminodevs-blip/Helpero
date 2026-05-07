@@ -1,7 +1,7 @@
-import '/backend/api_requests/api_calls.dart';
 import '/backend/supabase/supabase.dart';
+import '/components/master_assigned_widget.dart';
+import '/components/master_searching_widget.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/index.dart';
 import 'master_finder_map_box_widget.dart' show MasterFinderMapBoxWidget;
 import 'package:flutter/material.dart';
 
@@ -11,16 +11,25 @@ class MasterFinderMapBoxModel
 
   double targetZoom = 16.0;
 
+  bool refresher = false;
+
   ///  State fields for stateful widgets in this page.
 
-  // Stores action output result for [Backend Call - Query Rows] action in MasterFinderMapBox widget.
-  List<OrdersRow>? polledOrder;
-  // Stores action output result for [Backend Call - API (cancelpayment)] action in Button widget.
-  ApiCallResponse? cancelpayment;
+  Stream<List<OrdersRow>>? masterFinderMapBoxSupabaseStream;
+  // Model for master_searching component.
+  late MasterSearchingModel masterSearchingModel;
+  // Model for master_assigned component.
+  late MasterAssignedModel masterAssignedModel;
 
   @override
-  void initState(BuildContext context) {}
+  void initState(BuildContext context) {
+    masterSearchingModel = createModel(context, () => MasterSearchingModel());
+    masterAssignedModel = createModel(context, () => MasterAssignedModel());
+  }
 
   @override
-  void dispose() {}
+  void dispose() {
+    masterSearchingModel.dispose();
+    masterAssignedModel.dispose();
+  }
 }

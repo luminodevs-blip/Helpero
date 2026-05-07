@@ -7,7 +7,16 @@ import 'voucher_info_model.dart';
 export 'voucher_info_model.dart';
 
 class VoucherInfoWidget extends StatefulWidget {
-  const VoucherInfoWidget({super.key});
+  const VoucherInfoWidget({
+    super.key,
+    required this.title,
+    required this.description,
+    required this.expiresIn,
+  });
+
+  final String? title;
+  final String? description;
+  final String? expiresIn;
 
   @override
   State<VoucherInfoWidget> createState() => _VoucherInfoWidgetState();
@@ -47,8 +56,6 @@ class _VoucherInfoWidgetState extends State<VoucherInfoWidget> {
         decoration: BoxDecoration(
           color: FlutterFlowTheme.of(context).secondaryBackground,
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(0.0),
-            bottomRight: Radius.circular(0.0),
             topLeft: Radius.circular(16.0),
             topRight: Radius.circular(16.0),
           ),
@@ -76,7 +83,10 @@ class _VoucherInfoWidgetState extends State<VoucherInfoWidget> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Text(
-                      'Winter Special',
+                      valueOrDefault<String>(
+                        widget.title,
+                        'Title',
+                      ),
                       style: FlutterFlowTheme.of(context).bodyMedium.override(
                             font: GoogleFonts.outfit(
                               fontWeight: FontWeight.w600,
@@ -93,7 +103,10 @@ class _VoucherInfoWidgetState extends State<VoucherInfoWidget> {
                           ),
                     ),
                     Text(
-                      'Get 20% off up to \$40 on any service',
+                      valueOrDefault<String>(
+                        widget.description,
+                        'Description',
+                      ),
                       style: FlutterFlowTheme.of(context).bodyMedium.override(
                             font: GoogleFonts.outfit(
                               fontWeight: FlutterFlowTheme.of(context)
@@ -318,18 +331,23 @@ class _VoucherInfoWidgetState extends State<VoucherInfoWidget> {
                       size: 12.0,
                     ),
                     Text(
-                      '3 Days',
+                      valueOrDefault<String>(
+                        widget.expiresIn,
+                        'expiresIn',
+                      ),
                       style: FlutterFlowTheme.of(context).bodyMedium.override(
                             font: GoogleFonts.outfit(
-                              fontWeight: FontWeight.normal,
+                              fontWeight: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontWeight,
                               fontStyle: FlutterFlowTheme.of(context)
                                   .bodyMedium
                                   .fontStyle,
                             ),
-                            color: FlutterFlowTheme.of(context).error,
-                            fontSize: 15.0,
-                            letterSpacing: 0.2,
-                            fontWeight: FontWeight.normal,
+                            letterSpacing: 0.0,
+                            fontWeight: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontWeight,
                             fontStyle: FlutterFlowTheme.of(context)
                                 .bodyMedium
                                 .fontStyle,
@@ -376,7 +394,7 @@ class _VoucherInfoWidgetState extends State<VoucherInfoWidget> {
                 child: Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 12.0),
                   child: Text(
-                    'Toronto, Oakville',
+                    'Toronto (GTA)',
                     style: FlutterFlowTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.outfit(
                             fontWeight: FontWeight.w500,

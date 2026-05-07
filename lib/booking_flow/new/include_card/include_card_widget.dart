@@ -97,18 +97,16 @@ class _IncludeCardWidgetState extends State<IncludeCardWidget> {
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(8.0),
               bottomRight: Radius.circular(8.0),
-              topLeft: Radius.circular(0.0),
-              topRight: Radius.circular(0.0),
             ),
             child: Image.network(
               valueOrDefault<String>(
                 widget.imageUrl,
-                'https://hwgmjlsoeebgounmthmr.supabase.co/storage/v1/object/public/icons/Standart%20Cleaning2.png',
+                'https://hwgmjlsoeebgounmthmr.supabase.co/storage/v1/object/public/services/Includes/standard_include_Floor%20vacuuming.webp',
               ),
               width: double.infinity,
               height: 75.0,
               fit: BoxFit.cover,
-              alignment: Alignment(0.0, 1.0),
+              alignment: Alignment(0.0, 0.0),
             ),
           ),
         ],

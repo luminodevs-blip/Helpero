@@ -18,6 +18,7 @@ class ServerCheckoutStruct extends BaseStruct {
     String? taxName,
     double? totalToPay,
     String? appliedVoucherTitle,
+    int? specialistsCount,
   })  : _subtotal = subtotal,
         _visitFee = visitFee,
         _bookingFee = bookingFee,
@@ -28,7 +29,8 @@ class ServerCheckoutStruct extends BaseStruct {
         _taxAmount = taxAmount,
         _taxName = taxName,
         _totalToPay = totalToPay,
-        _appliedVoucherTitle = appliedVoucherTitle;
+        _appliedVoucherTitle = appliedVoucherTitle,
+        _specialistsCount = specialistsCount;
 
   // "subtotal" field.
   double? _subtotal;
@@ -129,6 +131,16 @@ class ServerCheckoutStruct extends BaseStruct {
 
   bool hasAppliedVoucherTitle() => _appliedVoucherTitle != null;
 
+  // "specialistsCount" field.
+  int? _specialistsCount;
+  int get specialistsCount => _specialistsCount ?? 0;
+  set specialistsCount(int? val) => _specialistsCount = val;
+
+  void incrementSpecialistsCount(int amount) =>
+      specialistsCount = specialistsCount + amount;
+
+  bool hasSpecialistsCount() => _specialistsCount != null;
+
   static ServerCheckoutStruct fromMap(Map<String, dynamic> data) =>
       ServerCheckoutStruct(
         subtotal: castToType<double>(data['subtotal']),
@@ -142,6 +154,7 @@ class ServerCheckoutStruct extends BaseStruct {
         taxName: data['taxName'] as String?,
         totalToPay: castToType<double>(data['totalToPay']),
         appliedVoucherTitle: data['appliedVoucherTitle'] as String?,
+        specialistsCount: castToType<int>(data['specialistsCount']),
       );
 
   static ServerCheckoutStruct? maybeFromMap(dynamic data) => data is Map
@@ -160,6 +173,7 @@ class ServerCheckoutStruct extends BaseStruct {
         'taxName': _taxName,
         'totalToPay': _totalToPay,
         'appliedVoucherTitle': _appliedVoucherTitle,
+        'specialistsCount': _specialistsCount,
       }.withoutNulls;
 
   @override
@@ -207,6 +221,10 @@ class ServerCheckoutStruct extends BaseStruct {
         'appliedVoucherTitle': serializeParam(
           _appliedVoucherTitle,
           ParamType.String,
+        ),
+        'specialistsCount': serializeParam(
+          _specialistsCount,
+          ParamType.int,
         ),
       }.withoutNulls;
 
@@ -267,6 +285,11 @@ class ServerCheckoutStruct extends BaseStruct {
           ParamType.String,
           false,
         ),
+        specialistsCount: deserializeParam(
+          data['specialistsCount'],
+          ParamType.int,
+          false,
+        ),
       );
 
   @override
@@ -285,7 +308,8 @@ class ServerCheckoutStruct extends BaseStruct {
         taxAmount == other.taxAmount &&
         taxName == other.taxName &&
         totalToPay == other.totalToPay &&
-        appliedVoucherTitle == other.appliedVoucherTitle;
+        appliedVoucherTitle == other.appliedVoucherTitle &&
+        specialistsCount == other.specialistsCount;
   }
 
   @override
@@ -300,7 +324,8 @@ class ServerCheckoutStruct extends BaseStruct {
         taxAmount,
         taxName,
         totalToPay,
-        appliedVoucherTitle
+        appliedVoucherTitle,
+        specialistsCount
       ]);
 }
 
@@ -316,6 +341,7 @@ ServerCheckoutStruct createServerCheckoutStruct({
   String? taxName,
   double? totalToPay,
   String? appliedVoucherTitle,
+  int? specialistsCount,
 }) =>
     ServerCheckoutStruct(
       subtotal: subtotal,
@@ -329,4 +355,5 @@ ServerCheckoutStruct createServerCheckoutStruct({
       taxName: taxName,
       totalToPay: totalToPay,
       appliedVoucherTitle: appliedVoucherTitle,
+      specialistsCount: specialistsCount,
     );

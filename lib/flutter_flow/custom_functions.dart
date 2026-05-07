@@ -436,3 +436,161 @@ List<UserVoucherStruct> parseUserVouchers(List<dynamic>? jsonList) {
 
   return result;
 }
+
+LatLng? combineLatLng(
+  double? lat,
+  double? lng,
+) {
+  // Проверяем, что обе координаты существуют
+  if (lat == null || lng == null) {
+    return null; // Если координат нет, возвращаем null (или можно вернуть LatLng(0, 0))
+  }
+
+  // Возвращаем объединенный объект LatLng
+  return LatLng(lat, lng);
+}
+
+double convertToDouble(dynamic val) {
+  return (val as num).toDouble();
+}
+
+String getEntryMethodLabel(String? method) {
+  if (method == null || method.isEmpty) {
+    return 'How will we get in?';
+  }
+
+  switch (method) {
+    case 'meet_at_door':
+      return 'I\'ll be home (Meet at door)';
+    case 'leave_with_concierge':
+      return 'Leave with building staff';
+    case 'door_code':
+      return 'Door code provided';
+    case 'key_in_lockbox':
+      return 'Keys in lockbox';
+    default:
+      return 'Set entry method';
+  }
+}
+
+List<DateTime> generateDays() {
+  return List.generate(14, (i) => DateTime.now().add(Duration(days: i)));
+}
+
+double? getLat(LatLng? location) {
+  return location?.latitude ?? 0.0;
+}
+
+double? getLng(LatLng? location) {
+  return location?.longitude ?? 0.0;
+}
+
+String? formatLatLng(LatLng? location) {
+  // Если локация пустая, отдаем дефолтное Торонто, чтобы не было ошибки 422
+  if (location == null) {
+    return "-79.38,43.65";
+  }
+  // Формат Mapbox: longitude (долгота), latitude (широта)
+  return "${location.longitude},${location.latitude}";
+}
+
+bool showChatHeader(
+  int currentIndex,
+  int totalCount,
+) {
+  if (totalCount == 0) {
+    return false;
+  }
+  return currentIndex == (totalCount - 1);
+}
+
+String getProgressBannerText(
+  int? statusSequence,
+  String? proName,
+) {
+  // Если имя еще неизвестно (например, при поиске), используем дефолтное слово
+  final name =
+      (proName != null && proName.trim().isNotEmpty) ? proName : 'A Pro';
+
+  switch (statusSequence) {
+    case 1: // searching
+      return 'Searching for the best Pro for you...';
+
+    case 2: // assigned
+      return '$name is preparing for your order';
+
+    case 3: // en_route
+      return '$name is on the way — arriving soon';
+
+    case 4: // arrived
+      return '$name has arrived at your location';
+
+    case 5: // in_progress
+      return '$name is currently working on your order';
+
+    case 6: // completed
+      return 'Order completed. Thank you!';
+
+    default:
+      return 'Processing your order...';
+  }
+}
+
+List<String>? parseAddonsFromMetadata(dynamic metadata) {
+  if (metadata == null) return [];
+  List<String> result = [];
+  try {
+    // Приводим JSON к Map
+    Map<String, dynamic> data = metadata as Map<String, dynamic>;
+    data.forEach((key, value) {
+      // Игнорируем технические ключи (например 'addons' если это массив объектов)
+      if (key == 'addons') return;
+
+      // Если значение это число и оно больше 0
+      if (value is int && value > 0) {
+        // Формируем строку, например "2 Rooms"
+        result.add('$value $key');
+      } else if (value is String && value.isNotEmpty) {
+        result.add('$key: $value');
+      }
+    });
+  } catch (e) {
+    print('Error parsing metadata: $e');
+  }
+  return result;
+}
+
+String? getStaticMapUrl(
+  double lat,
+  double lng,
+) {
+  // Если координаты пустые
+  if (lat == 0.0 && lng == 0.0) {
+    return '';
+  }
+
+  // Настройки
+  const String apiKey = 'AIzaSyCsFlANlVOYkg8AzASyV4myeE1L1O9U0dM';
+  const String mapId = '6cb6a40ecec468b75636393f';
+
+  const int zoom = 16;
+  const int width = 600;
+  const int height = 400;
+
+  // Генерируем надежный черный маркер с белой точкой через сервис Google
+  // %E2%80%A2 - это символ точки
+  const String markerUrl =
+      'https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|000000|FFFFFF';
+
+  // Сборка URL
+  final String url = 'https://maps.googleapis.com/maps/api/staticmap'
+      '?center=$lat,$lng'
+      '&zoom=$zoom'
+      '&size=${width}x$height'
+      '&scale=2'
+      '&map_id=$mapId'
+      '&markers=icon:$markerUrl%7C$lat,$lng'
+      '&key=$apiKey';
+
+  return url;
+}

@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 
 class ChoosePaymentMethodModel
     extends FlutterFlowModel<ChoosePaymentMethodWidget> {
+  ///  Local state fields for this component.
+
+  String selectedMethod = 'card';
+
   @override
   void initState(BuildContext context) {}
 

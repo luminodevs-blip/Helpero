@@ -84,8 +84,6 @@ class _BookingWidgetState extends State<BookingWidget> {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -243,6 +241,12 @@ class _BookingWidgetState extends State<BookingWidget> {
                                   onTap: () async {
                                     context.goNamed(
                                       HowDoIBookAServiceWidget.routeName,
+                                      queryParameters: {
+                                        'page': serializeParam(
+                                          'Booking',
+                                          ParamType.String,
+                                        ),
+                                      }.withoutNulls,
                                       extra: <String, dynamic>{
                                         '__transition_info__': TransitionInfo(
                                           hasTransition: true,
@@ -271,6 +275,12 @@ class _BookingWidgetState extends State<BookingWidget> {
                                     context.goNamed(
                                       CanICancelOrRescheduleMyBookingWidget
                                           .routeName,
+                                      queryParameters: {
+                                        'page': serializeParam(
+                                          'Booking',
+                                          ParamType.String,
+                                        ),
+                                      }.withoutNulls,
                                       extra: <String, dynamic>{
                                         '__transition_info__': TransitionInfo(
                                           hasTransition: true,

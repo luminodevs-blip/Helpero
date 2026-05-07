@@ -60,13 +60,11 @@ class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(10.0),
                     bottomRight: Radius.circular(10.0),
-                    topLeft: Radius.circular(0.0),
-                    topRight: Radius.circular(0.0),
                   ),
                 ),
                 child: Padding(
                   padding:
-                      EdgeInsetsDirectional.fromSTEB(16.0, 48.0, 16.0, 0.0),
+                      EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 0.0),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -105,7 +103,7 @@ class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
                               ),
                               color: FlutterFlowTheme.of(context).primary,
                               fontSize: 16.0,
-                              letterSpacing: 0.0,
+                              letterSpacing: 0.2,
                               fontWeight: FontWeight.w500,
                               fontStyle: FlutterFlowTheme.of(context)
                                   .bodyMedium
@@ -120,7 +118,7 @@ class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
             Align(
               alignment: AlignmentDirectional(-1.0, 0.0),
               child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 20.0),
+                padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 6.0),
                 child: Text(
                   'Payment method',
                   style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -131,7 +129,7 @@ class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
                         ),
                         color: FlutterFlowTheme.of(context).primaryText,
                         fontSize: 24.0,
-                        letterSpacing: 0.0,
+                        letterSpacing: 0.2,
                         fontWeight: FontWeight.w600,
                         fontStyle:
                             FlutterFlowTheme.of(context).bodyMedium.fontStyle,
@@ -140,11 +138,11 @@ class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
               ),
             ),
             Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+              padding: EdgeInsets.all(16.0),
               child: Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: FlutterFlowTheme.of(context).primary,
+                  color: FlutterFlowTheme.of(context).primaryBackground,
                   boxShadow: [
                     BoxShadow(
                       blurRadius: 2.0,
@@ -162,7 +160,7 @@ class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
                 ),
                 child: Padding(
                   padding:
-                      EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+                      EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 16.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,10 +183,10 @@ class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
                                         .bodyMedium
                                         .fontStyle,
                                   ),
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryBackground,
+                                  color:
+                                      FlutterFlowTheme.of(context).primaryText,
                                   fontSize: 16.0,
-                                  letterSpacing: 0.0,
+                                  letterSpacing: 0.2,
                                   fontWeight: FlutterFlowTheme.of(context)
                                       .bodyMedium
                                       .fontWeight,
@@ -204,23 +202,23 @@ class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
                             EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 14.0),
                         child: Text(
                           '0.00 \$',
-                          style:
-                              FlutterFlowTheme.of(context).bodyMedium.override(
-                                    font: GoogleFonts.outfit(
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
-                                    fontSize: 28.0,
-                                    letterSpacing: 0.0,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
+                          style: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .override(
+                                font: GoogleFonts.outfit(
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontStyle,
+                                ),
+                                color: FlutterFlowTheme.of(context).primaryText,
+                                fontSize: 28.0,
+                                letterSpacing: 0.2,
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontStyle,
+                              ),
                         ),
                       ),
                       Padding(
@@ -246,9 +244,9 @@ class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
                                     .bodyMedium
                                     .fontStyle,
                               ),
-                              color: FlutterFlowTheme.of(context).alternate,
-                              fontSize: 16.0,
-                              letterSpacing: 0.0,
+                              color: FlutterFlowTheme.of(context).primary,
+                              fontSize: 15.0,
+                              letterSpacing: 0.2,
                               fontWeight: FlutterFlowTheme.of(context)
                                   .bodyMedium
                                   .fontWeight,
@@ -306,7 +304,7 @@ class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
                                                     .fontStyle,
                                           ),
                                           fontSize: 16.0,
-                                          letterSpacing: 0.0,
+                                          letterSpacing: 0.2,
                                           fontWeight: FontWeight.w500,
                                           fontStyle:
                                               FlutterFlowTheme.of(context)
@@ -346,112 +344,8 @@ class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
                       ),
                     ),
                   ),
-                  Container(
-                    width: double.infinity,
-                    height: 60.0,
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(0.0),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            FaIcon(
-                              FontAwesomeIcons.ccVisa,
-                              color: FlutterFlowTheme.of(context).primary,
-                              size: 26.0,
-                            ),
-                            Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          0.0, 0.0, 0.0, 4.0),
-                                      child: Text(
-                                        'Bank Card',
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                              font: GoogleFonts.outfit(
-                                                fontWeight: FontWeight.w500,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                              fontSize: 16.0,
-                                              letterSpacing: 0.0,
-                                              fontWeight: FontWeight.w500,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  '**** 2809',
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        font: GoogleFonts.outfit(
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
-                                        letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                ),
-                              ],
-                            ),
-                          ].divide(SizedBox(width: 15.0)),
-                        ),
-                        Stack(
-                          alignment: AlignmentDirectional(0.0, 0.0),
-                          children: [
-                            Container(
-                              width: 22.0,
-                              height: 22.0,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: FlutterFlowTheme.of(context).alternate,
-                                  width: 2.0,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
+                  Align(
+                    alignment: AlignmentDirectional(-1.0, -1.0),
                     child: Container(
                       width: double.infinity,
                       height: 60.0,
@@ -466,63 +360,36 @@ class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
                           Row(
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                              FaIcon(
-                                FontAwesomeIcons.ccMastercard,
-                                color: FlutterFlowTheme.of(context).error,
-                                size: 26.0,
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 0.0, 2.0, 0.0),
+                                child: Icon(
+                                  Icons.credit_card_outlined,
+                                  color: FlutterFlowTheme.of(context)
+                                      .secondaryText,
+                                  size: 26.0,
+                                ),
                               ),
                               Column(
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 4.0),
-                                    child: Text(
-                                      'Bank Card',
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .override(
-                                            font: GoogleFonts.outfit(
-                                              fontWeight: FontWeight.w500,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
-                                            fontSize: 16.0,
-                                            letterSpacing: 0.0,
+                                  Text(
+                                    'Bank Card',
+                                    style: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .override(
+                                          font: GoogleFonts.outfit(
                                             fontWeight: FontWeight.w500,
                                             fontStyle:
                                                 FlutterFlowTheme.of(context)
                                                     .bodyMedium
                                                     .fontStyle,
                                           ),
-                                    ),
-                                  ),
-                                  Text(
-                                    '**** 1103',
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          font: GoogleFonts.outfit(
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                          ),
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          letterSpacing: 0.0,
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontWeight,
+                                          fontSize: 16.0,
+                                          letterSpacing: 0.2,
+                                          fontWeight: FontWeight.w500,
                                           fontStyle:
                                               FlutterFlowTheme.of(context)
                                                   .bodyMedium
@@ -548,6 +415,13 @@ class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
                                   ),
                                 ),
                               ),
+                              Container(
+                                width: 13.0,
+                                height: 13.0,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
                             ],
                           ),
                         ],
@@ -556,7 +430,7 @@ class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
                   ),
                   Padding(
                     padding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 40.0),
+                        EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 40.0),
                     child: Container(
                       width: double.infinity,
                       height: 60.0,
@@ -586,8 +460,8 @@ class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
                                         .fontStyle,
                                   ),
                                   color: FlutterFlowTheme.of(context).primary,
-                                  fontSize: 16.0,
-                                  letterSpacing: 0.0,
+                                  fontSize: 15.0,
+                                  letterSpacing: 0.2,
                                   fontWeight: FontWeight.normal,
                                   fontStyle: FlutterFlowTheme.of(context)
                                       .bodyMedium
@@ -598,10 +472,14 @@ class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
                       ),
                     ),
                   ),
-                ].addToStart(SizedBox(height: 12.0)),
+                ].addToStart(SizedBox(height: 16.0)),
               ),
             ),
-          ],
+          ].addToStart(SizedBox(
+              height: valueOrDefault<double>(
+            isWeb ? 0.0 : 20.0,
+            20.0,
+          ))),
         ),
       ),
     );

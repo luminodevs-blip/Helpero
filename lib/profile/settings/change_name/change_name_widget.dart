@@ -1,3 +1,5 @@
+import '/auth/supabase_auth/auth_util.dart';
+import '/backend/supabase/supabase.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -34,14 +36,14 @@ class _ChangeNameWidgetState extends State<ChangeNameWidget> {
     _model.firstnameTextController ??= TextEditingController(
         text: valueOrDefault<String>(
       FFAppState().userProfile.firstName,
-      'Oleg',
+      'Enter name',
     ));
     _model.firstnameFocusNode ??= FocusNode();
 
     _model.lastnameTextController ??= TextEditingController(
         text: valueOrDefault<String>(
       FFAppState().userProfile.lastName,
-      'Suvorov',
+      'Enter lastname',
     ));
     _model.lastnameFocusNode ??= FocusNode();
 
@@ -102,8 +104,6 @@ class _ChangeNameWidgetState extends State<ChangeNameWidget> {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -692,7 +692,11 @@ class _ChangeNameWidgetState extends State<ChangeNameWidget> {
                             ),
                           ),
                         ),
-                      ].addToStart(SizedBox(height: 4.0)),
+                      ].addToStart(SizedBox(
+                          height: valueOrDefault<double>(
+                        isWeb ? 4.0 : 44.0,
+                        44.0,
+                      ))),
                     ),
                   ),
                 ),
@@ -718,6 +722,18 @@ class _ChangeNameWidgetState extends State<ChangeNameWidget> {
                                             ''))
                                 ? null
                                 : () async {
+                                    await ProfilesTable().update(
+                                      data: {
+                                        'first_name':
+                                            _model.firstnameTextController.text,
+                                        'last_name':
+                                            _model.lastnameTextController.text,
+                                      },
+                                      matchingRows: (rows) => rows.eqOrNull(
+                                        'id',
+                                        currentUserUid,
+                                      ),
+                                    );
                                     FFAppState().updateUserProfileStruct(
                                       (e) => e
                                         ..firstName =

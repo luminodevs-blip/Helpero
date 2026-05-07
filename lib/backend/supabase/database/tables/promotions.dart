@@ -14,8 +14,8 @@ class PromotionsRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => PromotionsTable();
 
-  int get id => getField<int>('id')!;
-  set id(int value) => setField<int>('id', value);
+  int? get id => getField<int>('id');
+  set id(int? value) => setField<int>('id', value);
 
   String get title => getField<String>('title')!;
   set title(String value) => setField<String>('title', value);

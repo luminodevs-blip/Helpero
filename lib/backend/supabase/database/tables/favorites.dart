@@ -14,8 +14,8 @@ class FavoritesRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => FavoritesTable();
 
-  int get id => getField<int>('id')!;
-  set id(int value) => setField<int>('id', value);
+  int? get id => getField<int>('id');
+  set id(int? value) => setField<int>('id', value);
 
   String? get userId => getField<String>('user_id');
   set userId(String? value) => setField<String>('user_id', value);

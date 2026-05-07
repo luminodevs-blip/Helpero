@@ -1,9 +1,18 @@
 import '/auth_flow/cart_general/cart_general_widget.dart';
+import '/backend/schema/structs/index.dart';
+import '/backend/supabase/supabase.dart';
+import '/booking_flow/whats_include_bottom/whats_include_bottom_widget.dart';
 import '/components/navbar_widget.dart';
+import '/components/search_empty_result_widget.dart';
+import '/components/service_card_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/custom_code/actions/index.dart' as actions;
+import '/index.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'search_model.dart';
@@ -28,6 +37,15 @@ class _SearchWidgetState extends State<SearchWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => SearchModel());
+
+    // On page load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      _model.safeSearchResultsPage = await actions.searchServicesNative(
+        '',
+      );
+      _model.firstLoad = false;
+      safeSetState(() {});
+    });
 
     _model.textController ??= TextEditingController();
     _model.textFieldFocusNode ??= FocusNode();
@@ -106,7 +124,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'Categories',
+                                            'Search service',
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium
                                                 .override(
@@ -187,7 +205,14 @@ class _SearchWidgetState extends State<SearchWidget> {
                                                     padding:
                                                         MediaQuery.viewInsetsOf(
                                                             context),
-                                                    child: CartGeneralWidget(),
+                                                    child: Container(
+                                                      height: MediaQuery.sizeOf(
+                                                                  context)
+                                                              .height *
+                                                          0.95,
+                                                      child:
+                                                          CartGeneralWidget(),
+                                                    ),
                                                   ),
                                                 );
                                               },
@@ -199,12 +224,12 @@ class _SearchWidgetState extends State<SearchWidget> {
                                             height: 40.0,
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(25.0),
+                                                topRight: Radius.circular(25.0),
                                                 bottomLeft:
                                                     Radius.circular(25.0),
                                                 bottomRight:
                                                     Radius.circular(25.0),
-                                                topLeft: Radius.circular(25.0),
-                                                topRight: Radius.circular(25.0),
                                               ),
                                               shape: BoxShape.rectangle,
                                               border: Border.all(
@@ -255,6 +280,21 @@ class _SearchWidgetState extends State<SearchWidget> {
                                 child: TextFormField(
                                   controller: _model.textController,
                                   focusNode: _model.textFieldFocusNode,
+                                  onChanged: (_) => EasyDebounce.debounce(
+                                    '_model.textController',
+                                    Duration(milliseconds: 2000),
+                                    () async {
+                                      _model.input = _model.textController.text;
+                                      _model.firstLoad = true;
+                                      safeSetState(() {});
+                                      _model.safeSearchResults =
+                                          await actions.searchServicesNative(
+                                        _model.textController.text,
+                                      );
+
+                                      safeSetState(() {});
+                                    },
+                                  ),
                                   autofocus: false,
                                   enabled: true,
                                   obscureText: false,
@@ -283,7 +323,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                                                   .labelMedium
                                                   .fontStyle,
                                         ),
-                                    hintText: 'Look for services',
+                                    hintText: 'Mounting, cleaning...',
                                     hintStyle: FlutterFlowTheme.of(context)
                                         .labelMedium
                                         .override(
@@ -379,19 +419,16 @@ class _SearchWidgetState extends State<SearchWidget> {
                                       .asValidator(context),
                                 ),
                               ),
-                            ].addToStart(SizedBox(height: 48.0)),
+                            ],
                           ),
                         ),
                         Expanded(
                           child: Container(
                             width: double.infinity,
-                            height: MediaQuery.sizeOf(context).height * 1.0,
                             decoration: BoxDecoration(
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.0),
-                                bottomRight: Radius.circular(0.0),
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
                               ),
@@ -399,515 +436,815 @@ class _SearchWidgetState extends State<SearchWidget> {
                             child: Column(
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      16.0, 0.0, 16.0, 10.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Align(
-                                        alignment:
-                                            AlignmentDirectional(-1.0, 0.0),
-                                        child: Text(
-                                          'Tranding searches',
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                font: GoogleFonts.outfit(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
+                                Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Expanded(
+                                      child: Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            16.0, 0.0, 16.0, 10.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            if (_model.textController.text ==
+                                                    '')
+                                              Expanded(
+                                                child: Align(
+                                                  alignment:
+                                                      AlignmentDirectional(
+                                                          -1.0, 0.0),
+                                                  child: Text(
+                                                    'Trending searches',
+                                                    style: FlutterFlowTheme.of(
+                                                            context)
+                                                        .bodyMedium
+                                                        .override(
+                                                          font: GoogleFonts
+                                                              .outfit(
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontStyle:
+                                                                FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .bodyMedium
+                                                                    .fontStyle,
+                                                          ),
+                                                          fontSize: 18.0,
+                                                          letterSpacing: 0.2,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontStyle:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .bodyMedium
+                                                                  .fontStyle,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ),
+                                            if (_model.textController.text !=
+                                                    '')
+                                              Expanded(
+                                                child: Align(
+                                                  alignment:
+                                                      AlignmentDirectional(
+                                                          -1.0, -1.0),
+                                                  child: RichText(
+                                                    textScaler:
+                                                        MediaQuery.of(context)
+                                                            .textScaler,
+                                                    text: TextSpan(
+                                                      children: [
+                                                        TextSpan(
+                                                          text: 'Results for: ',
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .bodyMedium
+                                                              .override(
+                                                                font:
+                                                                    GoogleFonts
+                                                                        .outfit(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .normal,
+                                                                  fontStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .bodyMedium
+                                                                      .fontStyle,
+                                                                ),
+                                                                fontSize: 18.0,
+                                                                letterSpacing:
+                                                                    0.2,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal,
+                                                                fontStyle: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .bodyMedium
+                                                                    .fontStyle,
+                                                              ),
+                                                        ),
+                                                        TextSpan(
+                                                          text: valueOrDefault<
+                                                              String>(
+                                                            _model.input,
+                                                            'Service',
+                                                          ),
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 18.0,
+                                                          ),
+                                                        )
+                                                      ],
+                                                      style: FlutterFlowTheme
+                                                              .of(context)
                                                           .bodyMedium
-                                                          .fontStyle,
+                                                          .override(
+                                                            font: GoogleFonts
+                                                                .outfit(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .normal,
+                                                              fontStyle:
+                                                                  FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .bodyMedium
+                                                                      .fontStyle,
+                                                            ),
+                                                            fontSize: 18.0,
+                                                            letterSpacing: 0.2,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .normal,
+                                                            fontStyle:
+                                                                FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .bodyMedium
+                                                                    .fontStyle,
+                                                          ),
+                                                    ),
+                                                  ),
                                                 ),
-                                                fontSize: 18.0,
-                                                letterSpacing: 0.2,
-                                                fontWeight: FontWeight.w600,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
                                               ),
-                                        ),
-                                      ),
-                                      Opacity(
-                                        opacity: 0.0,
-                                        child: FlutterFlowIconButton(
-                                          borderRadius: 26.0,
-                                          buttonSize: 40.0,
-                                          fillColor: Color(0xFFF5F7FB),
-                                          icon: Icon(
-                                            Icons.arrow_forward_rounded,
-                                            color: FlutterFlowTheme.of(context)
-                                                .primary,
-                                            size: 24.0,
-                                          ),
-                                          onPressed: () async {
-                                            context.pushNamed(
-                                              SearchWidget.routeName,
-                                              extra: <String, dynamic>{
-                                                '__transition_info__':
-                                                    TransitionInfo(
-                                                  hasTransition: true,
-                                                  transitionType:
-                                                      PageTransitionType.fade,
-                                                  duration:
-                                                      Duration(milliseconds: 0),
+                                            Opacity(
+                                              opacity: 0.0,
+                                              child: FlutterFlowIconButton(
+                                                borderRadius: 26.0,
+                                                buttonSize: 40.0,
+                                                fillColor: Color(0xFFF5F7FB),
+                                                icon: Icon(
+                                                  Icons.arrow_forward_rounded,
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .primary,
+                                                  size: 24.0,
                                                 ),
-                                              },
-                                            );
-                                          },
+                                                onPressed: () async {
+                                                  context.pushNamed(
+                                                    SearchWidget.routeName,
+                                                    extra: <String, dynamic>{
+                                                      '__transition_info__':
+                                                          TransitionInfo(
+                                                        hasTransition: true,
+                                                        transitionType:
+                                                            PageTransitionType
+                                                                .fade,
+                                                        duration: Duration(
+                                                            milliseconds: 0),
+                                                      ),
+                                                    },
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Align(
-                                    alignment: AlignmentDirectional(-1.0, -1.0),
-                                    child: Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          16.0, 0.0, 16.0, 0.0),
-                                      child: Wrap(
-                                        spacing: 12.0,
-                                        runSpacing: 12.0,
-                                        alignment: WrapAlignment.start,
-                                        crossAxisAlignment:
-                                            WrapCrossAlignment.start,
-                                        direction: Axis.vertical,
-                                        runAlignment: WrapAlignment.start,
-                                        verticalDirection:
-                                            VerticalDirection.down,
-                                        clipBehavior: Clip.none,
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(6.0),
-                                              border: Border.all(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .alternate,
-                                              ),
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(
-                                                      12.0, 8.0, 12.0, 8.0),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Icon(
-                                                    Icons.trending_up_rounded,
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .secondaryText,
-                                                    size: 20.0,
-                                                  ),
-                                                  Text(
-                                                    'Proffessional bathroom cleaning',
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          font: GoogleFonts
-                                                              .outfit(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .normal,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .secondaryText,
-                                                          fontSize: 15.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                  ),
-                                                ].divide(SizedBox(width: 6.0)),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(6.0),
-                                              border: Border.all(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .alternate,
-                                              ),
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(
-                                                      12.0, 8.0, 12.0, 8.0),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Icon(
-                                                    Icons.trending_up_rounded,
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .secondaryText,
-                                                    size: 20.0,
-                                                  ),
-                                                  Text(
-                                                    'Washing machine repair',
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          font: GoogleFonts
-                                                              .outfit(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .normal,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .secondaryText,
-                                                          fontSize: 15.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                  ),
-                                                ].divide(SizedBox(width: 6.0)),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(6.0),
-                                              border: Border.all(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .alternate,
-                                              ),
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(
-                                                      12.0, 8.0, 12.0, 8.0),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Icon(
-                                                    Icons.trending_up_rounded,
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .secondaryText,
-                                                    size: 20.0,
-                                                  ),
-                                                  Text(
-                                                    'Proffessional kitchen cleaning',
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          font: GoogleFonts
-                                                              .outfit(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .normal,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .secondaryText,
-                                                          fontSize: 15.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                  ),
-                                                ].divide(SizedBox(width: 6.0)),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(6.0),
-                                              border: Border.all(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .alternate,
-                                              ),
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(
-                                                      12.0, 8.0, 12.0, 8.0),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Icon(
-                                                    Icons.trending_up_rounded,
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .secondaryText,
-                                                    size: 20.0,
-                                                  ),
-                                                  Text(
-                                                    'Ro repair',
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          font: GoogleFonts
-                                                              .outfit(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .normal,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .secondaryText,
-                                                          fontSize: 15.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                  ),
-                                                ].divide(SizedBox(width: 6.0)),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(6.0),
-                                              border: Border.all(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .alternate,
-                                              ),
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(
-                                                      12.0, 8.0, 12.0, 8.0),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Icon(
-                                                    Icons.trending_up_rounded,
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .secondaryText,
-                                                    size: 20.0,
-                                                  ),
-                                                  Text(
-                                                    'TV mountning',
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          font: GoogleFonts
-                                                              .outfit(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .normal,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .secondaryText,
-                                                          fontSize: 15.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                  ),
-                                                ].divide(SizedBox(width: 6.0)),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(6.0),
-                                              border: Border.all(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .alternate,
-                                              ),
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(
-                                                      12.0, 8.0, 12.0, 8.0),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Icon(
-                                                    Icons.trending_up_rounded,
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .secondaryText,
-                                                    size: 20.0,
-                                                  ),
-                                                  Text(
-                                                    'Car wash at home',
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          font: GoogleFonts
-                                                              .outfit(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .normal,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .secondaryText,
-                                                          fontSize: 15.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                  ),
-                                                ].divide(SizedBox(width: 6.0)),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(6.0),
-                                              border: Border.all(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .alternate,
-                                              ),
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(
-                                                      12.0, 8.0, 12.0, 8.0),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Icon(
-                                                    Icons.trending_up_rounded,
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .secondaryText,
-                                                    size: 20.0,
-                                                  ),
-                                                  Text(
-                                                    'AC cleaning',
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          font: GoogleFonts
-                                                              .outfit(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .normal,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .secondaryText,
-                                                          fontSize: 15.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                  ),
-                                                ].divide(SizedBox(width: 6.0)),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
                                       ),
                                     ),
-                                  ),
+                                    Container(
+                                      width: double.infinity,
+                                      height: 1.0,
+                                      decoration: BoxDecoration(
+                                        color: FlutterFlowTheme.of(context)
+                                            .alternate,
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                                if (_model.firstLoad == false)
+                                  Builder(
+                                    builder: (context) {
+                                      final searchResults = _model
+                                          .safeSearchResultsPage!
+                                          .toList()
+                                          .take(10)
+                                          .toList();
+                                      if (searchResults.isEmpty) {
+                                        return SearchEmptyResultWidget();
+                                      }
+
+                                      return ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        primary: false,
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: searchResults.length,
+                                        itemBuilder:
+                                            (context, searchResultsIndex) {
+                                          final searchResultsItem =
+                                              searchResults[searchResultsIndex];
+                                          return wrapWithModel(
+                                            model: _model.serviceCardModels1
+                                                .getModel(
+                                              searchResultsItem.id.toString(),
+                                              searchResultsIndex,
+                                            ),
+                                            updateCallback: () =>
+                                                safeSetState(() {}),
+                                            child: ServiceCardWidget(
+                                              key: Key(
+                                                'Keyabv_${searchResultsItem.id.toString()}',
+                                              ),
+                                              service: searchResultsItem,
+                                              navigate: () async {
+                                                FFAppState()
+                                                    .deleteActiveBookingDraft();
+                                                FFAppState()
+                                                        .activeBookingDraft =
+                                                    BookingDraftStruct
+                                                        .fromSerializableMap(
+                                                            jsonDecode(
+                                                                '{\"selectedAddons\":\"[]\",\"visit\":\"{\\\"arrivalType\\\":\\\"standard\\\"}\"}'));
+
+                                                FFAppState().activeService =
+                                                    ServicePackageStruct();
+                                                safeSetState(() {});
+                                                FFAppState().activeService =
+                                                    searchResultsItem;
+                                                FFAppState()
+                                                    .updateActiveBookingDraftStruct(
+                                                  (e) => e
+                                                    ..serviceId =
+                                                        searchResultsItem.id
+                                                    ..serviceName =
+                                                        searchResultsItem.name
+                                                    ..basePrice =
+                                                        searchResultsItem
+                                                            .basePrice
+                                                    ..configBanner =
+                                                        searchResultsItem
+                                                            .configBanner
+                                                    ..durationMinutes =
+                                                        searchResultsItem
+                                                            .durationMinutes
+                                                    ..address =
+                                                        AddressStructStruct(
+                                                      id: FFAppState()
+                                                          .selectedAddress
+                                                          .id,
+                                                      nameLabel: FFAppState()
+                                                          .selectedAddress
+                                                          .nameLabel,
+                                                      fullAddress: FFAppState()
+                                                          .selectedAddress
+                                                          .fullAddress,
+                                                      lat: FFAppState()
+                                                          .selectedAddress
+                                                          .lat,
+                                                      lng: FFAppState()
+                                                          .selectedAddress
+                                                          .lng,
+                                                      zipCode: 'M5S 1M4',
+                                                      city: 'Toronto',
+                                                      isDefault: true,
+                                                    )
+                                                    ..imageURL =
+                                                        searchResultsItem
+                                                            .imageUrl
+                                                    ..categoryId =
+                                                        ServiceCategoryStruct(
+                                                      id: searchResultsItem
+                                                          .categoryId,
+                                                      name: searchResultsItem
+                                                          .category,
+                                                      imageUrl:
+                                                          searchResultsItem
+                                                              .categoryImageUrl,
+                                                      slug: searchResultsItem
+                                                          .categorySlug,
+                                                      videoUrl:
+                                                          searchResultsItem
+                                                              .categoryVideoUrl,
+                                                      rating: searchResultsItem
+                                                          .categoryRating,
+                                                      bookingsCount:
+                                                          searchResultsItem
+                                                              .categoryBookingsCount,
+                                                      packageHeader:
+                                                          searchResultsItem
+                                                              .categoryPackageHeader,
+                                                      miniHeader:
+                                                          searchResultsItem
+                                                              .categoryMiniHeader,
+                                                    )
+                                                    ..kitchenDurationMinutes =
+                                                        searchResultsItem
+                                                            .kitchenDurationMinutes
+                                                    ..visit =
+                                                        VisitDetailsStruct(
+                                                      entryMethod:
+                                                          'meet_at_door',
+                                                    ),
+                                                );
+                                                safeSetState(() {});
+
+                                                context.pushNamed(
+                                                  AddToCartAnimationWidget
+                                                      .routeName,
+                                                  extra: <String, dynamic>{
+                                                    '__transition_info__':
+                                                        TransitionInfo(
+                                                      hasTransition: true,
+                                                      transitionType:
+                                                          PageTransitionType
+                                                              .fade,
+                                                    ),
+                                                  },
+                                                );
+                                              },
+                                              bottom: () async {
+                                                _model.supaRow =
+                                                    await ServicesTable()
+                                                        .queryRows(
+                                                  queryFn: (q) => q.eqOrNull(
+                                                    'id',
+                                                    searchResultsItem.id,
+                                                  ),
+                                                );
+                                                await showModalBottomSheet(
+                                                  isScrollControlled: true,
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  enableDrag: false,
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return GestureDetector(
+                                                      onTap: () {
+                                                        FocusScope.of(context)
+                                                            .unfocus();
+                                                        FocusManager.instance
+                                                            .primaryFocus
+                                                            ?.unfocus();
+                                                      },
+                                                      child: Padding(
+                                                        padding: MediaQuery
+                                                            .viewInsetsOf(
+                                                                context),
+                                                        child: Container(
+                                                          height:
+                                                              MediaQuery.sizeOf(
+                                                                          context)
+                                                                      .height *
+                                                                  0.95,
+                                                          child:
+                                                              WhatsIncludeBottomWidget(
+                                                            service: _model
+                                                                .supaRow!
+                                                                .firstOrNull!,
+                                                            navigate: () async {
+                                                              FFAppState()
+                                                                  .deleteActiveBookingDraft();
+                                                              FFAppState()
+                                                                      .activeBookingDraft =
+                                                                  BookingDraftStruct
+                                                                      .fromSerializableMap(
+                                                                          jsonDecode(
+                                                                              '{\"selectedAddons\":\"[]\",\"visit\":\"{\\\"arrivalType\\\":\\\"standard\\\"}\"}'));
+
+                                                              FFAppState()
+                                                                      .activeService =
+                                                                  ServicePackageStruct();
+                                                              safeSetState(
+                                                                  () {});
+                                                              FFAppState()
+                                                                      .activeService =
+                                                                  searchResultsItem;
+                                                              FFAppState()
+                                                                  .updateActiveBookingDraftStruct(
+                                                                (e) => e
+                                                                  ..serviceId =
+                                                                      searchResultsItem
+                                                                          .id
+                                                                  ..serviceName =
+                                                                      searchResultsItem
+                                                                          .name
+                                                                  ..basePrice =
+                                                                      searchResultsItem
+                                                                          .basePrice
+                                                                  ..configBanner =
+                                                                      searchResultsItem
+                                                                          .configBanner
+                                                                  ..durationMinutes =
+                                                                      searchResultsItem
+                                                                          .durationMinutes
+                                                                  ..address =
+                                                                      AddressStructStruct(
+                                                                    id: FFAppState()
+                                                                        .selectedAddress
+                                                                        .id,
+                                                                    nameLabel: FFAppState()
+                                                                        .selectedAddress
+                                                                        .nameLabel,
+                                                                    fullAddress:
+                                                                        FFAppState()
+                                                                            .selectedAddress
+                                                                            .fullAddress,
+                                                                    lat: FFAppState()
+                                                                        .selectedAddress
+                                                                        .lat,
+                                                                    lng: FFAppState()
+                                                                        .selectedAddress
+                                                                        .lng,
+                                                                    zipCode:
+                                                                        'M5S 1M4',
+                                                                    city:
+                                                                        'Toronto',
+                                                                    isDefault:
+                                                                        true,
+                                                                  )
+                                                                  ..imageURL =
+                                                                      searchResultsItem
+                                                                          .imageUrl
+                                                                  ..categoryId =
+                                                                      ServiceCategoryStruct(
+                                                                    id: searchResultsItem
+                                                                        .categoryId,
+                                                                    name: searchResultsItem
+                                                                        .category,
+                                                                    imageUrl:
+                                                                        searchResultsItem
+                                                                            .categoryImageUrl,
+                                                                    slug: searchResultsItem
+                                                                        .categorySlug,
+                                                                    videoUrl:
+                                                                        searchResultsItem
+                                                                            .categoryVideoUrl,
+                                                                    rating: searchResultsItem
+                                                                        .categoryRating,
+                                                                    bookingsCount:
+                                                                        searchResultsItem
+                                                                            .categoryBookingsCount,
+                                                                    packageHeader:
+                                                                        searchResultsItem
+                                                                            .categoryPackageHeader,
+                                                                    miniHeader:
+                                                                        searchResultsItem
+                                                                            .categoryMiniHeader,
+                                                                  )
+                                                                  ..kitchenDurationMinutes =
+                                                                      searchResultsItem
+                                                                          .kitchenDurationMinutes
+                                                                  ..visit =
+                                                                      VisitDetailsStruct(
+                                                                    entryMethod:
+                                                                        'meet_at_door',
+                                                                  ),
+                                                              );
+                                                              safeSetState(
+                                                                  () {});
+
+                                                              context.pushNamed(
+                                                                AddToCartAnimationWidget
+                                                                    .routeName,
+                                                                extra: <String,
+                                                                    dynamic>{
+                                                                  '__transition_info__':
+                                                                      TransitionInfo(
+                                                                    hasTransition:
+                                                                        true,
+                                                                    transitionType:
+                                                                        PageTransitionType
+                                                                            .fade,
+                                                                  ),
+                                                                },
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                ).then((value) =>
+                                                    safeSetState(() {}));
+
+                                                safeSetState(() {});
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                if (_model.firstLoad == true)
+                                  Builder(
+                                    builder: (context) {
+                                      final searchResults = _model
+                                          .safeSearchResults!
+                                          .toList()
+                                          .take(10)
+                                          .toList();
+                                      if (searchResults.isEmpty) {
+                                        return SearchEmptyResultWidget();
+                                      }
+
+                                      return ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        primary: false,
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: searchResults.length,
+                                        itemBuilder:
+                                            (context, searchResultsIndex) {
+                                          final searchResultsItem =
+                                              searchResults[searchResultsIndex];
+                                          return wrapWithModel(
+                                            model: _model.serviceCardModels2
+                                                .getModel(
+                                              searchResultsItem.id.toString(),
+                                              searchResultsIndex,
+                                            ),
+                                            updateCallback: () =>
+                                                safeSetState(() {}),
+                                            child: ServiceCardWidget(
+                                              key: Key(
+                                                'Keyqrx_${searchResultsItem.id.toString()}',
+                                              ),
+                                              service: searchResultsItem,
+                                              navigate: () async {
+                                                FFAppState()
+                                                    .deleteActiveBookingDraft();
+                                                FFAppState()
+                                                        .activeBookingDraft =
+                                                    BookingDraftStruct
+                                                        .fromSerializableMap(
+                                                            jsonDecode(
+                                                                '{\"selectedAddons\":\"[]\",\"visit\":\"{\\\"arrivalType\\\":\\\"standard\\\"}\"}'));
+
+                                                FFAppState().activeService =
+                                                    ServicePackageStruct();
+                                                safeSetState(() {});
+                                                FFAppState().activeService =
+                                                    searchResultsItem;
+                                                FFAppState()
+                                                    .updateActiveBookingDraftStruct(
+                                                  (e) => e
+                                                    ..serviceId =
+                                                        searchResultsItem.id
+                                                    ..serviceName =
+                                                        searchResultsItem.name
+                                                    ..basePrice =
+                                                        searchResultsItem
+                                                            .basePrice
+                                                    ..configBanner =
+                                                        searchResultsItem
+                                                            .configBanner
+                                                    ..durationMinutes =
+                                                        searchResultsItem
+                                                            .durationMinutes
+                                                    ..address =
+                                                        AddressStructStruct(
+                                                      id: FFAppState()
+                                                          .selectedAddress
+                                                          .id,
+                                                      nameLabel: FFAppState()
+                                                          .selectedAddress
+                                                          .nameLabel,
+                                                      fullAddress: FFAppState()
+                                                          .selectedAddress
+                                                          .fullAddress,
+                                                      lat: FFAppState()
+                                                          .selectedAddress
+                                                          .lat,
+                                                      lng: FFAppState()
+                                                          .selectedAddress
+                                                          .lng,
+                                                      zipCode: 'M5S 1M4',
+                                                      city: 'Toronto',
+                                                      isDefault: true,
+                                                    )
+                                                    ..imageURL =
+                                                        searchResultsItem
+                                                            .imageUrl
+                                                    ..categoryId =
+                                                        ServiceCategoryStruct(
+                                                      id: searchResultsItem
+                                                          .categoryId,
+                                                      name: searchResultsItem
+                                                          .category,
+                                                      imageUrl:
+                                                          searchResultsItem
+                                                              .categoryImageUrl,
+                                                      slug: searchResultsItem
+                                                          .categorySlug,
+                                                      videoUrl:
+                                                          searchResultsItem
+                                                              .categoryVideoUrl,
+                                                      rating: searchResultsItem
+                                                          .categoryRating,
+                                                      bookingsCount:
+                                                          searchResultsItem
+                                                              .categoryBookingsCount,
+                                                      packageHeader:
+                                                          searchResultsItem
+                                                              .categoryPackageHeader,
+                                                      miniHeader:
+                                                          searchResultsItem
+                                                              .categoryMiniHeader,
+                                                    )
+                                                    ..kitchenDurationMinutes =
+                                                        searchResultsItem
+                                                            .kitchenDurationMinutes,
+                                                );
+                                                safeSetState(() {});
+
+                                                context.pushNamed(
+                                                  AddToCartAnimationWidget
+                                                      .routeName,
+                                                  extra: <String, dynamic>{
+                                                    '__transition_info__':
+                                                        TransitionInfo(
+                                                      hasTransition: true,
+                                                      transitionType:
+                                                          PageTransitionType
+                                                              .fade,
+                                                    ),
+                                                  },
+                                                );
+                                              },
+                                              bottom: () async {
+                                                _model.supaRow2 =
+                                                    await ServicesTable()
+                                                        .queryRows(
+                                                  queryFn: (q) => q.eqOrNull(
+                                                    'id',
+                                                    searchResultsItem.id,
+                                                  ),
+                                                );
+                                                await showModalBottomSheet(
+                                                  isScrollControlled: true,
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  enableDrag: false,
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return GestureDetector(
+                                                      onTap: () {
+                                                        FocusScope.of(context)
+                                                            .unfocus();
+                                                        FocusManager.instance
+                                                            .primaryFocus
+                                                            ?.unfocus();
+                                                      },
+                                                      child: Padding(
+                                                        padding: MediaQuery
+                                                            .viewInsetsOf(
+                                                                context),
+                                                        child: Container(
+                                                          height:
+                                                              MediaQuery.sizeOf(
+                                                                          context)
+                                                                      .height *
+                                                                  0.95,
+                                                          child:
+                                                              WhatsIncludeBottomWidget(
+                                                            service: _model
+                                                                .supaRow2!
+                                                                .firstOrNull!,
+                                                            navigate: () async {
+                                                              FFAppState()
+                                                                  .deleteActiveBookingDraft();
+                                                              FFAppState()
+                                                                      .activeBookingDraft =
+                                                                  BookingDraftStruct
+                                                                      .fromSerializableMap(
+                                                                          jsonDecode(
+                                                                              '{\"selectedAddons\":\"[]\",\"visit\":\"{\\\"arrivalType\\\":\\\"standard\\\"}\"}'));
+
+                                                              FFAppState()
+                                                                      .activeService =
+                                                                  ServicePackageStruct();
+                                                              safeSetState(
+                                                                  () {});
+                                                              FFAppState()
+                                                                      .activeService =
+                                                                  searchResultsItem;
+                                                              FFAppState()
+                                                                  .updateActiveBookingDraftStruct(
+                                                                (e) => e
+                                                                  ..serviceId =
+                                                                      searchResultsItem
+                                                                          .id
+                                                                  ..serviceName =
+                                                                      searchResultsItem
+                                                                          .name
+                                                                  ..basePrice =
+                                                                      searchResultsItem
+                                                                          .basePrice
+                                                                  ..configBanner =
+                                                                      searchResultsItem
+                                                                          .configBanner
+                                                                  ..durationMinutes =
+                                                                      searchResultsItem
+                                                                          .durationMinutes
+                                                                  ..address =
+                                                                      AddressStructStruct(
+                                                                    id: FFAppState()
+                                                                        .selectedAddress
+                                                                        .id,
+                                                                    nameLabel: FFAppState()
+                                                                        .selectedAddress
+                                                                        .nameLabel,
+                                                                    fullAddress:
+                                                                        FFAppState()
+                                                                            .selectedAddress
+                                                                            .fullAddress,
+                                                                    lat: FFAppState()
+                                                                        .selectedAddress
+                                                                        .lat,
+                                                                    lng: FFAppState()
+                                                                        .selectedAddress
+                                                                        .lng,
+                                                                    zipCode:
+                                                                        'M5S 1M4',
+                                                                    city:
+                                                                        'Toronto',
+                                                                    isDefault:
+                                                                        true,
+                                                                  )
+                                                                  ..imageURL =
+                                                                      searchResultsItem
+                                                                          .imageUrl
+                                                                  ..categoryId =
+                                                                      ServiceCategoryStruct(
+                                                                    id: searchResultsItem
+                                                                        .categoryId,
+                                                                    name: searchResultsItem
+                                                                        .category,
+                                                                    imageUrl:
+                                                                        searchResultsItem
+                                                                            .categoryImageUrl,
+                                                                    slug: searchResultsItem
+                                                                        .categorySlug,
+                                                                    videoUrl:
+                                                                        searchResultsItem
+                                                                            .categoryVideoUrl,
+                                                                    rating: searchResultsItem
+                                                                        .categoryRating,
+                                                                    bookingsCount:
+                                                                        searchResultsItem
+                                                                            .categoryBookingsCount,
+                                                                    packageHeader:
+                                                                        searchResultsItem
+                                                                            .categoryPackageHeader,
+                                                                    miniHeader:
+                                                                        searchResultsItem
+                                                                            .categoryMiniHeader,
+                                                                  )
+                                                                  ..kitchenDurationMinutes =
+                                                                      searchResultsItem
+                                                                          .kitchenDurationMinutes,
+                                                              );
+                                                              safeSetState(
+                                                                  () {});
+
+                                                              context.pushNamed(
+                                                                AddToCartAnimationWidget
+                                                                    .routeName,
+                                                                extra: <String,
+                                                                    dynamic>{
+                                                                  '__transition_info__':
+                                                                      TransitionInfo(
+                                                                    hasTransition:
+                                                                        true,
+                                                                    transitionType:
+                                                                        PageTransitionType
+                                                                            .fade,
+                                                                  ),
+                                                                },
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                ).then((value) =>
+                                                    safeSetState(() {}));
+
+                                                safeSetState(() {});
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
                               ]
                                   .addToStart(SizedBox(height: 16.0))
                                   .addToEnd(SizedBox(height: 160.0)),
                             ),
                           ),
                         ),
-                      ],
+                      ]
+                          .addToStart(SizedBox(
+                              height: valueOrDefault<double>(
+                            isWeb ? 16.0 : 44.0,
+                            44.0,
+                          )))
+                          .addToEnd(SizedBox(height: 112.0)),
                     ),
                   ),
                 ),

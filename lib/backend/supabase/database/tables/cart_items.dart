@@ -14,8 +14,8 @@ class CartItemsRow extends SupabaseDataRow {
   @override
   SupabaseTable get table => CartItemsTable();
 
-  String get id => getField<String>('id')!;
-  set id(String value) => setField<String>('id', value);
+  String? get id => getField<String>('id');
+  set id(String? value) => setField<String>('id', value);
 
   String get cartId => getField<String>('cart_id')!;
   set cartId(String value) => setField<String>('cart_id', value);
@@ -23,12 +23,12 @@ class CartItemsRow extends SupabaseDataRow {
   int get serviceId => getField<int>('service_id')!;
   set serviceId(int value) => setField<int>('service_id', value);
 
-  int get quantity => getField<int>('quantity')!;
-  set quantity(int value) => setField<int>('quantity', value);
+  int? get quantity => getField<int>('quantity');
+  set quantity(int? value) => setField<int>('quantity', value);
 
   dynamic get metadata => getField<dynamic>('metadata');
   set metadata(dynamic value) => setField<dynamic>('metadata', value);
 
-  DateTime get createdAt => getField<DateTime>('created_at')!;
-  set createdAt(DateTime value) => setField<DateTime>('created_at', value);
+  DateTime? get createdAt => getField<DateTime>('created_at');
+  set createdAt(DateTime? value) => setField<DateTime>('created_at', value);
 }

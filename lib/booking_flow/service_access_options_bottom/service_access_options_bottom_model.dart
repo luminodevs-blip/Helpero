@@ -7,7 +7,9 @@ class ServiceAccessOptionsBottomModel
     extends FlutterFlowModel<ServiceAccessOptionsBottomWidget> {
   ///  Local state fields for this component.
 
-  int activeChoise = 1;
+  String activeChoise = 'meet_at_door';
+
+  String? entryNotes;
 
   ///  State fields for stateful widgets in this component.
 

@@ -15,8 +15,12 @@ class CheckoutModel extends FlutterFlowModel<CheckoutWidget> {
 
   bool showDescription = false;
 
+  String paymentMethod = 'card';
+
   ///  State fields for stateful widgets in this page.
 
+  // Stores action output result for [Bottom Sheet - ChoosePaymentMethod] action in Container widget.
+  String? payMethodOutput;
   // State field(s) for Timer widget.
   final timerInitialTimeMs = 600000;
   int timerMilliseconds = 600000;
@@ -30,6 +34,8 @@ class CheckoutModel extends FlutterFlowModel<CheckoutWidget> {
 
   // Stores action output result for [Backend Call - API (ProcessPayment)] action in Button widget.
   ApiCallResponse? paymentResult7;
+  // Stores action output result for [Custom Action - processStripePayment] action in Button widget.
+  bool? processStripePayment;
 
   @override
   void initState(BuildContext context) {}

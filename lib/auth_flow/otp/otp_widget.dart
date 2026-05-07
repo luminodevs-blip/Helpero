@@ -7,6 +7,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
+import 'package:flutter/services.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:flutter/material.dart';
@@ -82,8 +83,14 @@ class _OtpWidgetState extends State<OtpWidget> {
                 Align(
                   alignment: AlignmentDirectional(-1.0, 0.0),
                   child: Padding(
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(8.0, 48.0, 0.0, 34.0),
+                    padding: EdgeInsetsDirectional.fromSTEB(
+                        8.0,
+                        valueOrDefault<double>(
+                          isWeb ? 24.0 : 44.0,
+                          44.0,
+                        ),
+                        0.0,
+                        34.0),
                     child: FlutterFlowIconButton(
                       borderRadius: 10.0,
                       buttonSize: 44.0,
@@ -243,6 +250,9 @@ class _OtpWidgetState extends State<OtpWidget> {
                             obscureText: false,
                             hintCharacter: '-',
                             keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
                             pinTheme: PinTheme(
                               fieldHeight: 50.0,
                               fieldWidth: 50.0,

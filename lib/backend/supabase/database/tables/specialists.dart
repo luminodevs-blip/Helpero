@@ -46,4 +46,29 @@ class SpecialistsRow extends SupabaseDataRow {
 
   String? get radarStatus => getField<String>('radar_status');
   set radarStatus(String? value) => setField<String>('radar_status', value);
+
+  String? get vehicleModel => getField<String>('vehicle_model');
+  set vehicleModel(String? value) => setField<String>('vehicle_model', value);
+
+  String? get vehiclePlateNumber => getField<String>('vehicle_plate_number');
+  set vehiclePlateNumber(String? value) =>
+      setField<String>('vehicle_plate_number', value);
+
+  String? get vehicleColor => getField<String>('vehicle_color');
+  set vehicleColor(String? value) => setField<String>('vehicle_color', value);
+
+  double? get homeLat => getField<double>('home_lat');
+  set homeLat(double? value) => setField<double>('home_lat', value);
+
+  double? get homeLng => getField<double>('home_lng');
+  set homeLng(double? value) => setField<double>('home_lng', value);
+
+  bool? get isActive => getField<bool>('is_active');
+  set isActive(bool? value) => setField<bool>('is_active', value);
+
+  int? get reviewsCount => getField<int>('reviews_count');
+  set reviewsCount(int? value) => setField<int>('reviews_count', value);
+
+  String? get title => getField<String>('title');
+  set title(String? value) => setField<String>('title', value);
 }

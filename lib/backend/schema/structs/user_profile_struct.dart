@@ -17,7 +17,9 @@ class UserProfileStruct extends BaseStruct {
     String? avatarUrl,
     String? phoneNumber,
     List<AddressStructStruct>? savedAddresses,
-    int? currentCityId,
+    int? currentHouseId,
+    DateTime? dateOfBirth,
+    UserVoucherStruct? vouchersList,
   })  : _id = id,
         _role = role,
         _email = email,
@@ -27,7 +29,9 @@ class UserProfileStruct extends BaseStruct {
         _avatarUrl = avatarUrl,
         _phoneNumber = phoneNumber,
         _savedAddresses = savedAddresses,
-        _currentCityId = currentCityId;
+        _currentHouseId = currentHouseId,
+        _dateOfBirth = dateOfBirth,
+        _vouchersList = vouchersList;
 
   // "id" field.
   String? _id;
@@ -96,15 +100,33 @@ class UserProfileStruct extends BaseStruct {
 
   bool hasSavedAddresses() => _savedAddresses != null;
 
-  // "currentCityId" field.
-  int? _currentCityId;
-  int get currentCityId => _currentCityId ?? 0;
-  set currentCityId(int? val) => _currentCityId = val;
+  // "currentHouseId" field.
+  int? _currentHouseId;
+  int get currentHouseId => _currentHouseId ?? 0;
+  set currentHouseId(int? val) => _currentHouseId = val;
 
-  void incrementCurrentCityId(int amount) =>
-      currentCityId = currentCityId + amount;
+  void incrementCurrentHouseId(int amount) =>
+      currentHouseId = currentHouseId + amount;
 
-  bool hasCurrentCityId() => _currentCityId != null;
+  bool hasCurrentHouseId() => _currentHouseId != null;
+
+  // "DateOfBirth" field.
+  DateTime? _dateOfBirth;
+  DateTime? get dateOfBirth => _dateOfBirth;
+  set dateOfBirth(DateTime? val) => _dateOfBirth = val;
+
+  bool hasDateOfBirth() => _dateOfBirth != null;
+
+  // "VouchersList" field.
+  UserVoucherStruct? _vouchersList;
+  UserVoucherStruct get vouchersList => _vouchersList ?? UserVoucherStruct();
+  set vouchersList(UserVoucherStruct? val) => _vouchersList = val;
+
+  void updateVouchersList(Function(UserVoucherStruct) updateFn) {
+    updateFn(_vouchersList ??= UserVoucherStruct());
+  }
+
+  bool hasVouchersList() => _vouchersList != null;
 
   static UserProfileStruct fromMap(Map<String, dynamic> data) =>
       UserProfileStruct(
@@ -120,7 +142,11 @@ class UserProfileStruct extends BaseStruct {
           data['savedAddresses'],
           AddressStructStruct.fromMap,
         ),
-        currentCityId: castToType<int>(data['currentCityId']),
+        currentHouseId: castToType<int>(data['currentHouseId']),
+        dateOfBirth: data['DateOfBirth'] as DateTime?,
+        vouchersList: data['VouchersList'] is UserVoucherStruct
+            ? data['VouchersList']
+            : UserVoucherStruct.maybeFromMap(data['VouchersList']),
       );
 
   static UserProfileStruct? maybeFromMap(dynamic data) => data is Map
@@ -137,7 +163,9 @@ class UserProfileStruct extends BaseStruct {
         'avatarUrl': _avatarUrl,
         'phoneNumber': _phoneNumber,
         'savedAddresses': _savedAddresses?.map((e) => e.toMap()).toList(),
-        'currentCityId': _currentCityId,
+        'currentHouseId': _currentHouseId,
+        'DateOfBirth': _dateOfBirth,
+        'VouchersList': _vouchersList?.toMap(),
       }.withoutNulls;
 
   @override
@@ -179,9 +207,17 @@ class UserProfileStruct extends BaseStruct {
           ParamType.DataStruct,
           isList: true,
         ),
-        'currentCityId': serializeParam(
-          _currentCityId,
+        'currentHouseId': serializeParam(
+          _currentHouseId,
           ParamType.int,
+        ),
+        'DateOfBirth': serializeParam(
+          _dateOfBirth,
+          ParamType.DateTime,
+        ),
+        'VouchersList': serializeParam(
+          _vouchersList,
+          ParamType.DataStruct,
         ),
       }.withoutNulls;
 
@@ -233,10 +269,21 @@ class UserProfileStruct extends BaseStruct {
           true,
           structBuilder: AddressStructStruct.fromSerializableMap,
         ),
-        currentCityId: deserializeParam(
-          data['currentCityId'],
+        currentHouseId: deserializeParam(
+          data['currentHouseId'],
           ParamType.int,
           false,
+        ),
+        dateOfBirth: deserializeParam(
+          data['DateOfBirth'],
+          ParamType.DateTime,
+          false,
+        ),
+        vouchersList: deserializeStructParam(
+          data['VouchersList'],
+          ParamType.DataStruct,
+          false,
+          structBuilder: UserVoucherStruct.fromSerializableMap,
         ),
       );
 
@@ -256,7 +303,9 @@ class UserProfileStruct extends BaseStruct {
         avatarUrl == other.avatarUrl &&
         phoneNumber == other.phoneNumber &&
         listEquality.equals(savedAddresses, other.savedAddresses) &&
-        currentCityId == other.currentCityId;
+        currentHouseId == other.currentHouseId &&
+        dateOfBirth == other.dateOfBirth &&
+        vouchersList == other.vouchersList;
   }
 
   @override
@@ -270,7 +319,9 @@ class UserProfileStruct extends BaseStruct {
         avatarUrl,
         phoneNumber,
         savedAddresses,
-        currentCityId
+        currentHouseId,
+        dateOfBirth,
+        vouchersList
       ]);
 }
 
@@ -283,7 +334,9 @@ UserProfileStruct createUserProfileStruct({
   String? lastName,
   String? avatarUrl,
   String? phoneNumber,
-  int? currentCityId,
+  int? currentHouseId,
+  DateTime? dateOfBirth,
+  UserVoucherStruct? vouchersList,
 }) =>
     UserProfileStruct(
       id: id,
@@ -294,5 +347,7 @@ UserProfileStruct createUserProfileStruct({
       lastName: lastName,
       avatarUrl: avatarUrl,
       phoneNumber: phoneNumber,
-      currentCityId: currentCityId,
+      currentHouseId: currentHouseId,
+      dateOfBirth: dateOfBirth,
+      vouchersList: vouchersList ?? UserVoucherStruct(),
     );

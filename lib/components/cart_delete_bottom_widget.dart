@@ -1,5 +1,7 @@
+import '/backend/schema/structs/index.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'cart_delete_bottom_model.dart';
@@ -46,8 +48,6 @@ class _CartDeleteBottomWidgetState extends State<CartDeleteBottomWidget> {
         decoration: BoxDecoration(
           color: FlutterFlowTheme.of(context).secondaryBackground,
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(0.0),
-            bottomRight: Radius.circular(0.0),
             topLeft: Radius.circular(10.0),
             topRight: Radius.circular(10.0),
           ),
@@ -62,7 +62,24 @@ class _CartDeleteBottomWidgetState extends State<CartDeleteBottomWidget> {
               hoverColor: Colors.transparent,
               highlightColor: Colors.transparent,
               onTap: () async {
+                FFAppState().deleteActiveBookingDraft();
+                FFAppState().activeBookingDraft =
+                    BookingDraftStruct.fromSerializableMap(jsonDecode(
+                        '{\"selectedAddons\":\"[]\",\"visit\":\"{\\\"arrivalType\\\":\\\"standard\\\"}\"}'));
+
+                safeSetState(() {});
                 Navigator.pop(context);
+
+                context.goNamed(
+                  GeneralWidget.routeName,
+                  extra: <String, dynamic>{
+                    '__transition_info__': TransitionInfo(
+                      hasTransition: true,
+                      transitionType: PageTransitionType.fade,
+                      duration: Duration(milliseconds: 0),
+                    ),
+                  },
+                );
               },
               child: Row(
                 mainAxisSize: MainAxisSize.max,
