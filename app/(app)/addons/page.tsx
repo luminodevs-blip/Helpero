@@ -364,8 +364,8 @@ export default function AddonsPage() {
               
               <div className="flex items-center justify-between mt-2">
                 <div className="flex flex-col">
-                  <span className="font-sans text-[14px] font-normal text-[#57636C]">Total</span>
-                  <span className="font-outfit text-[22px] font-bold text-zinc-900 leading-tight">
+                  <span className="font-sans text-[16px] font-normal text-[#57636C]">Total</span>
+                  <span className="font-outfit text-[18px] font-semibold text-zinc-900 leading-tight">
                     ${activeBookingDraft.totalPrice?.toFixed(2)}
                   </span>
                 </div>
@@ -377,7 +377,7 @@ export default function AddonsPage() {
                     }
                     setSelectedAddonDetails(null);
                   }}
-                  className="w-[180px] h-[52px] rounded-[10px] bg-[#14181B] text-white font-sans text-[16px] font-semibold hover:bg-zinc-800 transition-colors shadow-md"
+                  className="w-[180px] h-[52px] rounded-[10px] bg-[#14181B] text-white font-sans text-[18px] font-semibold hover:bg-zinc-800 transition-colors shadow-md"
                 >
                   Add to cart
                 </button>
