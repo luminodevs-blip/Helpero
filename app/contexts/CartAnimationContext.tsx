@@ -15,12 +15,21 @@ const CartAnimationContext = createContext<CartAnimationContextType | undefined>
 
 export function CartAnimationProvider({ children }: { children: ReactNode }) {
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isFadingOut, setIsFadingOut] = useState(false);
 
   const triggerAnimation = (onComplete: () => void) => {
     setIsAnimating(true);
+    setIsFadingOut(false);
+    
     setTimeout(() => {
-      setIsAnimating(false);
-      onComplete();
+      setIsFadingOut(true);
+      onComplete(); // This triggers navigation/state change behind the overlay
+      
+      // Remove overlay completely after fade out duration
+      setTimeout(() => {
+        setIsAnimating(false);
+        setIsFadingOut(false);
+      }, 500);
     }, 1200);
   };
 
@@ -31,8 +40,8 @@ export function CartAnimationProvider({ children }: { children: ReactNode }) {
       {/* Animation Overlay */}
       {isAnimating && (
         <div 
-          className="fixed inset-0 z-[99999] bg-primary flex items-center justify-center pointer-events-none"
-          style={{ animation: "fadeOverlay 0.3s ease-out forwards" }}
+          className={`fixed inset-0 z-[99999] bg-primary flex items-center justify-center pointer-events-none transition-opacity duration-500 ${isFadingOut ? 'opacity-0' : 'opacity-100'}`}
+          style={!isFadingOut ? { animation: "fadeOverlay 0.3s ease-out forwards" } : undefined}
         >
           <div className="w-[300px] h-[300px] flex items-center justify-center">
             <Lottie 
