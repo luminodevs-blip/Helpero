@@ -185,7 +185,7 @@ export default function AddonsPage() {
       {/* Progress Bar & Footer Sticky Container */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white max-w-md mx-auto">
         {/* Progress Bar */}
-        <div className="w-full bg-zinc-100 h-[3px]">
+        <div className="w-full bg-zinc-100 h-[6px]">
           <div className="bg-[#7B82F4] h-full transition-all duration-300" style={{ width: "66%" }} />
         </div>
         
