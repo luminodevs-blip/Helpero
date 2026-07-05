@@ -153,10 +153,12 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
               <div className="w-10 h-1 bg-zinc-200 rounded-full mx-auto mb-4" />
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-outfit text-xl font-semibold text-zinc-900 mb-1">{service.name}</h3>
-                  <p className="text-[14px] text-zinc-500 font-medium">
-                    Starts at ${service.base_price?.toFixed(2) ?? "0.00"} 
-                    {service.estimated_duration ? ` • ${formatDuration(service.estimated_duration)}` : ''}
+                  <h3 className="font-outfit text-[20px] font-semibold text-zinc-900 mb-1">{service.name}</h3>
+                  <p className="flex items-center gap-1">
+                    <span className="text-[14px] font-medium text-zinc-900">Starts at ${service.base_price?.toFixed(2) ?? "0.00"}</span>
+                    {service.estimated_duration && (
+                      <span className="text-[14px] font-normal text-zinc-500"> • {formatDuration(service.estimated_duration)}</span>
+                    )}
                   </p>
                 </div>
                 <button onClick={() => setIsExpanded(false)} className="h-8 w-8 bg-zinc-100 rounded-full flex items-center justify-center text-zinc-500 hover:bg-zinc-200 transition-colors">
@@ -172,7 +174,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
               
               {/* 1. What is included */}
               <div>
-                <h4 className="font-outfit text-[16px] font-semibold text-zinc-900 mb-3">What is included:</h4>
+                <h4 className="font-outfit text-[17px] font-medium text-zinc-900 mb-3">What is included:</h4>
                 <div className="grid grid-cols-3 gap-2 pb-1">
                   {(service.included_items?.length ? service.included_items : [
                     { name: "Dust Surfaces", image: "https://images.unsplash.com/photo-1558402529-d2638a7023e9?w=200&h=200&fit=crop" },
@@ -193,7 +195,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
                     </div>
                   ))}
                 </div>
-                <p className="text-[12px] text-zinc-500 mt-3">* will be cleaned basis the selection</p>
+                <p className="text-[14px] font-normal text-zinc-500 mt-3">* will be cleaned basis the selection</p>
               </div>
 
               <div className="h-[8px] bg-[#f5f7fb] w-[calc(100%+40px)] -mx-5 shrink-0" />
@@ -201,10 +203,10 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
               {/* 2. What is excluded */}
               {service.excluded_items && service.excluded_items.length > 0 && (
                 <div>
-                  <h4 className="font-outfit text-[16px] font-semibold text-zinc-900 mb-4">What is excluded?</h4>
+                  <h4 className="font-outfit text-[17px] font-medium text-zinc-900 mb-4">What is excluded?</h4>
                   <ul className="space-y-3">
                     {service.excluded_items.map((ex: string, idx: number) => (
-                      <li key={idx} className="flex items-start gap-2.5 text-[14.5px] font-light text-zinc-500 leading-snug">
+                      <li key={idx} className="flex items-start gap-2.5 text-[15px] font-normal text-zinc-500 leading-snug">
                         <X className="h-4 w-4 text-red-400 mt-0.5 shrink-0" strokeWidth={2.5} />
                         {ex}
                       </li>
@@ -218,7 +220,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
               {/* 3. See the difference yourself */}
               {service.before_after_images && service.before_after_images.length > 0 && (
                 <div>
-                  <h4 className="font-outfit text-[16px] font-semibold text-zinc-900 mb-4">See the difference yourself</h4>
+                  <h4 className="font-outfit text-[17px] font-medium text-zinc-900 mb-4">See the difference yourself</h4>
                   <div className="grid grid-cols-2 gap-3">
                     {service.before_after_images.slice(0, 4).map((img: string, idx: number) => (
                       <div key={idx} className="h-[140px] rounded-xl overflow-hidden bg-zinc-100">
@@ -232,7 +234,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
               {/* 4. Our cleaning equipments */}
               {(!service.equipment || service.equipment.length === 0) && (
                 <div>
-                  <h4 className="font-outfit text-[16px] font-semibold text-zinc-900 mb-4">Our cleaning equipments</h4>
+                  <h4 className="font-outfit text-[17px] font-medium text-zinc-900 mb-4">Our cleaning equipments</h4>
                   <div className="grid grid-cols-2 gap-4">
                     {[1, 2].map((_, idx) => (
                       <div key={idx} className="flex flex-col items-center">
@@ -247,7 +249,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
               )}
               {service.equipment && service.equipment.length > 0 && (
                 <div>
-                  <h4 className="font-outfit text-[16px] font-semibold text-zinc-900 mb-4">Our cleaning equipments</h4>
+                  <h4 className="font-outfit text-[17px] font-medium text-zinc-900 mb-4">Our cleaning equipments</h4>
                   <div className="grid grid-cols-2 gap-4">
                     {service.equipment.map((eq: any, idx: number) => (
                       <div key={idx} className="flex flex-col items-center">
@@ -266,7 +268,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
               {/* 5. What we will need from you */}
               {service.requirements && service.requirements.length > 0 && (
                 <div>
-                  <h4 className="font-outfit text-[16px] font-semibold text-zinc-900 mb-4">What we will need from you</h4>
+                  <h4 className="font-outfit text-[17px] font-medium text-zinc-900 mb-4">What we will need from you</h4>
                   <div className="grid grid-cols-3 gap-3">
                     {service.requirements.map((req: any, idx: number) => (
                       <div key={idx} className="bg-[#f8f9fa] rounded-xl p-3 aspect-square flex flex-col justify-center border border-zinc-50">
@@ -285,7 +287,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
               {/* 6. Certified Experts */}
               {service.cleaner_bullets && service.cleaner_bullets.length > 0 && (
                 <div>
-                  <h4 className="font-outfit text-[16px] font-semibold text-zinc-900 mb-4">Certified Experts</h4>
+                  <h4 className="font-outfit text-[17px] font-medium text-zinc-900 mb-4">Certified Experts</h4>
                   <div className="flex justify-between gap-4">
                     <ul className="space-y-3 flex-1">
                       {service.cleaner_bullets.map((bullet: string, idx: number) => (
