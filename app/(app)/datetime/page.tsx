@@ -294,7 +294,7 @@ export default function DateTimePage() {
           
           <div 
             onClick={() => setIsAddressSelectorOpen(true)}
-            className="w-full h-[120px] bg-zinc-100 rounded-[14px] relative overflow-hidden flex items-center justify-center border border-zinc-200 cursor-pointer"
+            className="w-full h-[120px] bg-zinc-100 rounded-[10px] relative overflow-hidden flex items-center justify-center border border-zinc-200 cursor-pointer"
           >
             {selectedAddress?.lat && selectedAddress?.lng ? (
               <iframe
