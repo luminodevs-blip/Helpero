@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 import { Star, Sparkles, ChevronDown, ChevronUp, X, Key, Zap, Droplet, DoorOpen, ParkingCircle, Box, Square, Package, Maximize, Wrench, Wifi, AppWindow, Leaf } from "lucide-react";
 
 const iconMap: Record<string, any> = {
@@ -29,6 +30,60 @@ interface ServiceCardProps {
 export default function ServiceCard({ service, onClick, className = "" }: ServiceCardProps) {
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [activeFilter, setActiveFilter] = useState("Most detailed");
+
+  useEffect(() => {
+    if (isExpanded) {
+      const fetchReviews = async () => {
+        setReviewsLoading(true);
+        const { data, error } = await supabase
+          .from("reviews")
+          .select("*, profiles(first_name, last_name)")
+          .eq("service_id", service.id)
+          .order("created_at", { ascending: false });
+        
+        if (data) {
+          setReviews(data);
+        }
+        setReviewsLoading(false);
+      };
+      fetchReviews();
+    }
+  }, [isExpanded, service.id]);
+
+  // Derived state for reviews
+  const totalReviews = reviews.length || service.reviews_count || 1240;
+  const ratingCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+  if (reviews.length > 0) {
+    reviews.forEach((r) => {
+      if (r.rating >= 1 && r.rating <= 5) {
+        ratingCounts[r.rating as 1 | 2 | 3 | 4 | 5]++;
+      }
+    });
+  } else {
+    // Mock for when there are no reviews yet but we want to show the UI
+    ratingCounts[5] = Math.floor(totalReviews * 0.7);
+    ratingCounts[4] = Math.floor(totalReviews * 0.2);
+    ratingCounts[3] = Math.floor(totalReviews * 0.05);
+    ratingCounts[2] = Math.floor(totalReviews * 0.01);
+    ratingCounts[1] = totalReviews - ratingCounts[5] - ratingCounts[4] - ratingCounts[3] - ratingCounts[2];
+  }
+
+  const progressBars = [5, 4, 3, 2, 1].map((stars) => {
+    const count = ratingCounts[stars as 1 | 2 | 3 | 4 | 5];
+    const percent = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
+    return { stars, percent, count };
+  });
+
+  const displayReviews = [...reviews].sort((a, b) => {
+    if (activeFilter === "Most detailed") {
+      return (b.comment?.length || 0) - (a.comment?.length || 0);
+    }
+    // "In my area" / "Frequent users" fallback to date sorting for now
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
 
   // Format HH:MM:SS to "X hrs Y mins" or "Xh Y min"
   const formatDuration = (timeStr: string) => {
@@ -325,81 +380,95 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
               <div className="h-[8px] bg-[#f5f7fb] w-[calc(100%+40px)] -mx-5 shrink-0" />
 
               {/* 7. Reviews Summary & List */}
-              <div>
-                <div className="mb-4">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <Star className="h-[22px] w-[22px] fill-primary text-primary" />
-                    <span className="font-outfit text-[22px] font-bold text-zinc-900 leading-none">
-                      {(service.rating ?? 4.7).toFixed(2)}
-                    </span>
+              <div className="min-h-[100px]">
+                {reviewsLoading ? (
+                  <div className="flex justify-center items-center py-10">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                   </div>
-                  <p className="text-[13px] text-zinc-600">{Intl.NumberFormat('en-US').format(service.reviews_count ?? 1240)} reviews</p>
-                </div>
-                
-                {/* Progress bars */}
-                <div className="space-y-[12px] mb-6 pr-4">
-                  {[
-                    { stars: 5, percent: 70, count: 770 },
-                    { stars: 4, percent: 20, count: 165 },
-                    { stars: 3, percent: 5, count: 48 },
-                    { stars: 2, percent: 1, count: 12 },
-                    { stars: 1, percent: 0, count: 5 },
-                  ].map(row => (
-                    <div key={row.stars} className="flex items-center gap-3">
-                      <div className="flex items-center gap-1.5 w-6 shrink-0">
-                        <Star className="h-[14px] w-[14px] fill-primary text-primary shrink-0" />
-                        <span className="text-[14px] font-bold text-zinc-900 leading-none">{row.stars}</span>
+                ) : (
+                  <>
+                    <div className="mb-4">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <Star className="h-[22px] w-[22px] fill-primary text-primary" />
+                        <span className="font-outfit text-[22px] font-bold text-zinc-900 leading-none">
+                          {(service.rating ?? 4.7).toFixed(2)}
+                        </span>
                       </div>
-                      <div className="flex-1 h-[5px] bg-zinc-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-primary rounded-full" style={{ width: `${row.percent}%` }} />
-                      </div>
-                      <div className="w-8 text-right text-[13px] text-zinc-600 shrink-0">{row.count}</div>
+                      <p className="text-[13px] text-zinc-600">{Intl.NumberFormat('en-US').format(totalReviews)} reviews</p>
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="h-[8px] bg-[#f5f7fb] w-[calc(100%+40px)] -mx-5 shrink-0" />
-
-              {/* 8. All reviews */}
-              <div>
-                <div className="mt-1 mb-4 flex justify-between items-center">
-                  <h4 className="font-outfit text-[17px] font-medium text-zinc-900">All reviews</h4>
-                  <button className="text-[14px] text-primary font-medium">Filter</button>
-                </div>
-
-                {/* Filter chips */}
-                <div className="flex gap-2 overflow-x-auto scrollbar-none pb-2 -mx-5 px-5 mb-5">
-                  {["Most detailed", "In my area", "Frequent users"].map((chip, idx) => (
-                    <button key={idx} className="border border-zinc-200 rounded-[10px] px-3.5 py-2 whitespace-nowrap text-[13px] font-medium text-zinc-600 hover:bg-zinc-50 shrink-0">
-                      {chip}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Review list */}
-                <div className="space-y-6">
-                  {[
-                    { name: "Johanosoposinos", date: "Jan 29, 2026", duration: "For 1 hour, 30 minutes", rating: 5, text: "She did her job very well and I'm totally happy with her work. Many people have mentioned that she does very slow ofcourse she does slow for neatness. I will definitely book her in f ...." },
-                    { name: "Johanosoposinos", date: "Jan 29, 2026", duration: "For 1 hour, 30 minutes", rating: 5, text: "She did her job very well and I'm totally happy with her work. Many people have mentioned that she does very slow ofcourse she does slow for neatness. I will definitely book her in f ...." },
-                  ].map((review, idx) => (
-                    <div key={idx} className="border-b border-zinc-100 pb-6 last:border-0 last:pb-0">
-                      <div className="flex justify-between items-start mb-3">
-                        <div>
-                          <h5 className="text-[15px] font-semibold text-zinc-900 leading-tight mb-1">{review.name}</h5>
-                          <p className="text-[12.5px] text-zinc-500 leading-tight">{review.date} • {review.duration}</p>
+                    
+                    {/* Progress bars */}
+                    <div className="space-y-[12px] mb-6 pr-4">
+                      {progressBars.map(row => (
+                        <div key={row.stars} className="flex items-center gap-3">
+                          <div className="flex items-center gap-1.5 w-6 shrink-0">
+                            <Star className="h-[14px] w-[14px] fill-primary text-primary shrink-0" />
+                            <span className="text-[14px] font-bold text-zinc-900 leading-none">{row.stars}</span>
+                          </div>
+                          <div className="flex-1 h-[5px] bg-zinc-100 rounded-full overflow-hidden">
+                            <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${row.percent}%` }} />
+                          </div>
+                          <div className="w-8 text-right text-[13px] text-zinc-600 shrink-0">{row.count}</div>
                         </div>
-                        <div className="bg-[#0B7A5E] rounded-[4px] flex items-center gap-1 px-1.5 py-0.5 mt-0.5">
-                          <Star className="h-[11px] w-[11px] text-white" fill="currentColor" />
-                          <span className="text-white text-[13px] font-bold leading-none mt-0.5">{review.rating}</span>
-                        </div>
-                      </div>
-                      <p className="text-[14px] text-zinc-700 leading-[1.45]">
-                        {review.text}
-                      </p>
+                      ))}
                     </div>
-                  ))}
-                </div>
+
+                    <div className="h-[8px] bg-[#f5f7fb] w-[calc(100%+40px)] -mx-5 shrink-0" />
+
+                    {/* 8. All reviews */}
+                    <div className="mt-4">
+                      <div className="mb-4 flex justify-between items-center">
+                        <h4 className="font-outfit text-[17px] font-medium text-zinc-900">All reviews</h4>
+                        <button className="text-[14px] text-primary font-medium">Filter</button>
+                      </div>
+
+                      {/* Filter chips */}
+                      <div className="flex gap-2 overflow-x-auto scrollbar-none pb-2 -mx-5 px-5 mb-5">
+                        {["Most detailed", "In my area", "Frequent users"].map((chip, idx) => (
+                          <button 
+                            key={idx} 
+                            onClick={() => setActiveFilter(chip)}
+                            className={`border rounded-[10px] px-3.5 py-2 whitespace-nowrap text-[13px] font-medium shrink-0 transition-colors ${
+                              activeFilter === chip 
+                                ? "border-primary bg-primary/5 text-primary" 
+                                : "border-zinc-200 text-zinc-600 hover:bg-zinc-50"
+                            }`}
+                          >
+                            {chip}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Review list */}
+                      <div className="space-y-6">
+                        {displayReviews.length > 0 ? displayReviews.map((review, idx) => (
+                          <div key={idx} className="border-b border-zinc-100 pb-6 last:border-0 last:pb-0">
+                            <div className="flex justify-between items-start mb-3">
+                              <div>
+                                <h5 className="text-[15px] font-semibold text-zinc-900 leading-tight mb-1">
+                                  {review.profiles?.first_name ? `${review.profiles.first_name} ${review.profiles.last_name || ""}` : "Helpero User"}
+                                </h5>
+                                <p className="text-[12.5px] text-zinc-500 leading-tight">
+                                  {new Date(review.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                                  {service.estimated_duration && ` • For ${formatDuration(service.estimated_duration)}`}
+                                </p>
+                              </div>
+                              <div className="bg-[#0B7A5E] rounded-[4px] flex items-center gap-1 px-1.5 py-0.5 mt-0.5">
+                                <Star className="h-[11px] w-[11px] text-white" fill="currentColor" />
+                                <span className="text-white text-[13px] font-bold leading-none mt-0.5">{review.rating}</span>
+                              </div>
+                            </div>
+                            <p className="text-[14px] text-zinc-700 leading-[1.45]">
+                              {review.comment}
+                            </p>
+                          </div>
+                        )) : (
+                          <p className="text-[14px] text-zinc-500 text-center py-4">No reviews available yet.</p>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
