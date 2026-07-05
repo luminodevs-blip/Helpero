@@ -90,7 +90,7 @@ export default function ConfigurePage() {
       <div className="w-full h-[1px] bg-zinc-100" />
 
       {/* 2. Scrollable Body Content */}
-      <div className="flex-1 overflow-y-auto px-5 py-6 bg-white">
+      <div className="flex-1 overflow-y-auto px-5 pt-5 pb-6 bg-white">
         
         {loading ? (
           <div className="flex justify-center items-center py-20">
