@@ -264,9 +264,9 @@ export default function AddonsPage() {
             className="fixed inset-0 bg-black/40 backdrop-blur-sm animate-sheet-fade"
             onClick={() => setSelectedAddonDetails(null)}
           />
-          <div className="relative w-full max-w-md bg-white rounded-t-[24px] sm:rounded-[24px] overflow-hidden flex flex-col max-h-[95vh] animate-sheet-slide">
+          <div className="relative w-full max-w-md bg-white rounded-t-[10px] sm:rounded-[10px] overflow-hidden flex flex-col max-h-[95vh] animate-sheet-slide">
             {/* Image Header */}
-            <div className="relative w-full h-[240px] bg-zinc-100 shrink-0">
+            <div className="relative w-full h-[140px] bg-zinc-100 shrink-0">
               {/* Drag Handle */}
               <div className="absolute top-3 left-1/2 -translate-x-1/2 w-10 h-[5px] bg-white/70 rounded-full z-10" />
               
