@@ -34,10 +34,10 @@ export default function HomeAppBar({ categories = [], categoriesPinned = false }
   const searchBar = (
     <div
       onClick={() => router.push("/search")}
-      className="flex items-center bg-white/20 hover:bg-white/25 border border-white/5 transition-all rounded-[10px] h-11 px-4 cursor-pointer"
+      className="flex items-center bg-white/20 rounded-xl h-[44px] px-4 shadow-sm border border-white/10 cursor-pointer"
     >
-      <Search className="h-4.5 w-4.5 text-white/80 mr-2.5 flex-shrink-0" />
-      <span className="text-[16px] font-medium text-white/70">
+      <Search className="h-5 w-5 text-white/80 mr-2.5 flex-shrink-0" />
+      <span className="font-outfit text-[16px] font-normal text-white/80">
         Search for services
       </span>
     </div>
