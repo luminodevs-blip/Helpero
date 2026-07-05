@@ -287,7 +287,7 @@ export default function DateTimePage() {
         </div>
 
         {/* Service Location */}
-        <div className="space-y-4 pt-2">
+        <div className="space-y-4 !mt-[20px]">
           <h2 className="font-outfit text-[17px] font-medium text-zinc-900">
             Service location
           </h2>
