@@ -309,8 +309,8 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
                   <div className="flex justify-between gap-4">
                     <ul className="space-y-3 flex-1">
                       {service.cleaner_bullets.map((bullet: string, idx: number) => (
-                        <li key={idx} className="flex items-start gap-2.5 text-[15px] font-normal text-zinc-800 leading-snug">
-                          <Leaf className="h-4 w-4 text-primary mt-0.5 shrink-0" fill="currentColor" />
+                        <li key={idx} className="flex items-start gap-2.5 text-[15px] font-normal text-[#57636C] leading-snug">
+                          <Leaf className="h-4 w-4 text-[#57636C] mt-0.5 shrink-0" fill="currentColor" />
                           {bullet}
                         </li>
                       ))}
