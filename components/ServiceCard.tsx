@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { useCartAnimation } from "@/app/contexts/CartAnimationContext";
 import { Star, Sparkles, ChevronDown, ChevronUp, X, Key, Zap, Droplet, DoorOpen, ParkingCircle, Box, Square, Package, Maximize, Wrench, Wifi, AppWindow, Leaf } from "lucide-react";
 
 const iconMap: Record<string, any> = {
@@ -29,6 +30,7 @@ interface ServiceCardProps {
 
 export default function ServiceCard({ service, onClick, className = "" }: ServiceCardProps) {
   const router = useRouter();
+  const { triggerAnimation } = useCartAnimation();
   const [isExpanded, setIsExpanded] = useState(false);
   const [reviews, setReviews] = useState<any[]>([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
@@ -201,7 +203,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleCardClick();
+              triggerAnimation(() => handleCardClick());
             }}
             className="w-full py-2 rounded-[8px] text-[14.5px] font-normal active:scale-[0.98] transition-all bg-zinc-900 text-white hover:bg-zinc-700"
           >

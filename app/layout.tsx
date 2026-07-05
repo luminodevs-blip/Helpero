@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, Readex_Pro } from "next/font/google";
 import { ClientAuthProvider } from "@/app/contexts/ClientAuthContext";
+import { CartAnimationProvider } from "@/app/contexts/CartAnimationContext";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -36,7 +37,9 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ClientAuthProvider>
-          {children}
+          <CartAnimationProvider>
+            {children}
+          </CartAnimationProvider>
         </ClientAuthProvider>
 
         {/* Landscape Blocker Overlay */}
