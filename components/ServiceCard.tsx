@@ -411,7 +411,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
                   setIsExpanded(false);
                   handleCardClick();
                 }}
-                className="bg-[#1a1c20] text-white px-8 py-3.5 rounded-lg text-[18px] font-semibold active:scale-95 transition-transform pointer-events-auto shadow-md hover:bg-[#2a2c30]"
+                className="bg-[#1a1c20] text-white w-[140px] h-[50px] flex items-center justify-center rounded-lg text-[18px] font-semibold active:scale-95 transition-transform pointer-events-auto shadow-md hover:bg-[#2a2c30]"
               >
                 Book Now
               </button>
