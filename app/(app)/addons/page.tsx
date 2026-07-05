@@ -73,7 +73,7 @@ export default function AddonsPage() {
   return (
     <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[100px] relative flex flex-col shadow-md font-sans">
       {/* 1. Header */}
-      <div className="bg-white px-5 pt-12 pb-4 flex items-center justify-between sticky top-0 z-30">
+      <div className="bg-white px-5 pt-12 pb-5 flex items-center justify-between sticky top-0 z-30">
         <button
           onClick={() => router.back()}
           className="p-1 -ml-1 rounded-full hover:bg-zinc-100 text-zinc-900 focus:outline-none transition-colors"
