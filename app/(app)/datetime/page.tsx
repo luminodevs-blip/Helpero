@@ -298,11 +298,10 @@ export default function DateTimePage() {
           >
             {selectedAddress?.lat && selectedAddress?.lng ? (
               <iframe
-                width="100%"
-                height="100%"
+                className="absolute top-1/2 left-1/2 w-[110%] h-[250px] -translate-x-1/2 -translate-y-1/2"
                 frameBorder="0"
                 style={{ border: 0, pointerEvents: 'none' }}
-                src={`https://maps.google.com/maps?q=${selectedAddress.lat},${selectedAddress.lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                src={`https://maps.google.com/maps?q=${selectedAddress.lat},${selectedAddress.lng}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
                 allowFullScreen
               />
             ) : (
