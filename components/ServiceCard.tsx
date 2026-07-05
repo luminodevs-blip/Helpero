@@ -354,4 +354,5 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
         </div>
       )}
     </>
+  );
 }
