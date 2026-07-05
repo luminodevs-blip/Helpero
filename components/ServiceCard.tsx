@@ -241,7 +241,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
             <div className="h-[1px] w-full bg-zinc-100 shrink-0" />
 
             {/* Scrollable Body */}
-            <div className="overflow-y-auto px-5 py-6 pb-32 scrollbar-none flex flex-col gap-6 relative">
+            <div className="overflow-y-auto px-5 py-6 pb-6 scrollbar-none flex flex-col gap-6 relative overscroll-contain">
               
               {/* 1. What is included */}
               <div>
@@ -441,7 +441,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
 
                       {/* Review list */}
                       <div className="space-y-6">
-                        {displayReviews.length > 0 ? displayReviews.map((review, idx) => (
+                        {displayReviews.length > 0 ? displayReviews.slice(0, 5).map((review, idx) => (
                           <div key={idx} className="border-b border-zinc-100 pb-6 last:border-0 last:pb-0">
                             <div className="flex justify-between items-start mb-3">
                               <div>
@@ -465,11 +465,20 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
                         )) : (
                           <p className="text-[14px] text-zinc-500 text-center py-4">No reviews available yet.</p>
                         )}
+                        
+                        {displayReviews.length > 5 && (
+                          <button className="w-full py-3 text-[14px] font-medium text-zinc-700 bg-zinc-50 hover:bg-zinc-100 rounded-xl transition-colors">
+                            Show all {displayReviews.length} reviews
+                          </button>
+                        )}
                       </div>
                     </div>
                   </>
                 )}
               </div>
+              
+              {/* Bottom spacer to prevent content from hiding behind the absolute Book Now button */}
+              <div className="h-28 shrink-0 w-full" />
             </div>
 
             {/* Floating Book Now Button inside modal */}
