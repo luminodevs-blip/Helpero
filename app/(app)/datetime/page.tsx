@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
 import { ArrowLeft, Clock, Zap, CalendarDays, ChevronRight, Loader2, Home, User, ChevronUp } from "lucide-react";
 import { MdLocationOn } from "react-icons/md";
+import AddressSelector from "@/components/AddressSelector";
 
 // ─── Types ───────────────────────────────────────────────────────────
 interface ArrivalSlot {
@@ -46,6 +47,7 @@ export default function DateTimePage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<ArrivalSlot | null>(null);
   const [securing, setSecuring] = useState(false);
+  const [isAddressSelectorOpen, setIsAddressSelectorOpen] = useState(false);
 
   // Redirect if no active draft
   useEffect(() => {
@@ -286,17 +288,41 @@ export default function DateTimePage() {
 
         {/* Service Location */}
         <div className="space-y-4 pt-2">
-          <h2 className="font-outfit text-[17px] font-medium text-zinc-900">
-            Service location
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="font-outfit text-[17px] font-medium text-zinc-900">
+              Service location
+            </h2>
+            <button 
+              onClick={() => setIsAddressSelectorOpen(true)}
+              className="text-[14px] font-medium text-primary hover:underline"
+            >
+              Change
+            </button>
+          </div>
           
-          <div className="w-full h-[120px] bg-zinc-100 rounded-[14px] relative overflow-hidden flex items-center justify-center border border-zinc-200">
-            {/* Map Pin icon representing map center */}
-            <div className="absolute inset-0 opacity-20" style={{ 
-                backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23a1a1aa\' fill-opacity=\'0.4\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'3\'/%3E%3Ccircle cx=\'13\' cy=\'13\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E")',
-                backgroundSize: '20px 20px'
-            }} />
-            <MdLocationOn size={34} color="#14181B" className="absolute z-10" />
+          <div 
+            onClick={() => setIsAddressSelectorOpen(true)}
+            className="w-full h-[120px] bg-zinc-100 rounded-[14px] relative overflow-hidden flex items-center justify-center border border-zinc-200 cursor-pointer"
+          >
+            {selectedAddress?.lat && selectedAddress?.lng ? (
+              <iframe
+                width="100%"
+                height="100%"
+                frameBorder="0"
+                style={{ border: 0, pointerEvents: 'none' }}
+                src={`https://maps.google.com/maps?q=${selectedAddress.lat},${selectedAddress.lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                allowFullScreen
+              />
+            ) : (
+              <>
+                {/* Map Pin icon representing map center */}
+                <div className="absolute inset-0 opacity-20" style={{ 
+                    backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23a1a1aa\' fill-opacity=\'0.4\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'3\'/%3E%3Ccircle cx=\'13\' cy=\'13\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E")',
+                    backgroundSize: '20px 20px'
+                }} />
+                <MdLocationOn size={34} color="#14181B" className="absolute z-10" />
+              </>
+            )}
           </div>
 
           {selectedAddress && (
@@ -364,6 +390,10 @@ export default function DateTimePage() {
           </button>
         </div>
       </div>
+      <AddressSelector 
+        isOpen={isAddressSelectorOpen} 
+        onClose={() => setIsAddressSelectorOpen(false)} 
+      />
     </div>
   );
 }
