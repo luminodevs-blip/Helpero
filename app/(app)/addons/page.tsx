@@ -303,19 +303,19 @@ export default function AddonsPage() {
                 </div>
                 
                 {/* Modal Counter */}
-                <div className="shrink-0 flex items-center bg-[#F5F7FB] rounded-[10px] p-[3px] shadow-sm">
+                <div className="shrink-0 flex items-center justify-between w-[120px] bg-[#F5F7FB] rounded-[10px] p-[3px] shadow-sm">
                   <button 
                     onClick={() => handleQtyChange(selectedAddonDetails, "remove")}
-                    className="w-[30px] h-[30px] bg-white rounded-[8px] flex items-center justify-center text-zinc-900 shadow-sm hover:bg-zinc-50 transition-colors"
+                    className="w-[32px] h-[32px] bg-white rounded-[8px] flex items-center justify-center text-zinc-900 shadow-sm hover:bg-zinc-50 transition-colors"
                   >
                     <Minus className="w-[16px] h-[16px]" strokeWidth={2.5} />
                   </button>
-                  <span className="w-10 font-outfit text-[16px] font-bold text-zinc-900 text-center leading-none">
+                  <span className="flex-1 font-outfit text-[18px] font-semibold text-zinc-900 text-center leading-none mt-0.5">
                     {getAddonQty(selectedAddonDetails.id)}
                   </span>
                   <button 
                     onClick={() => handleQtyChange(selectedAddonDetails, "add")}
-                    className="w-[30px] h-[30px] bg-[#7B82F4] rounded-[8px] flex items-center justify-center text-white shadow-sm hover:bg-[#6A70E0] transition-colors"
+                    className="w-[32px] h-[32px] bg-[#7B82F4] rounded-[8px] flex items-center justify-center text-white shadow-sm hover:bg-[#6A70E0] transition-colors"
                   >
                     <Plus className="w-[16px] h-[16px]" strokeWidth={2.5} />
                   </button>
