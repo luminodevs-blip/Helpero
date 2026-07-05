@@ -241,7 +241,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
             <div className="h-[1px] w-full bg-zinc-100 shrink-0" />
 
             {/* Scrollable Body */}
-            <div className="overflow-y-auto px-5 py-6 pb-6 scrollbar-none flex flex-col gap-6 relative overscroll-contain">
+            <div className="overflow-y-auto flex-1 min-h-0 px-5 py-6 pb-6 scrollbar-none flex flex-col gap-6 relative overscroll-contain">
               
               {/* 1. What is included */}
               <div>
