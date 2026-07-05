@@ -81,7 +81,7 @@ export default function AddonsPage() {
           <ArrowLeft className="w-[24px] h-[24px]" strokeWidth={2} />
         </button>
         
-        <h1 className="font-outfit text-[19px] font-bold text-zinc-900 absolute left-1/2 -translate-x-1/2">
+        <h1 className="font-outfit text-[20px] font-semibold text-zinc-900 absolute left-1/2 -translate-x-1/2">
           Popular Add-ons
         </h1>
         
@@ -103,7 +103,7 @@ export default function AddonsPage() {
           </div>
         ) : (
           <div className="space-y-5">
-            <h2 className="font-outfit text-[17px] font-bold text-zinc-900">
+            <h2 className="font-outfit text-[17px] font-medium text-zinc-900">
               People also added
             </h2>
 
