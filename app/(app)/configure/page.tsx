@@ -101,7 +101,7 @@ export default function ConfigurePage() {
             {error}
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-5">
             <h2 className="font-outfit text-[17px] font-medium text-zinc-900">
               Set up your service
             </h2>

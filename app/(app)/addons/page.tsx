@@ -102,7 +102,7 @@ export default function AddonsPage() {
             {error}
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-5">
             <h2 className="font-outfit text-[17px] font-bold text-zinc-900">
               People also added
             </h2>
