@@ -80,7 +80,7 @@ export default function ConfigurePage() {
           <ArrowLeft className="h-6 w-6" strokeWidth={2.5} />
         </button>
         
-        <h1 className="font-outfit text-[19px] font-bold text-zinc-900 absolute left-1/2 -translate-x-1/2">
+        <h1 className="font-outfit text-[20px] font-semibold text-zinc-900 absolute left-1/2 -translate-x-1/2">
           Set up your service
         </h1>
         
@@ -102,7 +102,7 @@ export default function ConfigurePage() {
           </div>
         ) : (
           <div className="space-y-6">
-            <h2 className="font-outfit text-[17px] font-bold text-zinc-900">
+            <h2 className="font-outfit text-[17px] font-medium text-zinc-900">
               Set up your service
             </h2>
 
@@ -118,7 +118,7 @@ export default function ConfigurePage() {
                     >
                       <div className="flex items-center gap-4">
                         {/* Image Thumbnail */}
-                        <div className="w-14 h-14 rounded-xl overflow-hidden bg-zinc-50 border border-zinc-100 shrink-0 flex items-center justify-center">
+                        <div className="w-[60px] h-[60px] rounded-[6px] overflow-hidden bg-zinc-50 border border-zinc-100 shrink-0 flex items-center justify-center">
                           {addon.image_url ? (
                             <img src={addon.image_url} alt={addon.name} className="w-full h-full object-cover" />
                           ) : (
@@ -128,14 +128,14 @@ export default function ConfigurePage() {
 
                         {/* Details */}
                         <div className="flex flex-col gap-0.5">
-                          <p className="font-outfit text-[15px] font-bold text-zinc-900">
+                          <p className="font-outfit text-[16px] font-medium text-zinc-900">
                             {addon.name}
                           </p>
-                          <p className="text-[13px] font-medium text-zinc-900">
+                          <p className="font-sans text-[14px] font-normal text-zinc-900">
                             ${addon.price?.toFixed(2)} / {addon.name.toLowerCase().replace(/s$/, '')}
                           </p>
                           {(addon.description || addon.name === "Rooms" || addon.name === "Bathrooms") && (
-                            <p className="text-[12px] text-zinc-500">
+                            <p className="font-sans text-[14px] font-light text-zinc-500">
                               {addon.description || (addon.name === "Rooms" ? "(living & sleeping areas)" : "Hygiene zone")}
                             </p>
                           )}
@@ -143,17 +143,17 @@ export default function ConfigurePage() {
                       </div>
 
                       {/* Counter Controls */}
-                      <div className="flex items-center bg-zinc-50 border border-zinc-100 rounded-2xl p-1 shadow-sm shrink-0">
+                      <div className="flex items-center bg-white border border-zinc-100 rounded-full p-[3px] shadow-sm shrink-0">
                         <button
                           type="button"
                           onClick={() => handleQtyChange(addon, "remove")}
                           disabled={qty === 0}
-                          className="h-[30px] w-[34px] rounded-[10px] flex items-center justify-center text-zinc-900 bg-white shadow-sm border border-zinc-100 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-zinc-50 transition-colors"
+                          className="h-8 w-8 rounded-full flex items-center justify-center text-zinc-400 bg-transparent disabled:opacity-50 disabled:cursor-not-allowed hover:bg-zinc-50 transition-colors"
                         >
-                          <Minus className="h-4 w-4" strokeWidth={2.5} />
+                          <Minus className="h-4 w-4" strokeWidth={2} />
                         </button>
                         
-                        <span className="font-sans text-[15px] font-bold text-zinc-900 w-[30px] text-center">
+                        <span className="font-sans text-[15px] font-bold text-zinc-900 w-7 text-center">
                           {qty}
                         </span>
                         
@@ -161,9 +161,9 @@ export default function ConfigurePage() {
                           type="button"
                           onClick={() => handleQtyChange(addon, "add")}
                           disabled={qty >= 6}
-                          className="h-[30px] w-[34px] rounded-[10px] flex items-center justify-center text-white bg-primary shadow-sm hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          className="h-8 w-8 rounded-full flex items-center justify-center text-white bg-[#7B82F4] shadow-sm hover:bg-[#6A70E0] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
-                          <Plus className="h-4 w-4" strokeWidth={2.5} />
+                          <Plus className="h-4 w-4" strokeWidth={2} />
                         </button>
                       </div>
                     </div>
