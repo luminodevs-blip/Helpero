@@ -172,7 +172,7 @@ export default function ConfigurePage() {
               </div>
             )}
 
-            <div className="w-full h-[1px] bg-zinc-100 mt-2 mb-6" />
+            <div className="w-full h-[1px] bg-zinc-100 mb-6" />
 
             {/* Info Box */}
             <div className="bg-zinc-50/80 rounded-xl p-4 flex gap-3 items-start">
