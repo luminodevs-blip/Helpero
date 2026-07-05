@@ -335,7 +335,7 @@ export default function DateTimePage() {
                 <ChevronRight className="h-4 w-4 text-zinc-400" />
               </div>
               <div className="w-full h-px bg-zinc-100" />
-              <div className="flex items-center justify-between py-3">
+              <div className="flex items-center justify-between pt-[14px] pb-3">
                 <div className="flex items-center gap-3">
                   <User className="h-6 w-6 text-[#57636C]" style={{ fill: 'currentColor' }} />
                   <div>
