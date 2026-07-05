@@ -171,28 +171,28 @@ export default function DateTimePage() {
   const totalAmount = ((activeBookingDraft?.totalPrice || 0) + (selectedSlot?.fee || 0)).toFixed(2);
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen bg-primary pb-32 relative flex flex-col border-x border-zinc-100 shadow-sm">
-      {/* Top spacing to simulate status bar area */}
-      <div className="h-10 bg-primary w-full flex-shrink-0" />
+    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[100px] relative flex flex-col shadow-md font-sans border-x border-zinc-100">
       
-      {/* Main White Container */}
-      <div className="flex-1 bg-white rounded-t-[24px] flex flex-col relative z-20">
+      {/* 1. Header */}
+      <div className="bg-white px-5 pt-12 pb-5 flex items-center justify-between sticky top-0 z-30">
+        <button
+          onClick={() => router.back()}
+          className="p-1 -ml-1 flex items-center justify-center rounded-full hover:bg-zinc-100 text-zinc-900 focus:outline-none transition-colors"
+        >
+          <ArrowLeft className="w-[24px] h-[24px]" strokeWidth={2} />
+        </button>
         
-        {/* Header */}
-        <div className="px-5 py-4 flex items-center justify-between border-b border-zinc-100 bg-white sticky top-0 z-30 rounded-t-[24px]">
-          <button
-            onClick={() => router.back()}
-            className="p-2 -ml-2 text-zinc-900 hover:bg-zinc-100 rounded-full transition-all"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </button>
-          <h1 className="font-outfit text-[17px] font-bold text-zinc-900 absolute left-1/2 -translate-x-1/2">
-            Service details
-          </h1>
-          <div className="w-9 h-9" /> {/* Spacer */}
-        </div>
+        <h1 className="font-outfit text-[20px] font-semibold text-zinc-900 absolute left-1/2 -translate-x-1/2">
+          Service details
+        </h1>
+        
+        <div className="w-8" /> {/* Spacer */}
+      </div>
 
-        <div className="px-5 pt-6 pb-6 space-y-6">
+      <div className="w-full h-[1px] bg-zinc-100" />
+
+      {/* 2. Scrollable Body Content */}
+      <div className="flex-1 overflow-y-auto px-5 pt-5 pb-6 bg-white space-y-6">
         
         {/* Arrival Time */}
         <div className="space-y-4">
@@ -329,35 +329,36 @@ export default function DateTimePage() {
 
       </div>
 
-      </div> {/* End Main White Container */}
+      </div> {/* End Scrollable Body Content */}
 
-      {/* Sticky Bottom CTA */}
+      {/* Progress Bar & Footer Sticky Container */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white max-w-md mx-auto">
-        {/* Progress bar */}
-        <div className="w-full h-1 bg-primary/20">
-          <div className="h-full bg-primary" style={{ width: '66%' }} />
+        {/* Progress Bar */}
+        <div className="w-full bg-zinc-100 h-[6px]">
+          <div className="bg-[#7B82F4] h-full transition-all duration-300" style={{ width: "66%" }} />
         </div>
         
-        <div className="px-5 py-4 flex items-center justify-between">
-          <div className="flex flex-col">
-            <span className="text-[13px] text-zinc-500 font-medium mb-1">
+        {/* Footer */}
+        <div className="pt-4 pb-[40px] px-5 flex items-center justify-between">
+          <div className="flex flex-col gap-0.5">
+            <span className="font-sans text-[16px] font-normal text-[#57636C]">
               Total
             </span>
-            <div className="flex items-center gap-1 cursor-pointer">
-              <span className="font-outfit text-xl font-bold text-zinc-900">
+            <div className="flex items-center gap-1.5 cursor-pointer">
+              <span className="font-outfit text-[18px] font-semibold text-zinc-900">
                 ${totalAmount}
               </span>
-              <ChevronUp className="h-4 w-4 text-zinc-900" />
+              <ChevronUp className="w-4 h-4 text-zinc-900" />
             </div>
           </div>
 
           <button
             onClick={handleConfirm}
             disabled={!selectedSlot || securing}
-            className="px-8 py-3.5 rounded-[14px] bg-zinc-900 text-white font-sans text-[15px] font-bold hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center justify-center min-w-[140px]"
+            className="w-[200px] h-[50px] rounded-[10px] bg-[#14181B] text-white font-sans text-[18px] font-semibold hover:bg-zinc-800 focus:outline-none transition-all active:scale-95 shadow-md flex items-center justify-center"
           >
             {securing ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
+              <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
               "Checkout"
             )}
