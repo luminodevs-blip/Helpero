@@ -3,7 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { useClientAuth } from "@/app/contexts/ClientAuthContext";
 import { useCartAnimation } from "@/app/contexts/CartAnimationContext";
+import { BookingDraft } from "@/lib/types";
 import { Star, Sparkles, ChevronDown, ChevronUp, X, Key, Zap, Droplet, DoorOpen, ParkingCircle, Box, Square, Package, Maximize, Wrench, Wifi, AppWindow, Leaf } from "lucide-react";
 
 const iconMap: Record<string, any> = {
@@ -121,12 +123,42 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
   const visibleBullets = bullets.slice(0, 3);
   const hasMore = bullets.length > 3;
 
+  const { cart, updateCart, setActiveDraft } = useClientAuth();
+
   const handleCardClick = () => {
     if (onClick) {
       onClick();
     } else {
-      router.push(`/service/${service.id}`);
+      setIsExpanded(true);
     }
+  };
+
+  const handleBookNow = () => {
+    if (!service) return;
+
+    const sId = Number(service.id);
+    const catId = Number(service.category_id);
+
+    const filteredCart = cart.filter((item) => item.categoryId !== catId);
+
+    const newDraft: BookingDraft = {
+      currentCartId: `${sId}-${Date.now()}`,
+      serviceId: sId,
+      categoryId: catId,
+      serviceName: service.name,
+      basePrice: service.base_price || 0,
+      baseDuration: service.duration_minutes || 60,
+      totalPrice: service.base_price || 0,
+      totalDuration: service.duration_minutes || 60,
+      itemsPrice: service.base_price || 0,
+      selectedAddons: [],
+      address: null,
+    };
+
+    updateCart([...filteredCart, newDraft]);
+    setActiveDraft(newDraft);
+
+    router.push("/configure");
   };
 
   return (
@@ -203,7 +235,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
           <button
             onClick={(e) => {
               e.stopPropagation();
-              triggerAnimation(() => handleCardClick());
+              triggerAnimation(() => handleBookNow());
             }}
             className="w-full py-2 rounded-[8px] text-[14.5px] font-normal active:scale-[0.98] transition-all bg-zinc-900 text-white hover:bg-zinc-700"
           >
@@ -489,7 +521,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsExpanded(false);
-                  triggerAnimation(() => handleCardClick());
+                  triggerAnimation(() => handleBookNow());
                 }}
                 className="bg-[#1a1c20] text-white w-[140px] h-[50px] flex items-center justify-center rounded-lg text-[18px] font-semibold active:scale-95 transition-transform pointer-events-auto shadow-md hover:bg-[#2a2c30]"
               >
