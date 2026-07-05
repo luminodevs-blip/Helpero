@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
 import { supabase } from "@/lib/supabase";
 import { updateBookingAddon } from "@/lib/booking";
-import { ArrowLeft, Plus, Minus, Star, Sparkles, Loader2, ChevronUp } from "lucide-react";
+import { ArrowLeft, Plus, Check, Loader2, ChevronUp } from "lucide-react";
 
-export default function ConfigurePage() {
+export default function AddonsPage() {
   const router = useRouter();
   const { activeBookingDraft, cart, updateCart, setActiveDraft } = useClientAuth();
 
@@ -29,13 +29,14 @@ export default function ConfigurePage() {
           .from("service_addons")
           .select("*")
           .eq("service_id", activeBookingDraft.serviceId)
+          .eq("display_stage", "upsell")
           .order("sort_order", { ascending: true });
 
         if (err) throw new Error(err.message);
         setAddons(data || []);
       } catch (err: any) {
         console.error("Error loading addons:", err);
-        setError(err?.message || "Failed to load options");
+        setError(err?.message || "Failed to load addons");
       } finally {
         setLoading(false);
       }
@@ -46,11 +47,10 @@ export default function ConfigurePage() {
 
   if (!activeBookingDraft) return null;
 
-  // Group addons by display stage
-  const customizeAddons = addons.filter((a) => a.display_stage === "customize");
-  const upsellAddons = addons.filter((a) => a.display_stage === "upsell");
+  const handleToggleAddon = (addon: any) => {
+    const isSelected = getAddonQty(addon.id) > 0;
+    const action = isSelected ? "remove" : "add";
 
-  const handleQtyChange = (addon: any, action: "add" | "remove") => {
     // 1. Calculate updated draft using the booking utility
     const updatedDraft = updateBookingAddon(activeBookingDraft, addon, action);
 
@@ -81,7 +81,7 @@ export default function ConfigurePage() {
         </button>
         
         <h1 className="font-outfit text-[19px] font-bold text-zinc-900 absolute left-1/2 -translate-x-1/2">
-          Set up your service
+          Popular Add-ons
         </h1>
         
         <div className="w-8" /> {/* Spacer */}
@@ -94,7 +94,7 @@ export default function ConfigurePage() {
         
         {loading ? (
           <div className="flex justify-center items-center py-20">
-            <Loader2 className="h-8 w-8 text-primary animate-spin" />
+            <Loader2 className="h-8 w-8 text-[#7B82F4] animate-spin" />
           </div>
         ) : error ? (
           <div className="text-center py-10 text-sm text-red-500 bg-red-50 rounded-xl border border-red-100 p-4">
@@ -103,78 +103,75 @@ export default function ConfigurePage() {
         ) : (
           <div className="space-y-6">
             <h2 className="font-outfit text-[17px] font-bold text-zinc-900">
-              Set up your service
+              People also added
             </h2>
 
-            {/* Section A: Customize/Room Size counters */}
-            {customizeAddons.length > 0 && (
-              <div className="flex flex-col">
-                {customizeAddons.map((addon, index) => {
-                  const qty = getAddonQty(addon.id);
+            {addons.length > 0 ? (
+              <div className="grid grid-cols-3 gap-x-3 gap-y-6">
+                {addons.map((addon) => {
+                  const isSelected = getAddonQty(addon.id) > 0;
+                  // Dummy original price calculation (just for UI design matching)
+                  const originalPrice = addon.price ? (addon.price + 10).toFixed(2) : null;
+
                   return (
                     <div
                       key={addon.id}
-                      className={`flex items-center justify-between py-5 ${index !== customizeAddons.length - 1 ? 'border-b border-zinc-100' : ''}`}
+                      onClick={() => handleToggleAddon(addon)}
+                      className="flex flex-col cursor-pointer transition-opacity hover:opacity-90 active:opacity-70 group"
                     >
-                      <div className="flex items-center gap-4">
-                        {/* Image Thumbnail */}
-                        <div className="w-14 h-14 rounded-xl overflow-hidden bg-zinc-50 border border-zinc-100 shrink-0 flex items-center justify-center">
-                          {addon.image_url ? (
-                            <img src={addon.image_url} alt={addon.name} className="w-full h-full object-cover" />
-                          ) : (
-                            <Sparkles className="w-6 h-6 text-zinc-300" />
-                          )}
-                        </div>
-
-                        {/* Details */}
-                        <div className="flex flex-col gap-0.5">
-                          <p className="font-outfit text-[15px] font-bold text-zinc-900">
+                      {/* Image Thumbnail */}
+                      <div className="relative w-full aspect-square rounded-xl bg-zinc-100 overflow-hidden mb-2 border border-zinc-100">
+                        {addon.image_url ? (
+                          <img
+                            src={addon.image_url}
+                            alt={addon.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-zinc-100 text-zinc-300 font-outfit text-xs font-bold text-center px-2">
                             {addon.name}
-                          </p>
-                          <p className="text-[13px] font-medium text-zinc-900">
-                            ${addon.price?.toFixed(2)} / {addon.name.toLowerCase().replace(/s$/, '')}
-                          </p>
-                          {(addon.description || addon.name === "Rooms" || addon.name === "Bathrooms") && (
-                            <p className="text-[12px] text-zinc-500">
-                              {addon.description || (addon.name === "Rooms" ? "(living & sleeping areas)" : "Hygiene zone")}
-                            </p>
+                          </div>
+                        )}
+
+                        {/* Plus / Check Button */}
+                        <div className="absolute bottom-2 right-2 w-7 h-7 rounded-md bg-[#7B82F4] text-white flex items-center justify-center shadow-sm">
+                          {isSelected ? (
+                            <Check className="h-4 w-4" strokeWidth={3} />
+                          ) : (
+                            <Plus className="h-4 w-4" strokeWidth={2.5} />
                           )}
                         </div>
                       </div>
 
-                      {/* Counter Controls */}
-                      <div className="flex items-center bg-zinc-50 border border-zinc-100 rounded-2xl p-1 shadow-sm shrink-0">
-                        <button
-                          type="button"
-                          onClick={() => handleQtyChange(addon, "remove")}
-                          disabled={qty === 0}
-                          className="h-[30px] w-[34px] rounded-[10px] flex items-center justify-center text-zinc-900 bg-white shadow-sm border border-zinc-100 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-zinc-50 transition-colors"
-                        >
-                          <Minus className="h-4 w-4" strokeWidth={2.5} />
+                      {/* Details */}
+                      <div className="flex flex-col">
+                        <p className="font-outfit text-[14px] font-bold text-zinc-900 leading-tight mb-0.5 line-clamp-1">
+                          {addon.name}
+                        </p>
+                        <button className="text-[12px] font-medium text-[#7B82F4] self-start hover:underline mb-1">
+                          Learn more
                         </button>
-                        
-                        <span className="font-sans text-[15px] font-bold text-zinc-900 w-[30px] text-center">
-                          {qty}
-                        </span>
-                        
-                        <button
-                          type="button"
-                          onClick={() => handleQtyChange(addon, "add")}
-                          className="h-[30px] w-[34px] rounded-[10px] flex items-center justify-center text-white bg-primary shadow-sm hover:bg-primary/90 transition-colors"
-                        >
-                          <Plus className="h-4 w-4" strokeWidth={2.5} />
-                        </button>
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="font-sans text-[13px] font-semibold text-zinc-900">
+                            ${addon.price?.toFixed(2) || "0.00"}
+                          </span>
+                          {originalPrice && (
+                            <span className="font-sans text-[11px] font-medium text-zinc-300 line-through">
+                              ${originalPrice}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
                 })}
               </div>
+            ) : (
+              <p className="text-[14px] text-zinc-500">No addons available for this service.</p>
             )}
 
-            <div className="w-full h-[1px] bg-zinc-100 mt-2 mb-6" />
-
             {/* Info Box */}
-            <div className="bg-zinc-50/80 rounded-xl p-4 flex gap-3 items-start">
+            <div className="bg-zinc-50/80 rounded-xl p-4 flex gap-3 items-start mt-8">
               <div className="w-[18px] h-[18px] rounded-full bg-zinc-500 text-white flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">
                 i
               </div>
@@ -182,8 +179,6 @@ export default function ConfigurePage() {
                 Estimated cleaning time adjusts automatically based on your selection.
               </p>
             </div>
-
-            {/* Section B removed as it now belongs to its own addons page */}
           </div>
         )}
       </div>
@@ -192,7 +187,7 @@ export default function ConfigurePage() {
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white max-w-md mx-auto">
         {/* Progress Bar */}
         <div className="w-full bg-zinc-100 h-[3px]">
-          <div className="bg-[#7B82F4] h-full transition-all duration-300" style={{ width: "33%" }} />
+          <div className="bg-[#7B82F4] h-full transition-all duration-300" style={{ width: "66%" }} />
         </div>
         
         {/* Footer */}
@@ -210,7 +205,7 @@ export default function ConfigurePage() {
           </div>
 
           <button
-            onClick={() => router.push("/addons")}
+            onClick={() => router.push("/datetime")}
             className="w-[180px] h-[52px] rounded-xl bg-[#14181B] text-white font-sans text-[15px] font-bold hover:bg-zinc-800 focus:outline-none transition-all active:scale-95 shadow-md flex items-center justify-center"
           >
             Next
