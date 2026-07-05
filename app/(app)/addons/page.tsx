@@ -30,7 +30,8 @@ export default function AddonsPage() {
           .select("*")
           .eq("service_id", activeBookingDraft.serviceId)
           .eq("display_stage", "upsell")
-          .order("sort_order", { ascending: true });
+          .order("sort_order", { ascending: true })
+          .limit(6);
 
         if (err) throw new Error(err.message);
         setAddons(data || []);
