@@ -198,7 +198,7 @@ export default function DateTimePage() {
       <div className="flex-1 overflow-y-auto px-5 pt-5 pb-6 bg-white space-y-6">
         
         {/* Arrival Time */}
-        <div className="space-y-4">
+        <div className="space-y-5">
           <h2 className="font-outfit text-[17px] font-medium text-zinc-900">
             Arrival time
           </h2>
@@ -279,7 +279,7 @@ export default function DateTimePage() {
         </div>
 
         {/* Cleaning Duration */}
-        <div className="flex items-center justify-end border-b border-zinc-100 pb-6 pt-2">
+        <div className="flex items-center justify-end border-b border-zinc-100 pb-6 !mt-[16px]">
           <span className="font-sans text-[14.5px] font-normal text-[#57636C] mr-2">Cleaning duration:</span>
           <span className="font-sans text-[14.5px] font-medium text-zinc-900">
             {formatDuration(activeBookingDraft?.totalDuration)}
