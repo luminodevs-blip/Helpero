@@ -136,8 +136,8 @@ export default function AddonsPage() {
 
                         {/* Expanding Counter Button */}
                         <div 
-                          className={`absolute bottom-1.5 right-1.5 h-[28px] rounded-[8px] bg-[#7B82F4]/85 backdrop-blur-[2px] text-white shadow-sm transition-all duration-300 overflow-hidden flex items-center ${
-                            qty > 0 ? "w-[76px] justify-between px-1" : "w-[28px] justify-center cursor-pointer hover:bg-[#7B82F4]"
+                          className={`absolute bottom-1.5 right-1.5 h-[36px] rounded-[10px] shadow-sm transition-all duration-300 overflow-hidden flex items-center ${
+                            qty > 0 ? "w-[94px] bg-[#F5F7FB] p-[3px] justify-between" : "w-[36px] bg-[#7B82F4] justify-center cursor-pointer hover:bg-[#6A70E0]"
                           }`}
                           onClick={(e) => {
                             if (qty === 0) {
@@ -150,20 +150,20 @@ export default function AddonsPage() {
                             <>
                               <button 
                                 onClick={(e) => { e.stopPropagation(); handleQtyChange(addon, "remove"); }}
-                                className="w-6 h-6 flex items-center justify-center hover:bg-white/20 rounded-md transition-colors shrink-0"
+                                className="w-[30px] h-[30px] bg-white rounded-[8px] flex items-center justify-center text-zinc-900 shadow-sm hover:bg-zinc-50 transition-colors shrink-0"
                               >
-                                <Minus className="w-3.5 h-3.5" strokeWidth={2.5} />
+                                <Minus className="w-[16px] h-[16px]" strokeWidth={2.5} />
                               </button>
-                              <span className="font-outfit text-[13px] font-bold">{qty}</span>
+                              <span className="font-outfit text-[14px] font-bold text-zinc-900 flex-1 text-center leading-none">{qty}</span>
                               <button 
                                 onClick={(e) => { e.stopPropagation(); handleQtyChange(addon, "add"); }}
-                                className="w-6 h-6 flex items-center justify-center hover:bg-white/20 rounded-md transition-colors shrink-0"
+                                className="w-[30px] h-[30px] bg-[#7B82F4] rounded-[8px] flex items-center justify-center text-white shadow-sm hover:bg-[#6A70E0] transition-colors shrink-0"
                               >
-                                <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
+                                <Plus className="w-[16px] h-[16px]" strokeWidth={2.5} />
                               </button>
                             </>
                           ) : (
-                            <Plus className="w-[18px] h-[18px]" strokeWidth={2.5} />
+                            <Plus className="w-[20px] h-[20px] text-white" strokeWidth={2.5} />
                           )}
                         </div>
                       </div>
