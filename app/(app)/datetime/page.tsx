@@ -3,48 +3,36 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
-import { ArrowLeft, MapPin, Clock, Zap, CalendarDays, Star, ChevronRight, Loader2 } from "lucide-react";
+import { ArrowLeft, Clock, Zap, CalendarDays, ChevronRight, Loader2, MapPin, Home, User, ChevronUp } from "lucide-react";
 
 // ─── Types ───────────────────────────────────────────────────────────
 interface ArrivalSlot {
   id: string;
-  mode: "express" | "standard" | "scheduled";
-  timeStart: string;      // ISO datetime
-  timeEnd: string | null; // ISO datetime or null
+  mode: "priority" | "standard" | "scheduled";
+  timeStart: string;
+  timeEnd: string | null;
   fee: number;
   isGolden: boolean;
   reason: string;
-  displayDate: string;    // "Today" / "Tomorrow" / "Jun 28"
-  displayTime: string;    // "10:00 – 11:00"
+  displayDate: string;
+  displayTime: string;
 }
 
 const MODE_CONFIG = {
-  express: {
+  priority: {
     icon: Zap,
-    label: "Express",
-    tagline: "Fastest arrival",
-    color: "text-[#f59e0b]",
-    bg: "bg-[#fef3c7]",
-    border: "border-[#f59e0b]",
-    selectedBg: "bg-[#f59e0b]",
+    label: "Priority",
+    color: "text-primary",
   },
   standard: {
     icon: Clock,
     label: "Standard",
-    tagline: "Best match",
-    color: "text-primary",
-    bg: "bg-primary/10",
-    border: "border-primary",
-    selectedBg: "bg-primary",
+    color: "text-zinc-400",
   },
   scheduled: {
     icon: CalendarDays,
     label: "Scheduled",
-    tagline: "Pick a time",
-    color: "text-secondary",
-    bg: "bg-secondary/10",
-    border: "border-secondary",
-    selectedBg: "bg-secondary",
+    color: "text-zinc-400",
   },
 };
 
@@ -109,10 +97,10 @@ export default function DateTimePage() {
 
       setSlots(fetchedSlots);
 
-      // Auto-select standard slot
-      const standardSlot = fetchedSlots.find((s) => s.mode === "standard");
-      if (standardSlot && !selectedSlot) {
-        setSelectedSlot(standardSlot);
+      // Auto-select priority or standard slot
+      const defaultSlot = fetchedSlots.find((s) => s.mode === "priority") || fetchedSlots.find((s) => s.mode === "standard");
+      if (defaultSlot && !selectedSlot) {
+        setSelectedSlot(defaultSlot);
       }
     } catch (err: any) {
       setError(err?.message || "Couldn't load availability");
@@ -135,7 +123,6 @@ export default function DateTimePage() {
     if (!selectedSlot || !activeBookingDraft) return;
     setSecuring(true);
     try {
-      // Update draft with visit details
       const updatedDraft = {
         ...activeBookingDraft,
         visit: {
@@ -161,303 +148,211 @@ export default function DateTimePage() {
     }
   };
 
-  // Group slots by mode for the 3-column card grid
-  const expressSlots = slots.filter((s) => s.mode === "express");
+  const prioritySlots = slots.filter((s) => s.mode === "priority");
   const standardSlots = slots.filter((s) => s.mode === "standard");
   const scheduledSlots = slots.filter((s) => s.mode === "scheduled");
 
   const slotsByMode = [
-    ...(expressSlots.length > 0 ? [expressSlots[0]] : []),
+    ...(prioritySlots.length > 0 ? [prioritySlots[0]] : []),
     ...(standardSlots.length > 0 ? [standardSlots[0]] : []),
     ...(scheduledSlots.length > 0 ? [scheduledSlots[0]] : []),
   ];
 
+  const formatDuration = (minutes: number) => {
+    const hrs = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (hrs > 0) {
+      return `${hrs} hr ${mins} min`;
+    }
+    return `${mins} min`;
+  };
+
+  const totalAmount = ((activeBookingDraft?.totalPrice || 0) + (selectedSlot?.fee || 0)).toFixed(2);
+
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen bg-bg-secondary pb-32 relative flex flex-col border-x border-alternate shadow-md">
-      {/* Purple Header – matches Flutter background color: primary */}
-      <div className="bg-primary px-5 pt-12 pb-20 relative overflow-hidden">
-        {/* Radial glow */}
-        <div className="absolute inset-0 bg-radial-gradient from-white/10 to-transparent opacity-50 pointer-events-none" />
-
-        <div className="flex items-center justify-between mb-6 relative z-10">
-          <button
-            onClick={() => router.back()}
-            className="p-2 rounded-full border-2 border-white/30 text-white hover:bg-white/10 transition-all"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </button>
-
-          <div className="text-center">
-            <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">
-              Step 2 of 3
-            </span>
-            <p className="text-base font-bold text-white font-outfit">
-              Service details
-            </p>
-          </div>
-
-          {/* Transparent spacer for layout balance */}
-          <div className="w-9 h-9 opacity-0" />
-        </div>
-
-        {/* Address Row */}
-        {selectedAddress && (
-          <div className="flex items-center gap-2 bg-white/15 rounded-2xl px-4 py-3 relative z-10">
-            <MapPin className="h-4 w-4 text-white/80 flex-shrink-0" />
-            <p className="text-xs text-white/90 font-semibold line-clamp-1 flex-1">
-              {selectedAddress.fullAddress}
-            </p>
-          </div>
-        )}
+    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-32 relative flex flex-col border-x border-zinc-100 shadow-sm">
+      {/* Top thin accent line to match screenshot status bar edge */}
+      <div className="h-1 bg-primary w-full" />
+      
+      {/* Header */}
+      <div className="px-5 py-4 flex items-center justify-between border-b border-zinc-100 bg-white sticky top-0 z-30">
+        <button
+          onClick={() => router.back()}
+          className="p-2 -ml-2 text-zinc-900 hover:bg-zinc-100 rounded-full transition-all"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </button>
+        <h1 className="font-outfit text-[17px] font-bold text-zinc-900 absolute left-1/2 -translate-x-1/2">
+          Service details
+        </h1>
+        <div className="w-9 h-9" /> {/* Spacer */}
       </div>
 
-      {/* White Card pulls up over purple section */}
-      <div className="flex-1 bg-bg-secondary rounded-t-[28px] -mt-10 z-20 relative shadow-md">
+      <div className="px-5 pt-6 pb-6 space-y-6">
         
-        {/* Content Scroll area */}
-        <div className="overflow-y-auto px-5 pt-6 pb-4 space-y-8">
+        {/* Arrival Time */}
+        <div className="space-y-4">
+          <h2 className="font-outfit text-[17px] font-bold text-zinc-900">
+            Arrival time
+          </h2>
           
-          {/* Progress bar */}
-          <div className="w-full bg-alternate h-1 rounded-full overflow-hidden">
-            <div className="bg-primary h-full rounded-full" style={{ width: "66%" }} />
-          </div>
-
-          {/* Arrival Time Header */}
-          <div className="flex items-center justify-between">
-            <h3 className="font-outfit text-lg font-extrabold text-text-primary">
-              Arrival time
-            </h3>
-            {!loading && slots.length > 0 && (
-              <button
-                onClick={fetchSlots}
-                className="text-[10px] text-primary font-semibold underline"
-              >
-                Refresh
-              </button>
-            )}
-          </div>
-
-          {/* Slot Cards 3-column grid */}
           {loading ? (
-            <div className="grid grid-cols-3 gap-3">
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="h-36 rounded-2xl bg-bg-primary border border-alternate animate-pulse"
+                  className="h-[110px] w-[140px] shrink-0 rounded-[14px] bg-zinc-100 animate-pulse"
                 />
               ))}
             </div>
           ) : error ? (
-            <div className="text-center py-8 bg-error/5 rounded-2xl border border-error/20 p-4">
-              <p className="text-sm text-error font-semibold">{error}</p>
+            <div className="text-center py-6 bg-red-50 rounded-[14px] border border-red-100 p-4">
+              <p className="text-sm text-red-600 font-medium">{error}</p>
               <button
                 onClick={fetchSlots}
-                className="mt-3 text-xs text-primary font-bold underline"
+                className="mt-2 text-xs text-primary font-bold underline"
               >
                 Try again
               </button>
             </div>
           ) : slotsByMode.length === 0 ? (
-            <div className="text-center py-8 text-sm text-text-secondary">
-              No slots available for today. Please try a different time.
+            <div className="text-center py-6 text-sm text-zinc-500 bg-zinc-50 rounded-[14px]">
+              No slots available. Please try a different time.
             </div>
           ) : (
-            <div className="grid grid-cols-3 gap-3">
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-5 px-5">
               {slotsByMode.map((slot) => {
+                const isSelected = selectedSlot?.id === slot.id;
                 const cfg = MODE_CONFIG[slot.mode] || MODE_CONFIG.standard;
                 const ModeIcon = cfg.icon;
-                const isSelected = selectedSlot?.id === slot.id;
+
                 return (
                   <button
                     key={slot.id}
-                    type="button"
                     onClick={() => handleSelectSlot(slot)}
-                    className={`relative flex flex-col items-start rounded-2xl border-2 p-3 text-left transition-all focus:outline-none ${
+                    className={`shrink-0 w-[140px] rounded-[14px] p-3 text-left transition-all border flex flex-col justify-between min-h-[110px] ${
                       isSelected
-                        ? `${cfg.selectedBg} border-transparent text-white shadow-lg scale-[1.02]`
-                        : `bg-bg-primary ${cfg.border} hover:scale-[1.01]`
+                        ? "border-zinc-900 bg-white shadow-sm ring-1 ring-zinc-900"
+                        : "border-zinc-200 bg-white hover:border-zinc-300"
                     }`}
                   >
-                    {/* Icon */}
-                    <div
-                      className={`h-8 w-8 rounded-xl flex items-center justify-center mb-2 ${
-                        isSelected ? "bg-white/20" : cfg.bg
-                      }`}
-                    >
-                      <ModeIcon
-                        className={`h-4 w-4 ${isSelected ? "text-white" : cfg.color}`}
-                      />
-                    </div>
-
-                    {/* Mode label */}
-                    <p
-                      className={`text-[11px] font-extrabold leading-tight ${
-                        isSelected ? "text-white" : "text-text-primary"
-                      }`}
-                    >
-                      {cfg.label}
-                    </p>
-
-                    {/* Date/Tagline */}
-                    <p
-                      className={`text-[10px] mt-0.5 leading-tight ${
-                        isSelected ? "text-white/80" : "text-text-secondary"
-                      }`}
-                    >
-                      {slot.displayDate}
-                    </p>
-
-                    {/* Time display */}
-                    <p
-                      className={`text-[10px] font-semibold mt-1 leading-tight ${
-                        isSelected ? "text-white" : cfg.color
-                      }`}
-                    >
-                      {slot.displayTime}
-                    </p>
-
-                    {/* Fee badge */}
-                    {slot.fee > 0 && (
-                      <div
-                        className={`mt-2 px-2 py-0.5 rounded-full text-[9px] font-bold ${
-                          isSelected
-                            ? "bg-white/25 text-white"
-                            : `${cfg.bg} ${cfg.color}`
-                        }`}
-                      >
-                        +${slot.fee}
+                    <div>
+                      <div className="flex items-center gap-1.5 mb-2">
+                        <span className={`text-[13px] font-medium text-zinc-900`}>
+                          {cfg.label}
+                        </span>
+                        <ModeIcon className={`h-3.5 w-3.5 ${cfg.color}`} />
                       </div>
-                    )}
-
-                    {/* Golden badge */}
-                    {slot.isGolden && (
-                      <Star
-                        className="absolute top-2 right-2 h-3 w-3 text-yellow-400 fill-yellow-400"
-                      />
+                      <p className="text-[13px] text-zinc-500 font-medium leading-tight">
+                        {slot.displayDate}
+                      </p>
+                      <p className="text-[13px] text-zinc-500 font-medium mt-0.5 leading-tight">
+                        {slot.displayTime}
+                      </p>
+                    </div>
+                    
+                    {slot.fee > 0 ? (
+                      <p className="text-[11px] text-zinc-500 font-medium mt-3 truncate">
+                        + ${slot.fee.toFixed(2)} fee
+                      </p>
+                    ) : (
+                      <p className="text-[11px] text-zinc-400 font-medium mt-3 opacity-0">
+                        Placeholder
+                      </p>
                     )}
                   </button>
                 );
               })}
             </div>
           )}
+        </div>
 
-          {/* All Scheduled Slots (if "scheduled" selected, show time picker expansion) */}
-          {selectedSlot?.mode === "scheduled" && scheduledSlots.length > 1 && (
-            <div className="space-y-3">
-              <h4 className="font-outfit text-sm font-bold text-text-primary">
-                Choose a time
-              </h4>
-              <div className="space-y-2">
-                {scheduledSlots.map((slot) => {
-                  const isActive = selectedSlot?.id === slot.id;
-                  return (
-                    <button
-                      key={slot.id}
-                      onClick={() => handleSelectSlot(slot)}
-                      className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl border-2 transition-all ${
-                        isActive
-                          ? "border-secondary bg-secondary text-white"
-                          : "border-alternate bg-bg-primary hover:border-secondary/40"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <CalendarDays
-                          className={`h-4 w-4 ${isActive ? "text-white" : "text-secondary"}`}
-                        />
-                        <div className="text-left">
-                          <p className={`text-xs font-bold ${isActive ? "text-white" : "text-text-primary"}`}>
-                            {slot.displayDate}
-                          </p>
-                          <p className={`text-[10px] ${isActive ? "text-white/80" : "text-text-secondary"}`}>
-                            {slot.displayTime}
-                          </p>
-                        </div>
-                      </div>
-                      {slot.fee > 0 && (
-                        <span className={`text-xs font-extrabold ${isActive ? "text-white" : "text-secondary"}`}>
-                          +${slot.fee}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
+        {/* Cleaning Duration */}
+        <div className="flex items-center justify-end border-b border-zinc-100 pb-6 pt-2">
+          <span className="text-sm text-zinc-500 font-medium mr-2">Cleaning duration:</span>
+          <span className="text-sm font-bold text-zinc-900">
+            {formatDuration(activeBookingDraft.totalDuration)}
+          </span>
+        </div>
+
+        {/* Service Location */}
+        <div className="space-y-4 pt-2">
+          <h2 className="font-outfit text-[17px] font-bold text-zinc-900">
+            Service location
+          </h2>
+          
+          <div className="w-full h-[120px] bg-zinc-100 rounded-[14px] relative overflow-hidden flex items-center justify-center border border-zinc-200">
+            {/* Map Pin icon representing map center */}
+            <div className="absolute inset-0 opacity-20" style={{ 
+                backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23a1a1aa\' fill-opacity=\'0.4\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'3\'/%3E%3Ccircle cx=\'13\' cy=\'13\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E")',
+                backgroundSize: '20px 20px'
+            }} />
+            <MapPin className="h-8 w-8 text-zinc-900 absolute z-10" style={{ fill: 'currentColor', color: '#18181b' }} />
+          </div>
+
+          {selectedAddress && (
+            <div className="space-y-0 border-b border-zinc-100 pb-2">
+              <div className="flex items-center justify-between py-3">
+                <div className="flex items-center gap-3">
+                  <Home className="h-5 w-5 text-zinc-600" />
+                  <div>
+                    <p className="text-[14px] font-semibold text-zinc-900">My Home</p>
+                    <p className="text-[12px] text-zinc-500 line-clamp-1 max-w-[250px]">
+                      {selectedAddress.fullAddress}
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-zinc-400" />
               </div>
-            </div>
-          )}
-
-          {/* Order Summary section */}
-          {selectedSlot && (
-            <div className="bg-bg-primary rounded-2xl border border-alternate p-4 space-y-3">
-              <h4 className="font-outfit text-sm font-bold text-text-primary">
-                Order Summary
-              </h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between text-text-secondary">
-                  <span>{activeBookingDraft?.serviceName}</span>
-                  <span className="font-bold text-text-primary">
-                    ${activeBookingDraft?.basePrice?.toFixed(2)}
-                  </span>
-                </div>
-                {(activeBookingDraft?.selectedAddons || []).map((addon) => (
-                  <div key={addon.id} className="flex justify-between text-text-secondary">
-                    <span>
-                      {addon.name} × {addon.qty}
-                    </span>
-                    <span className="font-bold text-text-primary">
-                      +${addon.totalPrice.toFixed(2)}
-                    </span>
+              <div className="w-full h-px bg-zinc-100" />
+              <div className="flex items-center justify-between py-3">
+                <div className="flex items-center gap-3">
+                  <User className="h-5 w-5 text-zinc-600" />
+                  <div>
+                    <p className="text-[14px] font-semibold text-zinc-900">I'll be home (Meet at door)</p>
+                    <p className="text-[12px] text-zinc-500">Tap to add entry instructions</p>
                   </div>
-                ))}
-                {selectedSlot.fee > 0 && (
-                  <div className="flex justify-between text-text-secondary">
-                    <span>{MODE_CONFIG[selectedSlot.mode]?.label} fee</span>
-                    <span className="font-bold text-text-primary">
-                      +${selectedSlot.fee.toFixed(2)}
-                    </span>
-                  </div>
-                )}
-                <div className="border-t border-alternate pt-2 flex justify-between font-extrabold text-text-primary text-sm">
-                  <span>Total</span>
-                  <span className="text-primary">
-                    ${((activeBookingDraft?.totalPrice || 0) + (selectedSlot.fee || 0)).toFixed(2)}
-                  </span>
                 </div>
+                <ChevronRight className="h-4 w-4 text-zinc-400" />
               </div>
             </div>
           )}
         </div>
+
       </div>
 
       {/* Sticky Bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-bg-secondary border-t border-alternate py-4 px-6 flex items-center justify-between max-w-md mx-auto">
-        <div className="flex flex-col">
-          {selectedSlot ? (
-            <>
-              <span className="text-[10px] text-text-secondary font-semibold uppercase tracking-wide">
-                {selectedSlot.displayDate} · {selectedSlot.displayTime}
-              </span>
-              <span className="font-outfit text-lg font-extrabold text-primary">
-                ${((activeBookingDraft?.totalPrice || 0) + (selectedSlot.fee || 0)).toFixed(2)}
-              </span>
-            </>
-          ) : (
-            <span className="text-sm text-text-secondary">Select a time slot</span>
-          )}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white max-w-md mx-auto">
+        {/* Progress bar */}
+        <div className="w-full h-1 bg-primary/20">
+          <div className="h-full bg-primary" style={{ width: '66%' }} />
         </div>
+        
+        <div className="px-5 py-4 flex items-center justify-between">
+          <div className="flex flex-col">
+            <span className="text-[13px] text-zinc-500 font-medium mb-1">
+              Total
+            </span>
+            <div className="flex items-center gap-1 cursor-pointer">
+              <span className="font-outfit text-xl font-bold text-zinc-900">
+                ${totalAmount}
+              </span>
+              <ChevronUp className="h-4 w-4 text-zinc-900" />
+            </div>
+          </div>
 
-        <button
-          onClick={handleConfirm}
-          disabled={!selectedSlot || securing}
-          className="px-7 h-14 rounded-full bg-primary text-white font-sans text-sm font-bold hover:bg-primary/95 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 shadow-md flex items-center justify-center gap-2"
-        >
-          {securing ? (
-            <Loader2 className="h-5 w-5 animate-spin" />
-          ) : (
-            <>
-              Confirm <ChevronRight className="h-4 w-4" />
-            </>
-          )}
-        </button>
+          <button
+            onClick={handleConfirm}
+            disabled={!selectedSlot || securing}
+            className="px-8 py-3.5 rounded-[14px] bg-zinc-900 text-white font-sans text-[15px] font-bold hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center justify-center min-w-[140px]"
+          >
+            {securing ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              "Checkout"
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );
