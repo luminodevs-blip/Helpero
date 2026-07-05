@@ -348,14 +348,14 @@ export default function AddonsPage() {
             {/* Modal Footer */}
             <div className="absolute bottom-0 left-0 right-0 bg-white pt-3 pb-[40px] px-5">
               {/* Promo savings notice */}
-              <div className="absolute -top-[40px] left-0 right-0 h-[40px] bg-[#7B82F4] flex items-center justify-center gap-2 px-4 shadow-sm">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+              <div className="absolute -top-[32px] left-0 right-0 h-[32px] bg-[#7B82F4] flex items-center justify-center gap-2 px-4 shadow-sm">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white shrink-0">
                   <path d="M4 3h16a2 2 0 0 1 2 2v6a1 1 0 0 0 1 1v0a1 1 0 0 0-1 1v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6a1 1 0 0 0-1-1v0a1 1 0 0 0 1-1V5a2 2 0 0 1 2-2z"></path>
                   <line x1="8" y1="12" x2="8.01" y2="12"></line>
                   <line x1="12" y1="12" x2="12.01" y2="12"></line>
                   <line x1="16" y1="12" x2="16.01" y2="12"></line>
                 </svg>
-                <span className="font-sans text-[14px] font-medium text-white">
+                <span className="font-sans text-[14px] font-normal text-white leading-none mt-0.5">
                   You saved $50 with promos
                 </span>
               </div>
