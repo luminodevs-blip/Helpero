@@ -25,12 +25,12 @@ const MODE_CONFIG = {
     color: "text-primary",
   },
   standard: {
-    icon: Clock,
+    icon: null,
     label: "Standard",
     color: "text-zinc-400",
   },
   scheduled: {
-    icon: CalendarDays,
+    icon: null,
     label: "Scheduled",
     color: "text-zinc-400",
   },
@@ -158,37 +158,41 @@ export default function DateTimePage() {
     ...(scheduledSlots.length > 0 ? [scheduledSlots[0]] : []),
   ];
 
-  const formatDuration = (minutes: number) => {
+  const formatDuration = (minutes?: number) => {
+    if (!minutes) return "0m";
     const hrs = Math.floor(minutes / 60);
     const mins = minutes % 60;
     if (hrs > 0) {
-      return `${hrs} hr ${mins} min`;
+      return `${hrs}h ${mins}m`;
     }
-    return `${mins} min`;
+    return `${mins}m`;
   };
 
   const totalAmount = ((activeBookingDraft?.totalPrice || 0) + (selectedSlot?.fee || 0)).toFixed(2);
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-32 relative flex flex-col border-x border-zinc-100 shadow-sm">
-      {/* Top thin accent line to match screenshot status bar edge */}
-      <div className="h-1 bg-primary w-full" />
+    <div className="w-full max-w-md mx-auto min-h-screen bg-primary pb-32 relative flex flex-col border-x border-zinc-100 shadow-sm">
+      {/* Top spacing to simulate status bar area */}
+      <div className="h-10 bg-primary w-full flex-shrink-0" />
       
-      {/* Header */}
-      <div className="px-5 py-4 flex items-center justify-between border-b border-zinc-100 bg-white sticky top-0 z-30">
-        <button
-          onClick={() => router.back()}
-          className="p-2 -ml-2 text-zinc-900 hover:bg-zinc-100 rounded-full transition-all"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </button>
-        <h1 className="font-outfit text-[17px] font-bold text-zinc-900 absolute left-1/2 -translate-x-1/2">
-          Service details
-        </h1>
-        <div className="w-9 h-9" /> {/* Spacer */}
-      </div>
+      {/* Main White Container */}
+      <div className="flex-1 bg-white rounded-t-[24px] flex flex-col relative z-20">
+        
+        {/* Header */}
+        <div className="px-5 py-4 flex items-center justify-between border-b border-zinc-100 bg-white sticky top-0 z-30 rounded-t-[24px]">
+          <button
+            onClick={() => router.back()}
+            className="p-2 -ml-2 text-zinc-900 hover:bg-zinc-100 rounded-full transition-all"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+          <h1 className="font-outfit text-[17px] font-bold text-zinc-900 absolute left-1/2 -translate-x-1/2">
+            Service details
+          </h1>
+          <div className="w-9 h-9" /> {/* Spacer */}
+        </div>
 
-      <div className="px-5 pt-6 pb-6 space-y-6">
+        <div className="px-5 pt-6 pb-6 space-y-6">
         
         {/* Arrival Time */}
         <div className="space-y-4">
@@ -230,18 +234,18 @@ export default function DateTimePage() {
                   <button
                     key={slot.id}
                     onClick={() => handleSelectSlot(slot)}
-                    className={`shrink-0 w-[140px] rounded-[14px] p-3 text-left transition-all border flex flex-col justify-between min-h-[110px] ${
+                    className={`shrink-0 w-[130px] rounded-[14px] p-3 text-left transition-all border flex flex-col justify-between min-h-[110px] ${
                       isSelected
-                        ? "border-zinc-900 bg-white shadow-sm ring-1 ring-zinc-900"
+                        ? "border-primary bg-primary/5 ring-1 ring-primary/20"
                         : "border-zinc-200 bg-white hover:border-zinc-300"
                     }`}
                   >
                     <div>
                       <div className="flex items-center gap-1.5 mb-2">
-                        <span className={`text-[13px] font-medium text-zinc-900`}>
+                        <span className={`text-[14px] font-medium text-zinc-900`}>
                           {cfg.label}
                         </span>
-                        <ModeIcon className={`h-3.5 w-3.5 ${cfg.color}`} />
+                        {ModeIcon && <ModeIcon className={`h-3.5 w-3.5 text-primary`} style={{ fill: 'currentColor' }} />}
                       </div>
                       <p className="text-[13px] text-zinc-500 font-medium leading-tight">
                         {slot.displayDate}
@@ -251,12 +255,16 @@ export default function DateTimePage() {
                       </p>
                     </div>
                     
-                    {slot.fee > 0 ? (
-                      <p className="text-[11px] text-zinc-500 font-medium mt-3 truncate">
-                        + ${slot.fee.toFixed(2)} fee
+                    {slot.mode === "standard" ? (
+                      <p className="text-[12px] text-zinc-500 font-medium mt-3 truncate">
+                        free
+                      </p>
+                    ) : slot.fee > 0 ? (
+                      <p className="text-[12px] text-zinc-500 font-medium mt-3 truncate">
+                        + ${slot.fee}
                       </p>
                     ) : (
-                      <p className="text-[11px] text-zinc-400 font-medium mt-3 opacity-0">
+                      <p className="text-[12px] text-zinc-400 font-medium mt-3 opacity-0">
                         Placeholder
                       </p>
                     )}
@@ -271,7 +279,7 @@ export default function DateTimePage() {
         <div className="flex items-center justify-end border-b border-zinc-100 pb-6 pt-2">
           <span className="text-sm text-zinc-500 font-medium mr-2">Cleaning duration:</span>
           <span className="text-sm font-bold text-zinc-900">
-            {formatDuration(activeBookingDraft.totalDuration)}
+            {formatDuration(activeBookingDraft?.totalDuration)}
           </span>
         </div>
 
@@ -294,9 +302,9 @@ export default function DateTimePage() {
             <div className="space-y-0 border-b border-zinc-100 pb-2">
               <div className="flex items-center justify-between py-3">
                 <div className="flex items-center gap-3">
-                  <Home className="h-5 w-5 text-zinc-600" />
+                  <Home className="h-5 w-5 text-zinc-600" style={{ fill: 'currentColor' }} />
                   <div>
-                    <p className="text-[14px] font-semibold text-zinc-900">My Home</p>
+                    <p className="text-[14px] font-semibold text-zinc-900">Home</p>
                     <p className="text-[12px] text-zinc-500 line-clamp-1 max-w-[250px]">
                       {selectedAddress.fullAddress}
                     </p>
@@ -307,7 +315,7 @@ export default function DateTimePage() {
               <div className="w-full h-px bg-zinc-100" />
               <div className="flex items-center justify-between py-3">
                 <div className="flex items-center gap-3">
-                  <User className="h-5 w-5 text-zinc-600" />
+                  <User className="h-5 w-5 text-zinc-600" style={{ fill: 'currentColor' }} />
                   <div>
                     <p className="text-[14px] font-semibold text-zinc-900">I'll be home (Meet at door)</p>
                     <p className="text-[12px] text-zinc-500">Tap to add entry instructions</p>
@@ -320,6 +328,8 @@ export default function DateTimePage() {
         </div>
 
       </div>
+
+      </div> {/* End Main White Container */}
 
       {/* Sticky Bottom CTA */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white max-w-md mx-auto">
