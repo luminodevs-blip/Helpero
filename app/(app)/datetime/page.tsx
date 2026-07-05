@@ -206,7 +206,7 @@ export default function DateTimePage() {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="h-[110px] w-[140px] shrink-0 rounded-[14px] bg-zinc-100 animate-pulse"
+                  className="h-[128px] w-[146px] shrink-0 rounded-[12px] bg-zinc-100 animate-pulse"
                 />
               ))}
             </div>
@@ -235,7 +235,7 @@ export default function DateTimePage() {
                   <button
                     key={`${slot.id}-${slot.mode}`}
                     onClick={() => handleSelectSlot(slot)}
-                    className={`shrink-0 w-[130px] rounded-[14px] p-3 text-left transition-all border flex flex-col justify-between min-h-[110px] ${
+                    className={`shrink-0 w-[146px] h-[128px] rounded-[12px] p-3 text-left transition-all border flex flex-col justify-between ${
                       isSelected
                         ? "border-primary bg-primary/5 ring-1 ring-primary/20"
                         : "border-zinc-200 bg-white hover:border-zinc-300"
