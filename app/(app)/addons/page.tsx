@@ -48,10 +48,7 @@ export default function AddonsPage() {
 
   if (!activeBookingDraft) return null;
 
-  const handleToggleAddon = (addon: any) => {
-    const isSelected = getAddonQty(addon.id) > 0;
-    const action = isSelected ? "remove" : "add";
-
+  const handleQtyChange = (addon: any, action: "add" | "remove") => {
     // 1. Calculate updated draft using the booking utility
     const updatedDraft = updateBookingAddon(activeBookingDraft, addon, action);
 
@@ -110,34 +107,61 @@ export default function AddonsPage() {
             {addons.length > 0 ? (
               <div className="grid grid-cols-3 gap-x-3 gap-y-6">
                 {addons.map((addon) => {
-                  const isSelected = getAddonQty(addon.id) > 0;
-                  // Dummy original price calculation (just for UI design matching)
+                  const qty = getAddonQty(addon.id);
                   const originalPrice = addon.price ? (addon.price + 10).toFixed(2) : null;
 
                   return (
                     <div
                       key={addon.id}
-                      onClick={() => handleToggleAddon(addon)}
-                      className="flex flex-col cursor-pointer transition-opacity hover:opacity-90 active:opacity-70 group"
+                      className="flex flex-col group"
                     >
                       {/* Image Thumbnail */}
-                      <div className="relative w-full h-[100px] rounded-[8px] bg-zinc-100 overflow-hidden mb-2 border border-zinc-100">
+                      <div 
+                        className="relative w-full h-[100px] rounded-[8px] bg-zinc-100 overflow-hidden mb-2 border border-zinc-100 cursor-pointer"
+                        onClick={() => {
+                          if (qty === 0) handleQtyChange(addon, "add");
+                        }}
+                      >
                         {addon.image_url ? (
                           <img
                             src={addon.image_url}
                             alt={addon.name}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover transition-opacity hover:opacity-90 active:opacity-70"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-zinc-100 text-zinc-300 font-outfit text-xs font-bold text-center px-2">
+                          <div className="w-full h-full flex items-center justify-center bg-zinc-100 text-zinc-300 font-outfit text-xs font-bold text-center px-2 transition-opacity hover:opacity-90 active:opacity-70">
                             {addon.name}
                           </div>
                         )}
 
-                        {/* Plus / Check Button */}
-                        <div className="absolute bottom-1.5 right-1.5 w-[28px] h-[28px] rounded-[8px] bg-[#7B82F4]/85 backdrop-blur-[2px] text-white flex items-center justify-center shadow-sm">
-                          {isSelected ? (
-                            <Check className="h-4 w-4" strokeWidth={3} />
+                        {/* Expanding Counter Button */}
+                        <div 
+                          className={`absolute bottom-1.5 right-1.5 h-[28px] rounded-[8px] bg-[#7B82F4]/85 backdrop-blur-[2px] text-white shadow-sm transition-all duration-300 overflow-hidden flex items-center ${
+                            qty > 0 ? "w-[76px] justify-between px-1" : "w-[28px] justify-center cursor-pointer hover:bg-[#7B82F4]"
+                          }`}
+                          onClick={(e) => {
+                            if (qty === 0) {
+                              e.stopPropagation();
+                              handleQtyChange(addon, "add");
+                            }
+                          }}
+                        >
+                          {qty > 0 ? (
+                            <>
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); handleQtyChange(addon, "remove"); }}
+                                className="w-6 h-6 flex items-center justify-center hover:bg-white/20 rounded-md transition-colors shrink-0"
+                              >
+                                <Minus className="w-3.5 h-3.5" strokeWidth={2.5} />
+                              </button>
+                              <span className="font-outfit text-[13px] font-bold">{qty}</span>
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); handleQtyChange(addon, "add"); }}
+                                className="w-6 h-6 flex items-center justify-center hover:bg-white/20 rounded-md transition-colors shrink-0"
+                              >
+                                <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
+                              </button>
+                            </>
                           ) : (
                             <Plus className="w-[18px] h-[18px]" strokeWidth={2.5} />
                           )}
