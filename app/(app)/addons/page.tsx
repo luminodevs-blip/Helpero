@@ -242,12 +242,29 @@ export default function AddonsPage() {
 
       {/* Bottom Sheet Modal */}
       {selectedAddonDetails && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4 animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4">
+          <style>{`
+            @keyframes sheetFadeIn {
+              from { opacity: 0; }
+              to { opacity: 1; }
+            }
+            @keyframes sheetSlideUp {
+              from { transform: translateY(100%); }
+              to { transform: translateY(0); }
+            }
+            .animate-sheet-fade {
+              animation: sheetFadeIn 0.3s ease-out forwards;
+            }
+            .animate-sheet-slide {
+              animation: sheetSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+          `}</style>
+          
           <div 
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm animate-sheet-fade"
             onClick={() => setSelectedAddonDetails(null)}
           />
-          <div className="relative w-full max-w-md bg-white rounded-t-[24px] sm:rounded-[24px] overflow-hidden flex flex-col max-h-[95vh] animate-in slide-in-from-bottom duration-300">
+          <div className="relative w-full max-w-md bg-white rounded-t-[24px] sm:rounded-[24px] overflow-hidden flex flex-col max-h-[95vh] animate-sheet-slide">
             {/* Image Header */}
             <div className="relative w-full h-[240px] bg-zinc-100 shrink-0">
               {/* Drag Handle */}
