@@ -279,7 +279,7 @@ export default function DateTimePage() {
         </div>
 
         {/* Cleaning Duration */}
-        <div className="flex items-center justify-end border-b border-zinc-100 pb-6 !mt-[16px]">
+        <div className="flex items-center justify-end border-b border-zinc-100 pb-3 !mt-[16px]">
           <span className="font-sans text-[14.5px] font-normal text-[#57636C] mr-2">Cleaning duration:</span>
           <span className="font-sans text-[14.5px] font-medium text-zinc-900">
             {formatDuration(activeBookingDraft?.totalDuration)}
