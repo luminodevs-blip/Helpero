@@ -105,7 +105,7 @@ export default function AddonsPage() {
             </h2>
 
             {addons.length > 0 ? (
-              <div className="grid grid-cols-3 gap-x-3 gap-y-6">
+              <div className="grid grid-cols-3 gap-x-4 gap-y-6">
                 {addons.map((addon) => {
                   const qty = getAddonQty(addon.id);
                   const originalPrice = addon.price ? (addon.price + 10).toFixed(2) : null;
@@ -170,13 +170,13 @@ export default function AddonsPage() {
 
                       {/* Details */}
                       <div className="flex flex-col px-0.5">
-                        <p className="font-outfit text-[14px] font-medium text-zinc-900 leading-tight mb-0.5 line-clamp-1">
+                        <p className="font-outfit text-[14px] font-medium text-zinc-900 leading-tight mb-1 line-clamp-1">
                           {addon.name}
                         </p>
-                        <button className="text-[12.5px] font-normal text-[#7B82F4] self-start hover:underline mb-1.5">
+                        <button className="text-[12.5px] font-normal text-[#7B82F4] self-start hover:underline mb-1">
                           Learn more
                         </button>
-                        <div className="flex items-center gap-1.5 flex-wrap">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-sans text-[14px] font-normal text-zinc-900">
                             ${addon.price?.toFixed(2) || "0.00"}
                           </span>
