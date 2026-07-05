@@ -284,7 +284,7 @@ export default function AddonsPage() {
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto px-5 py-5 pb-[180px]">
+            <div className="flex-1 overflow-y-auto px-5 pt-4 pb-[180px]">
               <div className="flex justify-between items-center mb-[18px]">
                 <div className="flex flex-col">
                   <h3 className="font-outfit text-[16px] font-medium text-zinc-900 mb-1">
