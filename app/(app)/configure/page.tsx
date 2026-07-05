@@ -75,9 +75,9 @@ export default function ConfigurePage() {
       <div className="bg-white px-5 pt-12 pb-5 flex items-center justify-between sticky top-0 z-30">
         <button
           onClick={() => router.back()}
-          className="p-1 -ml-1 rounded-full hover:bg-zinc-100 text-zinc-900 focus:outline-none transition-colors"
+          className="p-1 -ml-1 flex items-center justify-center rounded-full hover:bg-zinc-100 text-zinc-900 focus:outline-none transition-colors"
         >
-          <ArrowLeft className="h-6 w-6" strokeWidth={2.5} />
+          <ArrowLeft className="w-[24px] h-[24px]" strokeWidth={2} />
         </button>
         
         <h1 className="font-outfit text-[20px] font-semibold text-zinc-900 absolute left-1/2 -translate-x-1/2">
