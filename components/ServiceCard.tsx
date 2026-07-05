@@ -2,8 +2,24 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Star, Sparkles, ChevronDown, ChevronUp, X } from "lucide-react";
+import { Star, Sparkles, ChevronDown, ChevronUp, X, Key, Zap, Droplet, DoorOpen, ParkingCircle, Box, Square, Package, Maximize, Wrench, Wifi, AppWindow, Leaf } from "lucide-react";
 
+const iconMap: Record<string, any> = {
+  access: Key,
+  power: Zap,
+  bucket: Droplet,
+  water_drop: Droplet,
+  cleaning_services: Sparkles,
+  door_open: DoorOpen,
+  local_parking: ParkingCircle,
+  inventory_2: Box,
+  wall: Square,
+  items: Package,
+  open_in_full: Maximize,
+  tools: Wrench,
+  wifi: Wifi,
+  window: AppWindow,
+};
 interface ServiceCardProps {
   service: any;
   onClick?: () => void;
@@ -270,14 +286,16 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
                 <div>
                   <h4 className="font-outfit text-[17px] font-medium text-zinc-900 mb-4">What we will need from you</h4>
                   <div className="grid grid-cols-3 gap-3">
-                    {service.requirements.map((req: any, idx: number) => (
-                      <div key={idx} className="bg-[#f8f9fa] rounded-xl p-3 aspect-square flex flex-col justify-center border border-zinc-50">
-                        <div className="h-6 w-6 text-zinc-600 mb-2">
-                          <Sparkles className="h-full w-full" /> {/* Using generic icon */}
+                    {service.requirements.map((req: any, idx: number) => {
+                      const IconComponent = (typeof req === 'object' && req.icon) ? (iconMap[req.icon] || Sparkles) : Sparkles;
+                      const text = typeof req === 'object' ? (req.text || req.name) : req;
+                      return (
+                        <div key={idx} className="bg-[#f8f9fa] rounded-xl p-3 aspect-square flex flex-col justify-center border border-zinc-50">
+                          <IconComponent className="h-6 w-6 text-zinc-600 mb-3" />
+                          <p className="text-[14.5px] font-semibold text-zinc-900 leading-tight">{text}</p>
                         </div>
-                        <p className="text-[12px] leading-tight font-semibold text-zinc-800">{req.text}</p>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -291,8 +309,8 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
                   <div className="flex justify-between gap-4">
                     <ul className="space-y-3 flex-1">
                       {service.cleaner_bullets.map((bullet: string, idx: number) => (
-                        <li key={idx} className="flex items-center gap-2 text-[14px] text-zinc-500 font-medium">
-                          <Star className="h-4 w-4 text-zinc-400 shrink-0" />
+                        <li key={idx} className="flex items-start gap-2.5 text-[15px] font-normal text-zinc-800 leading-snug">
+                          <Leaf className="h-4 w-4 text-primary mt-0.5 shrink-0" fill="currentColor" />
                           {bullet}
                         </li>
                       ))}
