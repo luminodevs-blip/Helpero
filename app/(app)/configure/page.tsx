@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
 import { supabase } from "@/lib/supabase";
 import { updateBookingAddon } from "@/lib/booking";
-import { ArrowLeft, Plus, Minus, Star, Sparkles, Loader2, ChevronUp } from "lucide-react";
+import { ArrowLeft, Plus, Minus, Star, Sparkles, Loader2, ChevronUp, Info } from "lucide-react";
 
 export default function ConfigurePage() {
   const router = useRouter();
@@ -176,10 +176,8 @@ export default function ConfigurePage() {
 
             {/* Info Box */}
             <div className="bg-zinc-50/80 rounded-xl p-4 flex gap-3 items-start">
-              <div className="w-[18px] h-[18px] rounded-full bg-zinc-500 text-white flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">
-                i
-              </div>
-              <p className="text-[13px] text-zinc-500 leading-snug">
+              <Info className="w-4 h-4 text-[#57636C] shrink-0 mt-0.5" strokeWidth={2} />
+              <p className="font-sans text-[14px] font-light text-[#57636C] leading-snug">
                 Estimated cleaning time adjusts automatically based on your selection.
               </p>
             </div>
