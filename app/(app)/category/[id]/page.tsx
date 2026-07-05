@@ -146,7 +146,7 @@ export default function CategoryPage() {
       </div>
 
       {/* ── 2. CONTENT CARD — slides over hero, rounded top corners ── */}
-      <div className="flex-1 bg-white rounded-t-[10px] -mt-12 relative z-10 px-5 pt-[10px] pb-32 shadow-[0_-4px_24px_rgba(0,0,0,0.08)]">
+      <div className="flex-1 bg-white rounded-t-[10px] -mt-12 relative px-5 pt-[10px] pb-32 shadow-[0_-4px_24px_rgba(0,0,0,0.08)]">
 
         {/* Category Title + Rating */}
         <div className="space-y-[6px] mb-[16px]">
