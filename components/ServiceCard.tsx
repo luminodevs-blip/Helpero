@@ -235,7 +235,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
 
               {/* 3. See the difference yourself */}
               {service.before_after_images && service.before_after_images.length > 0 && (
-                <div>
+                <div className="bg-[#f5f7fb] -mx-5 px-5 py-6">
                   <h4 className="font-outfit text-[17px] font-medium text-zinc-900 mb-4">See the difference yourself</h4>
                   <div className="grid grid-cols-2 gap-3">
                     {service.before_after_images.slice(0, 4).map((img: string, idx: number) => (
