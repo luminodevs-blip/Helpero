@@ -226,13 +226,13 @@ export default function DateTimePage() {
           ) : (
             <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-5 px-5">
               {slotsByMode.map((slot) => {
-                const isSelected = selectedSlot?.id === slot.id;
+                const isSelected = selectedSlot?.id === slot.id && selectedSlot?.mode === slot.mode;
                 const cfg = MODE_CONFIG[slot.mode] || MODE_CONFIG.standard;
                 const ModeIcon = cfg.icon;
 
                 return (
                   <button
-                    key={slot.id}
+                    key={`${slot.id}-${slot.mode}`}
                     onClick={() => handleSelectSlot(slot)}
                     className={`shrink-0 w-[130px] rounded-[14px] p-3 text-left transition-all border flex flex-col justify-between min-h-[110px] ${
                       isSelected
