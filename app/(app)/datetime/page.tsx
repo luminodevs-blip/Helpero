@@ -297,13 +297,22 @@ export default function DateTimePage() {
             className="w-full h-[120px] bg-zinc-100 rounded-t-[10px] relative overflow-hidden flex items-center justify-center border border-zinc-200 cursor-pointer"
           >
             {selectedAddress?.lat && selectedAddress?.lng ? (
-              <iframe
-                className="absolute top-1/2 left-1/2 w-[110%] h-[250px] -translate-x-1/2 -translate-y-1/2"
-                frameBorder="0"
-                style={{ border: 0, pointerEvents: 'none' }}
-                src={`https://maps.google.com/maps?q=${selectedAddress.lat},${selectedAddress.lng}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
-                allowFullScreen
-              />
+              <>
+                <iframe
+                  className="absolute top-1/2 left-1/2 w-[110%] h-[250px] -translate-x-1/2 -translate-y-1/2"
+                  frameBorder="0"
+                  style={{ border: 0, pointerEvents: 'none' }}
+                  src={`https://maps.google.com/maps?q=${selectedAddress.lat},${selectedAddress.lng}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
+                  allowFullScreen
+                />
+                {/* Custom Black Marker covering the red one */}
+                <div 
+                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-full z-10"
+                  style={{ filter: 'drop-shadow(0px 0px 8px rgba(255, 255, 255, 0.9))' }}
+                >
+                  <MdLocationOn className="w-[52px] h-[52px] text-zinc-900" />
+                </div>
+              </>
             ) : (
               <>
                 {/* Map Pin icon representing map center */}
