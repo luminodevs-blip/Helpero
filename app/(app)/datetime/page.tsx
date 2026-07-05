@@ -235,7 +235,7 @@ export default function DateTimePage() {
                   <button
                     key={`${slot.id}-${slot.mode}`}
                     onClick={() => handleSelectSlot(slot)}
-                    className={`shrink-0 w-[146px] h-[128px] rounded-[12px] p-3 text-left transition-all border flex flex-col justify-between ${
+                    className={`shrink-0 w-[146px] h-[128px] rounded-[12px] p-[14px] text-left transition-all border flex flex-col justify-between ${
                       isSelected
                         ? "border-primary bg-primary/5 ring-1 ring-primary/20"
                         : "border-zinc-200 bg-white hover:border-zinc-300"
