@@ -285,7 +285,7 @@ export default function AddonsPage() {
 
             {/* Content */}
             <div className="flex-1 overflow-y-auto px-5 py-5 pb-[180px]">
-              <div className="flex justify-between items-center mb-5">
+              <div className="flex justify-between items-center mb-[18px]">
                 <div className="flex flex-col">
                   <h3 className="font-outfit text-[16px] font-medium text-zinc-900 mb-1">
                     {selectedAddonDetails.name}
@@ -321,6 +321,8 @@ export default function AddonsPage() {
                   </button>
                 </div>
               </div>
+
+              <div className="h-[1px] w-full bg-zinc-100 mb-[18px]" />
 
               <p className="font-sans text-[14.5px] font-normal text-zinc-900 mb-6">
                 Additional 30 mins added to your booking.
