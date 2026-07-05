@@ -143,17 +143,17 @@ export default function ConfigurePage() {
                       </div>
 
                       {/* Counter Controls */}
-                      <div className="flex items-center bg-white border border-zinc-100 rounded-full p-[3px] shadow-sm shrink-0">
+                      <div className="flex items-center justify-between bg-[#F5F7FB] rounded-[10px] p-[5px] shrink-0 w-[110px]">
                         <button
                           type="button"
                           onClick={() => handleQtyChange(addon, "remove")}
                           disabled={qty === 0}
-                          className="h-8 w-8 rounded-full flex items-center justify-center text-zinc-400 bg-transparent disabled:opacity-50 disabled:cursor-not-allowed hover:bg-zinc-50 transition-colors"
+                          className="h-[30px] w-[30px] rounded-[8px] flex items-center justify-center text-zinc-900 bg-white shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-zinc-50 transition-colors"
                         >
-                          <Minus className="h-4 w-4" strokeWidth={2} />
+                          <Minus className="w-[18px] h-[18px]" strokeWidth={2} />
                         </button>
                         
-                        <span className="font-sans text-[15px] font-bold text-zinc-900 w-7 text-center">
+                        <span className="font-sans text-[20px] font-medium text-zinc-900 text-center">
                           {qty}
                         </span>
                         
@@ -161,9 +161,9 @@ export default function ConfigurePage() {
                           type="button"
                           onClick={() => handleQtyChange(addon, "add")}
                           disabled={qty >= 6}
-                          className="h-8 w-8 rounded-full flex items-center justify-center text-white bg-[#7B82F4] shadow-sm hover:bg-[#6A70E0] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          className="h-[30px] w-[30px] rounded-[8px] flex items-center justify-center text-white bg-[#7B82F4] shadow-sm hover:bg-[#6A70E0] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
-                          <Plus className="h-4 w-4" strokeWidth={2} />
+                          <Plus className="w-[18px] h-[18px]" strokeWidth={2} />
                         </button>
                       </div>
                     </div>
