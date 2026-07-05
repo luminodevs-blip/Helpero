@@ -18,25 +18,51 @@ export default function AddonsPage() {
   // Swipe-to-close refs
   const touchStartY = useRef<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartY.current = e.touches[0].clientY;
+    if (sheetRef.current) {
+      sheetRef.current.style.transition = "none";
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartY.current === null) return;
+    
+    // Only allow swipe down if we are at the top of the scroll view
+    if (scrollRef.current && scrollRef.current.scrollTop > 0) {
+      return;
+    }
+
+    const currentY = e.touches[0].clientY;
+    const diff = currentY - touchStartY.current;
+    
+    if (diff > 0 && sheetRef.current) {
+      sheetRef.current.style.transform = `translateY(${diff}px)`;
+    }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartY.current === null) return;
     
-    // Only allow swipe down to close if we are at the top of the scroll view
-    if (scrollRef.current && scrollRef.current.scrollTop > 0) {
-      touchStartY.current = null;
-      return;
-    }
-
     const currentY = e.changedTouches[0].clientY;
     const diff = currentY - touchStartY.current;
     
-    if (diff > 50) { // 50px threshold for swipe down
-      setSelectedAddonDetails(null);
+    if (sheetRef.current) {
+      sheetRef.current.style.transition = "transform 0.3s ease-out";
+    }
+
+    if (diff > 100) { // 100px threshold for swipe down to close
+      if (sheetRef.current) {
+        sheetRef.current.style.transform = `translateY(100%)`;
+      }
+      setTimeout(() => setSelectedAddonDetails(null), 300);
+    } else {
+      // Snap back if threshold not met
+      if (sheetRef.current) {
+        sheetRef.current.style.transform = `translateY(0)`;
+      }
     }
     touchStartY.current = null;
   };
@@ -292,8 +318,10 @@ export default function AddonsPage() {
             onClick={() => setSelectedAddonDetails(null)}
           />
           <div 
+            ref={sheetRef}
             className="relative w-full max-w-md bg-white rounded-t-[10px] sm:rounded-[10px] overflow-hidden flex flex-col max-h-[95vh] animate-sheet-slide"
             onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
             {/* Image Header */}
