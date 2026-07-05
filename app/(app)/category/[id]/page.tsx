@@ -131,7 +131,7 @@ export default function CategoryPage() {
         {/* Back Button — white circle, floating above video */}
         <button
           onClick={() => router.back()}
-          className="absolute top-12 left-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md hover:bg-zinc-50 active:scale-95 transition-all focus:outline-none"
+          className="absolute top-10 left-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md hover:bg-zinc-50 active:scale-95 transition-all focus:outline-none"
         >
           <ArrowLeft className="h-5 w-5 text-zinc-800" />
         </button>
@@ -139,7 +139,7 @@ export default function CategoryPage() {
         {/* Share Button — white circle, floating above video */}
         <button
           onClick={handleShare}
-          className="absolute top-12 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md hover:bg-zinc-50 active:scale-95 transition-all focus:outline-none"
+          className="absolute top-10 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md hover:bg-zinc-50 active:scale-95 transition-all focus:outline-none"
         >
           <Share2 className="h-[18px] w-[18px] text-zinc-800" />
         </button>
