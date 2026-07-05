@@ -121,7 +121,7 @@ export default function AddonsPage() {
                       className="flex flex-col cursor-pointer transition-opacity hover:opacity-90 active:opacity-70 group"
                     >
                       {/* Image Thumbnail */}
-                      <div className="relative w-full aspect-square rounded-[12px] bg-zinc-100 overflow-hidden mb-2 border border-zinc-100">
+                      <div className="relative w-full h-[100px] rounded-[8px] bg-zinc-100 overflow-hidden mb-2 border border-zinc-100">
                         {addon.image_url ? (
                           <img
                             src={addon.image_url}
@@ -146,18 +146,18 @@ export default function AddonsPage() {
 
                       {/* Details */}
                       <div className="flex flex-col px-0.5">
-                        <p className="font-outfit text-[14px] font-bold text-zinc-900 leading-tight mb-0.5 line-clamp-1">
+                        <p className="font-outfit text-[14px] font-medium text-zinc-900 leading-tight mb-0.5 line-clamp-1">
                           {addon.name}
                         </p>
-                        <button className="text-[11px] font-medium text-[#7B82F4] self-start hover:underline mb-1.5">
+                        <button className="text-[12.5px] font-normal text-[#7B82F4] self-start hover:underline mb-1.5">
                           Learn more
                         </button>
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="font-outfit text-[13px] font-bold text-zinc-900">
+                          <span className="font-sans text-[14px] font-normal text-zinc-900">
                             ${addon.price?.toFixed(2) || "0.00"}
                           </span>
                           {originalPrice && (
-                            <span className="font-sans text-[11px] font-medium text-zinc-300 line-through">
+                            <span className="font-sans text-[14px] font-normal text-[#e0e3e7] line-through">
                               ${originalPrice}
                             </span>
                           )}
