@@ -21,7 +21,7 @@ export function CartAnimationProvider({ children }: { children: ReactNode }) {
     setTimeout(() => {
       setIsAnimating(false);
       onComplete();
-    }, 1050);
+    }, 1200);
   };
 
   return (
@@ -30,7 +30,10 @@ export function CartAnimationProvider({ children }: { children: ReactNode }) {
       
       {/* Animation Overlay */}
       {isAnimating && (
-        <div className="fixed inset-0 z-[99999] bg-primary flex items-center justify-center pointer-events-none">
+        <div 
+          className="fixed inset-0 z-[99999] bg-primary flex items-center justify-center pointer-events-none"
+          style={{ animation: "fadeOverlay 0.3s ease-out forwards" }}
+        >
           <div className="w-[300px] h-[300px] flex items-center justify-center">
             <Lottie 
               animationData={animationData} 
@@ -39,6 +42,12 @@ export function CartAnimationProvider({ children }: { children: ReactNode }) {
               style={{ width: "100%", height: "100%" }}
             />
           </div>
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes fadeOverlay {
+              0% { opacity: 0; }
+              100% { opacity: 1; }
+            }
+          `}} />
         </div>
       )}
     </CartAnimationContext.Provider>
