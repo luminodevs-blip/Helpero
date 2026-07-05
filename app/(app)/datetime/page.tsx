@@ -288,17 +288,9 @@ export default function DateTimePage() {
 
         {/* Service Location */}
         <div className="space-y-4 pt-2">
-          <div className="flex items-center justify-between">
-            <h2 className="font-outfit text-[17px] font-medium text-zinc-900">
-              Service location
-            </h2>
-            <button 
-              onClick={() => setIsAddressSelectorOpen(true)}
-              className="text-[14px] font-medium text-primary hover:underline"
-            >
-              Change
-            </button>
-          </div>
+          <h2 className="font-outfit text-[17px] font-medium text-zinc-900">
+            Service location
+          </h2>
           
           <div 
             onClick={() => setIsAddressSelectorOpen(true)}
@@ -327,7 +319,10 @@ export default function DateTimePage() {
 
           {selectedAddress && (
             <div className="space-y-0 border-b border-zinc-100 pb-2">
-              <div className="flex items-center justify-between py-3">
+              <div 
+                className="flex items-center justify-between py-3 cursor-pointer hover:bg-zinc-50 transition-colors rounded-xl -mx-2 px-2"
+                onClick={() => setIsAddressSelectorOpen(true)}
+              >
                 <div className="flex items-center gap-3">
                   <Home className="h-6 w-6 text-[#57636C]" style={{ fill: 'currentColor' }} />
                   <div>
