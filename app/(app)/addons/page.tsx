@@ -287,15 +287,15 @@ export default function AddonsPage() {
             <div className="flex-1 overflow-y-auto px-5 py-5 pb-[180px]">
               <div className="flex justify-between items-center mb-5">
                 <div className="flex flex-col">
-                  <h3 className="font-outfit text-[18px] font-bold text-zinc-900 mb-1">
+                  <h3 className="font-outfit text-[16px] font-medium text-zinc-900 mb-1">
                     {selectedAddonDetails.name}
                   </h3>
                   <div className="flex items-center gap-2">
-                    <span className="font-sans text-[15px] font-medium text-zinc-900">
+                    <span className="font-sans text-[14.5px] font-normal text-zinc-900">
                       ${selectedAddonDetails.price?.toFixed(2) || "0.00"}
                     </span>
                     {selectedAddonDetails.price && (
-                      <span className="font-sans text-[15px] font-normal text-[#e0e3e7] line-through">
+                      <span className="font-sans text-[14.5px] font-normal text-[#e0e3e7] line-through">
                         ${(selectedAddonDetails.price + 10).toFixed(2)}
                       </span>
                     )}
