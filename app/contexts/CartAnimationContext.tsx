@@ -22,14 +22,18 @@ export function CartAnimationProvider({ children }: { children: ReactNode }) {
     setIsFadingOut(false);
     
     setTimeout(() => {
-      setIsFadingOut(true);
       onComplete(); // This triggers navigation/state change behind the overlay
       
-      // Remove overlay completely after fade out duration
+      // Wait a moment for the next page to render before fading out
       setTimeout(() => {
-        setIsAnimating(false);
-        setIsFadingOut(false);
-      }, 500);
+        setIsFadingOut(true);
+        
+        // Remove overlay completely after fade out duration
+        setTimeout(() => {
+          setIsAnimating(false);
+          setIsFadingOut(false);
+        }, 500);
+      }, 300); // 300ms buffer for router to render new page
     }, 1200);
   };
 
