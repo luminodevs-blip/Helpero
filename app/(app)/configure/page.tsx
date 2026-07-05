@@ -69,6 +69,10 @@ export default function ConfigurePage() {
     return found ? found.qty : 0;
   };
 
+  const hasSelectedSomething = 
+    customizeAddons.length === 0 || 
+    customizeAddons.some((addon) => getAddonQty(addon.id) > 0);
+
   return (
     <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[100px] relative flex flex-col shadow-md font-sans">
       {/* 1. Header */}
@@ -210,7 +214,12 @@ export default function ConfigurePage() {
 
           <button
             onClick={() => router.push("/addons")}
-            className="w-[200px] h-[50px] rounded-[10px] bg-[#14181B] text-white font-sans text-[18px] font-semibold hover:bg-zinc-800 focus:outline-none transition-all active:scale-95 shadow-md flex items-center justify-center"
+            disabled={!hasSelectedSomething}
+            className={`w-[200px] h-[50px] rounded-[10px] font-sans text-[18px] font-semibold flex items-center justify-center transition-all ${
+              hasSelectedSomething 
+                ? "bg-[#14181B] text-white hover:bg-zinc-800 active:scale-95 shadow-md" 
+                : "bg-zinc-200 text-zinc-400 cursor-not-allowed"
+            }`}
           >
             Next
           </button>
