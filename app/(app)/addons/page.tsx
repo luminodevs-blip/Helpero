@@ -14,6 +14,7 @@ export default function AddonsPage() {
   const [addons, setAddons] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedAddonDetails, setSelectedAddonDetails] = useState<any | null>(null);
 
   useEffect(() => {
     if (!activeBookingDraft) {
@@ -173,7 +174,10 @@ export default function AddonsPage() {
                         <p className="font-outfit text-[14px] font-medium text-zinc-900 leading-tight mb-1 line-clamp-1">
                           {addon.name}
                         </p>
-                        <button className="text-[12.5px] font-normal text-[#7B82F4] self-start hover:underline mb-1">
+                        <button 
+                          onClick={() => setSelectedAddonDetails(addon)}
+                          className="text-[12.5px] font-normal text-[#7B82F4] self-start hover:underline mb-1"
+                        >
                           Learn more
                         </button>
                         <div className="flex items-center gap-2 flex-wrap">
@@ -235,6 +239,134 @@ export default function AddonsPage() {
           </button>
         </div>
       </div>
+
+      {/* Bottom Sheet Modal */}
+      {selectedAddonDetails && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4 animate-in fade-in duration-200">
+          <div 
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setSelectedAddonDetails(null)}
+          />
+          <div className="relative w-full max-w-md bg-white rounded-t-[24px] sm:rounded-[24px] overflow-hidden flex flex-col max-h-[95vh] animate-in slide-in-from-bottom duration-300">
+            {/* Image Header */}
+            <div className="relative w-full h-[240px] bg-zinc-100 shrink-0">
+              {/* Drag Handle */}
+              <div className="absolute top-3 left-1/2 -translate-x-1/2 w-10 h-[5px] bg-white/70 rounded-full z-10" />
+              
+              {selectedAddonDetails.image_url ? (
+                <img 
+                  src={selectedAddonDetails.image_url} 
+                  alt={selectedAddonDetails.name} 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-zinc-100 text-zinc-300 font-outfit text-xl font-bold">
+                  {selectedAddonDetails.name}
+                </div>
+              )}
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto px-5 py-5 pb-[180px]">
+              <div className="flex justify-between items-center mb-5">
+                <div className="flex flex-col">
+                  <h3 className="font-outfit text-[18px] font-bold text-zinc-900 mb-1">
+                    {selectedAddonDetails.name}
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <span className="font-sans text-[15px] font-medium text-zinc-900">
+                      ${selectedAddonDetails.price?.toFixed(2) || "0.00"}
+                    </span>
+                    {selectedAddonDetails.price && (
+                      <span className="font-sans text-[15px] font-normal text-[#e0e3e7] line-through">
+                        ${(selectedAddonDetails.price + 10).toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Modal Counter */}
+                <div className="shrink-0 flex items-center bg-[#F5F7FB] rounded-[10px] p-[3px] shadow-sm">
+                  <button 
+                    onClick={() => handleQtyChange(selectedAddonDetails, "remove")}
+                    className="w-[30px] h-[30px] bg-white rounded-[8px] flex items-center justify-center text-zinc-900 shadow-sm hover:bg-zinc-50 transition-colors"
+                  >
+                    <Minus className="w-[16px] h-[16px]" strokeWidth={2.5} />
+                  </button>
+                  <span className="w-10 font-outfit text-[16px] font-bold text-zinc-900 text-center leading-none">
+                    {getAddonQty(selectedAddonDetails.id)}
+                  </span>
+                  <button 
+                    onClick={() => handleQtyChange(selectedAddonDetails, "add")}
+                    className="w-[30px] h-[30px] bg-[#7B82F4] rounded-[8px] flex items-center justify-center text-white shadow-sm hover:bg-[#6A70E0] transition-colors"
+                  >
+                    <Plus className="w-[16px] h-[16px]" strokeWidth={2.5} />
+                  </button>
+                </div>
+              </div>
+
+              <p className="font-sans text-[14px] font-medium text-zinc-900 mb-6">
+                Additional 30 mins added to your booking.
+              </p>
+
+              <div className="space-y-6">
+                <div>
+                  <h4 className="font-sans text-[15px] font-bold text-zinc-900 mb-2">What you get:</h4>
+                  <ul className="space-y-1.5">
+                    <li className="font-sans text-[14px] font-normal text-zinc-900">- Hair_removal_(up_to_2_rooms)</li>
+                    <li className="font-sans text-[14px] font-normal text-zinc-900">- Extra_vacuuming_of_floors</li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <h4 className="font-sans text-[15px] font-bold text-zinc-900 mb-2">Not included:</h4>
+                  <ul className="space-y-1.5">
+                    <li className="font-sans text-[14px] font-normal text-zinc-900">- Odor removal</li>
+                    <li className="font-sans text-[14px] font-normal text-zinc-900">- Deep upholstery cleaning</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="absolute bottom-0 left-0 right-0 bg-white pt-3 pb-[40px] px-5">
+              {/* Promo savings notice */}
+              <div className="absolute -top-[40px] left-0 right-0 h-[40px] bg-[#7B82F4] flex items-center justify-center gap-2 px-4 shadow-sm">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                  <path d="M4 3h16a2 2 0 0 1 2 2v6a1 1 0 0 0 1 1v0a1 1 0 0 0-1 1v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6a1 1 0 0 0-1-1v0a1 1 0 0 0 1-1V5a2 2 0 0 1 2-2z"></path>
+                  <line x1="8" y1="12" x2="8.01" y2="12"></line>
+                  <line x1="12" y1="12" x2="12.01" y2="12"></line>
+                  <line x1="16" y1="12" x2="16.01" y2="12"></line>
+                </svg>
+                <span className="font-sans text-[14px] font-medium text-white">
+                  You saved $50 with promos
+                </span>
+              </div>
+              
+              <div className="flex items-center justify-between mt-2">
+                <div className="flex flex-col">
+                  <span className="font-sans text-[14px] font-normal text-[#57636C]">Total</span>
+                  <span className="font-outfit text-[22px] font-bold text-zinc-900 leading-tight">
+                    ${activeBookingDraft.totalPrice?.toFixed(2)}
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    const currentQty = getAddonQty(selectedAddonDetails.id);
+                    if (currentQty === 0) {
+                      handleQtyChange(selectedAddonDetails, "add");
+                    }
+                    setSelectedAddonDetails(null);
+                  }}
+                  className="w-[180px] h-[52px] rounded-[10px] bg-[#14181B] text-white font-sans text-[16px] font-semibold hover:bg-zinc-800 transition-colors shadow-md"
+                >
+                  Add to cart
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
