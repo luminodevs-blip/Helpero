@@ -196,7 +196,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
                 <p className="text-[12px] text-zinc-500 mt-3">* will be cleaned basis the selection</p>
               </div>
 
-              <div className="h-2 bg-[#f8f9fa] -mx-5" />
+              <div className="h-[8px] bg-[#f5f7fb] w-[calc(100%+40px)] -mx-5 shrink-0" />
 
               {/* 2. What is excluded */}
               {service.excluded_items && service.excluded_items.length > 0 && (
@@ -213,7 +213,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
                 </div>
               )}
 
-              {service.excluded_items?.length > 0 && <div className="h-2 bg-[#f8f9fa] -mx-5" />}
+              {service.excluded_items?.length > 0 && <div className="h-[8px] bg-[#f5f7fb] w-[calc(100%+40px)] -mx-5 shrink-0" />}
 
               {/* 3. See the difference yourself */}
               {service.before_after_images && service.before_after_images.length > 0 && (
@@ -261,7 +261,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
                 </div>
               )}
 
-              <div className="h-2 bg-[#f8f9fa] -mx-5" />
+              <div className="h-[8px] bg-[#f5f7fb] w-[calc(100%+40px)] -mx-5 shrink-0" />
 
               {/* 5. What we will need from you */}
               {service.requirements && service.requirements.length > 0 && (
@@ -280,7 +280,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
                 </div>
               )}
 
-              <div className="h-2 bg-[#f8f9fa] -mx-5" />
+              <div className="h-[8px] bg-[#f5f7fb] w-[calc(100%+40px)] -mx-5 shrink-0" />
 
               {/* 6. Certified Experts */}
               {service.cleaner_bullets && service.cleaner_bullets.length > 0 && (
@@ -302,7 +302,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
                 </div>
               )}
 
-              <div className="h-2 bg-[#f8f9fa] -mx-5" />
+              <div className="h-[8px] bg-[#f5f7fb] w-[calc(100%+40px)] -mx-5 shrink-0" />
 
               {/* 7. Reviews Summary */}
               <div>
