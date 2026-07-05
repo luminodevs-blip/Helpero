@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #7B82F4;
+  --secondary: #39D2C0;
+  --tertiary: #EE8B60;
+  --alternate: #E0E3E7;
+  --primary-background: #F1F4F8;
+  --secondary-background: #FFFFFF;
+  --primary-text: #14181B;
+  --secondary-text: #57636C;
+  --success: #249689;
+  --error: #FF5963;
+  --warning: #F9CF58;
+}
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-tertiary: var(--tertiary);
+  --color-alternate: var(--alternate);
+  --color-bg-primary: var(--primary-background);
+  --color-bg-secondary: var(--secondary-background);
+  --color-text-primary: var(--primary-text);
+  --color-text-secondary: var(--secondary-text);
+  --color-success: var(--success);
+  --color-error: var(--error);
+  --color-warning: var(--warning);
+  --font-sans: var(--font-outfit), sans-serif;
+  --font-outfit: var(--font-outfit), sans-serif;
+}
+
+body {
+  background-color: var(--primary);
+  background-image: linear-gradient(to bottom, var(--primary) 0%, var(--primary) 50vh, var(--secondary-background) 50vh, var(--secondary-background) 100%);
+  background-attachment: fixed;
+  color: var(--primary-text);
+  font-family: var(--font-outfit), sans-serif;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* ── Hide scrollbars everywhere, keep scroll functionality ── */
+* {
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* IE / Edge */
+}
+*::-webkit-scrollbar {
+  display: none;               /* Chrome / Safari / WebKit */
+}
