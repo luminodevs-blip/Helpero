@@ -318,9 +318,9 @@ export default function DateTimePage() {
           </div>
 
           {selectedAddress && (
-            <div className="space-y-0 border-b border-zinc-100 pb-0 !mt-[14px]">
+            <div className="space-y-0 border-b border-zinc-100 pb-0 !mt-0">
               <div 
-                className="flex items-center justify-between pt-3 pb-[20px] cursor-pointer hover:bg-zinc-50 transition-colors rounded-xl -mx-2 px-2"
+                className="flex items-center justify-between pt-[14px] pb-[20px] cursor-pointer hover:bg-zinc-50 transition-colors rounded-xl -mx-2 px-2"
                 onClick={() => setIsAddressSelectorOpen(true)}
               >
                 <div className="flex items-center gap-3">
