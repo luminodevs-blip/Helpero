@@ -144,7 +144,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
         <div className="fixed inset-0 z-[100] flex flex-col justify-end" onClick={(e) => { e.stopPropagation(); setIsExpanded(false); }}>
           <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] transition-opacity" />
           <div 
-            className="relative w-full max-w-md mx-auto bg-white rounded-t-[24px] overflow-hidden shadow-2xl transition-transform flex flex-col max-h-[85vh]"
+            className="relative w-full max-w-md mx-auto bg-white rounded-t-[24px] overflow-hidden shadow-2xl transition-transform flex flex-col h-[96vh]"
             onClick={(e) => e.stopPropagation()}
             style={{ animation: "slideUp 0.3s ease-out forwards" }}
           >
@@ -173,19 +173,19 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
               {/* 1. What is included */}
               <div>
                 <h4 className="font-outfit text-[16px] font-semibold text-zinc-900 mb-3">What is included:</h4>
-                <div className="flex gap-3 overflow-x-auto scrollbar-none -mx-5 px-5 pb-1">
+                <div className="grid grid-cols-3 gap-2 pb-1">
                   {(service.included_items?.length ? service.included_items : [
-                    { name: "Floor Vacuuming", image: "https://images.unsplash.com/photo-1558402529-d2638a7023e9?w=200&h=200&fit=crop" },
-                    { name: "Dusting", image: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=200&h=200&fit=crop" },
-                    { name: "Mopping", image: "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=200&h=200&fit=crop" }
+                    { name: "Dust Surfaces", image: "https://images.unsplash.com/photo-1558402529-d2638a7023e9?w=200&h=200&fit=crop" },
+                    { name: "Vacuum Floors", image: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=200&h=200&fit=crop" },
+                    { name: "Mop Floors", image: "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=200&h=200&fit=crop" }
                   ]).map((item: any, idx: number) => (
-                    <div key={idx} className="w-[120px] bg-[#f8f9fa] rounded-xl overflow-hidden shrink-0 flex flex-col border border-zinc-100">
-                      <div className="p-3 pb-2 flex-1">
-                        <p className="text-[13.5px] leading-[1.2] font-medium text-zinc-800 break-words">
+                    <div key={idx} className="bg-[#f8f9fa] rounded-xl overflow-hidden shrink-0 flex flex-col border border-zinc-100 aspect-[3/4]">
+                      <div className="p-2 pb-1 flex-1">
+                        <p className="text-[11px] leading-[1.2] font-semibold text-zinc-800 break-words">
                           {typeof item === 'object' ? item.name : item}
                         </p>
                       </div>
-                      <div className="h-[70px] w-full bg-zinc-200 mt-auto">
+                      <div className="h-1/2 w-full bg-zinc-200 mt-auto">
                         {typeof item === 'object' && item.image && (
                           <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
                         )}
