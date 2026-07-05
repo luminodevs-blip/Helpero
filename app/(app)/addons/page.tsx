@@ -136,8 +136,8 @@ export default function AddonsPage() {
 
                         {/* Expanding Counter Button */}
                         <div 
-                          className={`absolute bottom-1.5 right-1.5 h-[36px] rounded-[10px] shadow-sm transition-all duration-300 overflow-hidden flex items-center ${
-                            qty > 0 ? "w-[94px] bg-[#F5F7FB] p-[3px] justify-between" : "w-[36px] bg-[#7B82F4] justify-center cursor-pointer hover:bg-[#6A70E0]"
+                          className={`absolute bottom-1.5 right-1.5 rounded-[10px] shadow-sm transition-all duration-300 overflow-hidden flex items-center ${
+                            qty > 0 ? "h-[36px] w-[94px] bg-[#F5F7FB] p-[3px] justify-between" : "h-[30px] w-[30px] bg-[#7B82F4] justify-center cursor-pointer hover:bg-[#6A70E0]"
                           }`}
                           onClick={(e) => {
                             if (qty === 0) {
