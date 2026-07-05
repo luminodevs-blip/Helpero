@@ -324,28 +324,81 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
 
               <div className="h-[8px] bg-[#f5f7fb] w-[calc(100%+40px)] -mx-5 shrink-0" />
 
-              {/* 7. Reviews Summary */}
+              {/* 7. Reviews Summary & List */}
               <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Star className="h-5 w-5 fill-[#6366f1] text-[#6366f1]" />
-                  <span className="font-outfit text-2xl font-semibold text-zinc-900">
-                    {(service.rating ?? 4.7).toFixed(2)}
-                  </span>
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <Star className="h-[22px] w-[22px] fill-primary text-primary" />
+                    <span className="font-outfit text-[22px] font-bold text-zinc-900 leading-none">
+                      {(service.rating ?? 4.7).toFixed(2)}
+                    </span>
+                  </div>
+                  <p className="text-[13px] text-zinc-600">{Intl.NumberFormat('en-US').format(service.reviews_count ?? 1240)} reviews</p>
                 </div>
-                <p className="text-[13px] text-zinc-500 mb-4">{service.reviews_count ?? 1240} reviews</p>
                 
-                {/* Mock progress bars */}
-                <div className="space-y-2.5 max-w-[80%]">
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1 w-8 text-[13px] font-bold text-zinc-800"><Star className="h-3.5 w-3.5 fill-[#6366f1] text-[#6366f1]"/> 5</div>
-                    <div className="h-1.5 flex-1 bg-zinc-100 rounded-full overflow-hidden"><div className="h-full bg-[#6366f1] rounded-full" style={{width: '75%'}}/></div>
-                    <span className="text-[12px] text-zinc-500 w-6 text-right">865</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1 w-8 text-[13px] font-bold text-zinc-800"><Star className="h-3.5 w-3.5 fill-[#6366f1] text-[#6366f1]"/> 4</div>
-                    <div className="h-1.5 flex-1 bg-zinc-100 rounded-full overflow-hidden"><div className="h-full bg-[#6366f1] rounded-full" style={{width: '25%'}}/></div>
-                    <span className="text-[12px] text-zinc-500 w-6 text-right">165</span>
-                  </div>
+                {/* Progress bars */}
+                <div className="space-y-[12px] mb-6 pr-4">
+                  {[
+                    { stars: 5, percent: 70, count: 770 },
+                    { stars: 4, percent: 20, count: 165 },
+                    { stars: 3, percent: 5, count: 48 },
+                    { stars: 2, percent: 1, count: 12 },
+                    { stars: 1, percent: 0, count: 5 },
+                  ].map(row => (
+                    <div key={row.stars} className="flex items-center gap-3">
+                      <div className="flex items-center gap-1.5 w-6 shrink-0">
+                        <Star className="h-[14px] w-[14px] fill-primary text-primary shrink-0" />
+                        <span className="text-[14px] font-bold text-zinc-900 leading-none">{row.stars}</span>
+                      </div>
+                      <div className="flex-1 h-[5px] bg-zinc-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-primary rounded-full" style={{ width: `${row.percent}%` }} />
+                      </div>
+                      <div className="w-8 text-right text-[13px] text-zinc-600 shrink-0">{row.count}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="h-[8px] bg-[#f5f7fb] w-[calc(100%+40px)] -mx-5 shrink-0" />
+
+              {/* 8. All reviews */}
+              <div>
+                <div className="mt-1 mb-4 flex justify-between items-center">
+                  <h4 className="font-outfit text-[17px] font-medium text-zinc-900">All reviews</h4>
+                  <button className="text-[14px] text-primary font-medium">Filter</button>
+                </div>
+
+                {/* Filter chips */}
+                <div className="flex gap-2 overflow-x-auto scrollbar-none pb-2 -mx-5 px-5 mb-5">
+                  {["Most detailed", "In my area", "Frequent users"].map((chip, idx) => (
+                    <button key={idx} className="border border-zinc-200 rounded-[10px] px-3.5 py-2 whitespace-nowrap text-[13px] font-medium text-zinc-600 hover:bg-zinc-50 shrink-0">
+                      {chip}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Review list */}
+                <div className="space-y-6">
+                  {[
+                    { name: "Johanosoposinos", date: "Jan 29, 2026", duration: "For 1 hour, 30 minutes", rating: 5, text: "She did her job very well and I'm totally happy with her work. Many people have mentioned that she does very slow ofcourse she does slow for neatness. I will definitely book her in f ...." },
+                    { name: "Johanosoposinos", date: "Jan 29, 2026", duration: "For 1 hour, 30 minutes", rating: 5, text: "She did her job very well and I'm totally happy with her work. Many people have mentioned that she does very slow ofcourse she does slow for neatness. I will definitely book her in f ...." },
+                  ].map((review, idx) => (
+                    <div key={idx} className="border-b border-zinc-100 pb-6 last:border-0 last:pb-0">
+                      <div className="flex justify-between items-start mb-3">
+                        <div>
+                          <h5 className="text-[15px] font-semibold text-zinc-900 leading-tight mb-1">{review.name}</h5>
+                          <p className="text-[12.5px] text-zinc-500 leading-tight">{review.date} • {review.duration}</p>
+                        </div>
+                        <div className="bg-[#0B7A5E] rounded-[4px] flex items-center gap-1 px-1.5 py-0.5 mt-0.5">
+                          <Star className="h-[11px] w-[11px] text-white" fill="currentColor" />
+                          <span className="text-white text-[13px] font-bold leading-none mt-0.5">{review.rating}</span>
+                        </div>
+                      </div>
+                      <p className="text-[14px] text-zinc-700 leading-[1.45]">
+                        {review.text}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
