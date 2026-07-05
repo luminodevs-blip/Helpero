@@ -322,7 +322,7 @@ export default function AddonsPage() {
                 </div>
               </div>
 
-              <div className="h-[1px] w-full bg-zinc-100 mb-[18px]" />
+              <div className="h-[1px] bg-zinc-100 mb-[18px] -mx-5" />
 
               <p className="font-sans text-[14.5px] font-normal text-zinc-900 mb-4">
                 Additional 30 mins added to your booking.
