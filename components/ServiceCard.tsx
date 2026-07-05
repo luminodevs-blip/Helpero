@@ -489,7 +489,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsExpanded(false);
-                  handleCardClick();
+                  triggerAnimation(() => handleCardClick());
                 }}
                 className="bg-[#1a1c20] text-white w-[140px] h-[50px] flex items-center justify-center rounded-lg text-[18px] font-semibold active:scale-95 transition-transform pointer-events-auto shadow-md hover:bg-[#2a2c30]"
               >
