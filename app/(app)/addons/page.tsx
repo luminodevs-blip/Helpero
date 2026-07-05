@@ -44,7 +44,7 @@ export default function AddonsPage() {
     }
 
     loadAddons();
-  }, [activeBookingDraft, router]);
+  }, [activeBookingDraft?.serviceId, router]);
 
   if (!activeBookingDraft) return null;
 

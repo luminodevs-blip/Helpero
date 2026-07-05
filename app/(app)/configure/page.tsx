@@ -42,7 +42,7 @@ export default function ConfigurePage() {
     }
 
     loadAddons();
-  }, [activeBookingDraft, router]);
+  }, [activeBookingDraft?.serviceId, router]);
 
   if (!activeBookingDraft) return null;
 
