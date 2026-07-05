@@ -330,7 +330,7 @@ export default function AddonsPage() {
 
               <div className="space-y-6">
                 <div>
-                  <h4 className="font-sans text-[15px] font-medium text-zinc-900 mb-2">What you get:</h4>
+                  <h4 className="font-sans text-[15px] font-medium text-zinc-900 mb-0.5">What you get:</h4>
                   <ul className="space-y-1">
                     <li className="font-sans text-[14.5px] font-normal text-zinc-900">- Hair_removal_(up_to_2_rooms)</li>
                     <li className="font-sans text-[14.5px] font-normal text-zinc-900">- Extra_vacuuming_of_floors</li>
@@ -338,7 +338,7 @@ export default function AddonsPage() {
                 </div>
                 
                 <div>
-                  <h4 className="font-sans text-[15px] font-medium text-zinc-900 mb-2">Not included:</h4>
+                  <h4 className="font-sans text-[15px] font-medium text-zinc-900 mb-0.5">Not included:</h4>
                   <ul className="space-y-1">
                     <li className="font-sans text-[14.5px] font-normal text-zinc-900">- Odor removal</li>
                     <li className="font-sans text-[14.5px] font-normal text-zinc-900">- Deep upholstery cleaning</li>
