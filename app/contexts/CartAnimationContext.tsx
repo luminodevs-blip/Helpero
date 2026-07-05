@@ -34,7 +34,7 @@ export function CartAnimationProvider({ children }: { children: ReactNode }) {
           setIsFadingOut(false);
         }, 500);
       }, 300); // 300ms buffer for router to render new page
-    }, 1200);
+    }, 1125); // Trigger navigation 75ms earlier
   };
 
   return (
