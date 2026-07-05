@@ -179,13 +179,13 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
                     { name: "Vacuum Floors", image: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=200&h=200&fit=crop" },
                     { name: "Mop Floors", image: "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=200&h=200&fit=crop" }
                   ]).map((item: any, idx: number) => (
-                    <div key={idx} className="bg-[#f8f9fa] rounded-xl overflow-hidden shrink-0 flex flex-col border border-zinc-100 aspect-[3/4]">
-                      <div className="p-2 pb-1 flex-1">
-                        <p className="text-[11px] leading-[1.2] font-semibold text-zinc-800 break-words">
+                    <div key={idx} className="bg-[#f8f9fa] rounded-xl overflow-hidden shrink-0 flex flex-col border border-zinc-100 h-[125px]">
+                      <div className="pt-1 px-2 pb-2 flex-1">
+                        <p className="text-[14.5px] font-normal leading-[1.2] text-zinc-800 break-words">
                           {typeof item === 'object' ? item.name : item}
                         </p>
                       </div>
-                      <div className="h-1/2 w-full bg-zinc-200 mt-auto">
+                      <div className="h-[85px] w-full shrink-0 bg-zinc-200 mt-auto">
                         {typeof item === 'object' && item.image && (
                           <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
                         )}
