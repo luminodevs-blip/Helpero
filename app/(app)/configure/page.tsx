@@ -160,7 +160,8 @@ export default function ConfigurePage() {
                         <button
                           type="button"
                           onClick={() => handleQtyChange(addon, "add")}
-                          className="h-[30px] w-[34px] rounded-[10px] flex items-center justify-center text-white bg-primary shadow-sm hover:bg-primary/90 transition-colors"
+                          disabled={qty >= 6}
+                          className="h-[30px] w-[34px] rounded-[10px] flex items-center justify-center text-white bg-primary shadow-sm hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                           <Plus className="h-4 w-4" strokeWidth={2.5} />
                         </button>
