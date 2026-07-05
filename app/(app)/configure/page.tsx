@@ -195,7 +195,7 @@ export default function ConfigurePage() {
         </div>
         
         {/* Footer */}
-        <div className="py-4 px-5 flex items-center justify-between">
+        <div className="pt-4 pb-[40px] px-5 flex items-center justify-between">
           <div className="flex flex-col gap-0.5">
             <span className="font-sans text-[16px] font-normal text-[#57636C]">
               Total
