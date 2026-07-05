@@ -196,7 +196,7 @@ export default function DateTimePage() {
         
         {/* Arrival Time */}
         <div className="space-y-4">
-          <h2 className="font-outfit text-[17px] font-bold text-zinc-900">
+          <h2 className="font-outfit text-[17px] font-medium text-zinc-900">
             Arrival time
           </h2>
           
@@ -277,15 +277,15 @@ export default function DateTimePage() {
 
         {/* Cleaning Duration */}
         <div className="flex items-center justify-end border-b border-zinc-100 pb-6 pt-2">
-          <span className="text-sm text-zinc-500 font-medium mr-2">Cleaning duration:</span>
-          <span className="text-sm font-bold text-zinc-900">
+          <span className="font-sans text-[14.5px] font-normal text-[#57636C] mr-2">Cleaning duration:</span>
+          <span className="font-sans text-[14.5px] font-medium text-zinc-900">
             {formatDuration(activeBookingDraft?.totalDuration)}
           </span>
         </div>
 
         {/* Service Location */}
         <div className="space-y-4 pt-2">
-          <h2 className="font-outfit text-[17px] font-bold text-zinc-900">
+          <h2 className="font-outfit text-[17px] font-medium text-zinc-900">
             Service location
           </h2>
           
@@ -302,10 +302,10 @@ export default function DateTimePage() {
             <div className="space-y-0 border-b border-zinc-100 pb-2">
               <div className="flex items-center justify-between py-3">
                 <div className="flex items-center gap-3">
-                  <Home className="h-5 w-5 text-zinc-600" style={{ fill: 'currentColor' }} />
+                  <Home className="h-6 w-6 text-[#57636C]" style={{ fill: 'currentColor' }} />
                   <div>
-                    <p className="text-[14px] font-semibold text-zinc-900">Home</p>
-                    <p className="text-[12px] text-zinc-500 line-clamp-1 max-w-[250px]">
+                    <p className="font-sans text-[15px] font-medium text-zinc-900">Home</p>
+                    <p className="font-sans text-[14px] font-normal text-[#57636C] line-clamp-1 max-w-[250px]">
                       {selectedAddress.fullAddress}
                     </p>
                   </div>
@@ -315,10 +315,10 @@ export default function DateTimePage() {
               <div className="w-full h-px bg-zinc-100" />
               <div className="flex items-center justify-between py-3">
                 <div className="flex items-center gap-3">
-                  <User className="h-5 w-5 text-zinc-600" style={{ fill: 'currentColor' }} />
+                  <User className="h-6 w-6 text-[#57636C]" style={{ fill: 'currentColor' }} />
                   <div>
-                    <p className="text-[14px] font-semibold text-zinc-900">I'll be home (Meet at door)</p>
-                    <p className="text-[12px] text-zinc-500">Tap to add entry instructions</p>
+                    <p className="font-sans text-[15px] font-medium text-zinc-900">I'll be home (Meet at door)</p>
+                    <p className="font-sans text-[14px] font-normal text-[#57636C]">Tap to add entry instructions</p>
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-zinc-400" />
