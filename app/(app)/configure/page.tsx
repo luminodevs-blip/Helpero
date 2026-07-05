@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
 import { supabase } from "@/lib/supabase";
 import { updateBookingAddon } from "@/lib/booking";
-import { ArrowLeft, Plus, Minus, Star, Sparkles, Loader2 } from "lucide-react";
+import { ArrowLeft, Plus, Minus, Star, Sparkles, Loader2, ChevronUp } from "lucide-react";
 
 export default function ConfigurePage() {
   const router = useRouter();
@@ -70,114 +70,125 @@ export default function ConfigurePage() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen bg-bg-secondary pb-32 relative flex flex-col border-x border-alternate shadow-md">
-      {/* 1. Header (Wizard: Step 1 of 3) */}
-      <div className="bg-bg-secondary px-5 pt-6 pb-4 border-b border-alternate sticky top-0 z-30">
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => router.back()}
-            className="p-1 rounded-full hover:bg-bg-primary text-text-primary focus:outline-none"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </button>
-          
-          {/* Progress Indicator */}
-          <div className="flex flex-col items-center">
-            <span className="text-[10px] font-bold text-primary uppercase tracking-widest">
-              Step 1 of 3
-            </span>
-            <span className="text-xs font-semibold text-text-secondary mt-0.5">
-              Customize Service
-            </span>
-          </div>
-          
-          {/* Empty spacer for balancing layout */}
-          <div className="w-7 h-7" />
-        </div>
-
-        {/* Progress Bar Line */}
-        <div className="w-full bg-alternate h-1 rounded-full mt-4 overflow-hidden">
-          <div className="bg-primary h-full rounded-full transition-all duration-300" style={{ width: "33%" }} />
-        </div>
+    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[100px] relative flex flex-col shadow-md font-sans">
+      {/* 1. Header */}
+      <div className="bg-white px-5 pt-12 pb-4 flex items-center justify-between sticky top-0 z-30">
+        <button
+          onClick={() => router.back()}
+          className="p-1 -ml-1 rounded-full hover:bg-zinc-100 text-zinc-900 focus:outline-none transition-colors"
+        >
+          <ArrowLeft className="h-6 w-6" strokeWidth={2.5} />
+        </button>
+        
+        <h1 className="font-outfit text-[19px] font-bold text-zinc-900 absolute left-1/2 -translate-x-1/2">
+          Set up your service
+        </h1>
+        
+        <div className="w-8" /> {/* Spacer */}
       </div>
 
+      <div className="w-full h-[1px] bg-zinc-100" />
+
       {/* 2. Scrollable Body Content */}
-      <div className="flex-1 overflow-y-auto px-5 py-6 space-y-8 bg-bg-secondary">
+      <div className="flex-1 overflow-y-auto px-5 py-6 bg-white">
         
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <Loader2 className="h-8 w-8 text-primary animate-spin" />
           </div>
         ) : error ? (
-          <div className="text-center py-10 text-sm text-error bg-error/5 rounded-xl border border-error/20 p-4">
+          <div className="text-center py-10 text-sm text-red-500 bg-red-50 rounded-xl border border-red-100 p-4">
             {error}
           </div>
         ) : (
-          <>
+          <div className="space-y-6">
+            <h2 className="font-outfit text-[17px] font-bold text-zinc-900">
+              Set up your service
+            </h2>
+
             {/* Section A: Customize/Room Size counters */}
             {customizeAddons.length > 0 && (
-              <div className="space-y-5">
-                <div className="border-b border-alternate pb-2">
-                  <h3 className="font-outfit text-base font-extrabold text-text-primary">
-                    Choose your home size
-                  </h3>
-                </div>
+              <div className="flex flex-col">
+                {customizeAddons.map((addon, index) => {
+                  const qty = getAddonQty(addon.id);
+                  return (
+                    <div
+                      key={addon.id}
+                      className={`flex items-center justify-between py-5 ${index !== customizeAddons.length - 1 ? 'border-b border-zinc-100' : ''}`}
+                    >
+                      <div className="flex items-center gap-4">
+                        {/* Image Thumbnail */}
+                        <div className="w-14 h-14 rounded-xl overflow-hidden bg-zinc-50 border border-zinc-100 shrink-0 flex items-center justify-center">
+                          {addon.image_url ? (
+                            <img src={addon.image_url} alt={addon.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <Sparkles className="w-6 h-6 text-zinc-300" />
+                          )}
+                        </div>
 
-                <div className="space-y-4">
-                  {customizeAddons.map((addon) => {
-                    const qty = getAddonQty(addon.id);
-                    return (
-                      <div
-                        key={addon.id}
-                        className="flex items-center justify-between p-4 rounded-2xl border border-alternate bg-bg-primary/30"
-                      >
-                        <div className="space-y-1 pr-4">
-                          <p className="text-sm font-bold text-text-primary">
+                        {/* Details */}
+                        <div className="flex flex-col gap-0.5">
+                          <p className="font-outfit text-[15px] font-bold text-zinc-900">
                             {addon.name}
                           </p>
-                          <p className="text-xs text-text-secondary">
-                            +${addon.price?.toFixed(2)} (+{addon.duration_minutes || 0}m)
+                          <p className="text-[13px] font-medium text-zinc-900">
+                            ${addon.price?.toFixed(2)} / {addon.name.toLowerCase().replace(/s$/, '')}
                           </p>
-                        </div>
-
-                        {/* Counter Controls */}
-                        <div className="flex items-center gap-3 bg-bg-secondary border border-alternate rounded-full p-1 shadow-xs">
-                          <button
-                            type="button"
-                            onClick={() => handleQtyChange(addon, "remove")}
-                            disabled={qty === 0}
-                            className="h-8 w-8 rounded-full flex items-center justify-center text-text-primary border border-alternate bg-bg-primary hover:bg-bg-primary/80 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                          >
-                            <Minus className="h-4 w-4" />
-                          </button>
-                          
-                          <span className="font-outfit text-base font-bold text-text-primary min-w-[20px] text-center">
-                            {qty}
-                          </span>
-                          
-                          <button
-                            type="button"
-                            onClick={() => handleQtyChange(addon, "add")}
-                            className="h-8 w-8 rounded-full flex items-center justify-center text-white bg-primary hover:bg-primary/90 transition-all"
-                          >
-                            <Plus className="h-4 w-4" />
-                          </button>
+                          {(addon.description || addon.name === "Rooms" || addon.name === "Bathrooms") && (
+                            <p className="text-[12px] text-zinc-500">
+                              {addon.description || (addon.name === "Rooms" ? "(living & sleeping areas)" : "Hygiene zone")}
+                            </p>
+                          )}
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
+
+                      {/* Counter Controls */}
+                      <div className="flex items-center bg-zinc-50 border border-zinc-100 rounded-2xl p-1 shadow-sm shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => handleQtyChange(addon, "remove")}
+                          disabled={qty === 0}
+                          className="h-[30px] w-[34px] rounded-[10px] flex items-center justify-center text-zinc-900 bg-white shadow-sm border border-zinc-100 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-zinc-50 transition-colors"
+                        >
+                          <Minus className="h-4 w-4" strokeWidth={2.5} />
+                        </button>
+                        
+                        <span className="font-sans text-[15px] font-bold text-zinc-900 w-[30px] text-center">
+                          {qty}
+                        </span>
+                        
+                        <button
+                          type="button"
+                          onClick={() => handleQtyChange(addon, "add")}
+                          className="h-[30px] w-[34px] rounded-[10px] flex items-center justify-center text-white bg-primary shadow-sm hover:bg-primary/90 transition-colors"
+                        >
+                          <Plus className="h-4 w-4" strokeWidth={2.5} />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
 
-            {/* Section B: Extras / Upsell list */}
+            <div className="w-full h-[1px] bg-zinc-100 mt-2 mb-6" />
+
+            {/* Info Box */}
+            <div className="bg-zinc-50/80 rounded-xl p-4 flex gap-3 items-start">
+              <div className="w-[18px] h-[18px] rounded-full bg-zinc-500 text-white flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">
+                i
+              </div>
+              <p className="text-[13px] text-zinc-500 leading-snug">
+                Estimated cleaning time adjusts automatically based on your selection.
+              </p>
+            </div>
+
+            {/* Section B: Extras / Upsell list (kept just in case) */}
             {upsellAddons.length > 0 && (
-              <div className="space-y-5">
-                <div className="border-b border-alternate pb-2">
-                  <h3 className="font-outfit text-base font-extrabold text-text-primary">
-                    Select additional extras
-                  </h3>
-                </div>
+              <div className="space-y-4 pt-4">
+                <h3 className="font-outfit text-[17px] font-bold text-zinc-900">
+                  Select additional extras
+                </h3>
 
                 <div className="grid grid-cols-2 gap-4">
                   {upsellAddons.map((addon) => {
@@ -190,22 +201,16 @@ export default function ConfigurePage() {
                         className={`flex flex-col rounded-2xl border p-3 cursor-pointer transition-all select-none relative overflow-hidden ${
                           isSelected
                             ? "border-primary bg-primary/5 ring-1 ring-primary"
-                            : "border-alternate bg-bg-primary/20 hover:border-primary/30"
+                            : "border-zinc-200 bg-white hover:border-primary/30"
                         }`}
                       >
-                        {/* Addon Image Thumbnail */}
-                        <div className="h-28 w-full rounded-xl bg-bg-primary border border-alternate relative overflow-hidden flex items-center justify-center mb-3">
+                        <div className="h-24 w-full rounded-xl bg-zinc-50 border border-zinc-100 relative overflow-hidden flex items-center justify-center mb-3">
                           {addon.image_url ? (
-                            <img
-                              src={addon.image_url}
-                              alt={addon.name}
-                              className="h-full w-full object-cover"
-                            />
+                            <img src={addon.image_url} alt={addon.name} className="h-full w-full object-cover" />
                           ) : (
-                            <Sparkles className="h-6 w-6 text-primary/30" />
+                            <Sparkles className="h-6 w-6 text-zinc-300" />
                           )}
 
-                          {/* Check / Quantity Counter badge on top */}
                           {isSelected && (
                             <div className="absolute top-2 right-2 h-6 px-2 rounded-full bg-primary text-white text-[10px] font-extrabold flex items-center justify-center shadow-md">
                               {qty}x
@@ -213,22 +218,21 @@ export default function ConfigurePage() {
                           )}
                         </div>
 
-                        {/* Text Detail Info */}
                         <div className="flex-1 flex flex-col justify-between">
                           <div>
-                            <p className="text-xs font-bold text-text-primary leading-tight line-clamp-1">
+                            <p className="text-[13px] font-bold text-zinc-900 leading-tight line-clamp-1">
                               {addon.name}
                             </p>
-                            <p className="text-[10px] text-text-secondary mt-0.5 line-clamp-2 leading-tight">
-                              {addon.description || "Deep clean extra option."}
+                            <p className="text-[11px] text-zinc-500 mt-1 line-clamp-2 leading-tight">
+                              {addon.description}
                             </p>
                           </div>
 
                           <div className="flex items-baseline justify-between mt-3">
-                            <span className="text-[10px] text-text-secondary font-semibold">
+                            <span className="text-[11px] text-zinc-500 font-medium">
                               {addon.duration_minutes ? `+${addon.duration_minutes}m` : ""}
                             </span>
-                            <span className="text-xs font-extrabold text-primary font-outfit">
+                            <span className="text-[13px] font-bold text-zinc-900 font-outfit">
                               +${addon.price?.toFixed(2)}
                             </span>
                           </div>
@@ -239,27 +243,38 @@ export default function ConfigurePage() {
                 </div>
               </div>
             )}
-          </>
+          </div>
         )}
       </div>
 
-      {/* 3. Sticky Bottom Checkout Subtotal Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-bg-secondary border-t border-alternate shadow-lg py-4 px-6 flex items-center justify-between max-w-md mx-auto">
-        <div className="flex flex-col">
-          <span className="text-[10px] font-semibold text-text-secondary uppercase tracking-wider">
-            Subtotal Price ({activeBookingDraft.totalDuration}m)
-          </span>
-          <span className="font-outfit text-xl font-extrabold text-primary mt-0.5">
-            ${activeBookingDraft.totalPrice?.toFixed(2)}
-          </span>
+      {/* Progress Bar & Footer Sticky Container */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white max-w-md mx-auto">
+        {/* Progress Bar */}
+        <div className="w-full bg-zinc-100 h-[3px]">
+          <div className="bg-[#7B82F4] h-full transition-all duration-300" style={{ width: "33%" }} />
         </div>
+        
+        {/* Footer */}
+        <div className="py-4 px-5 flex items-center justify-between">
+          <div className="flex flex-col">
+            <span className="text-[13px] font-medium text-zinc-500">
+              Total
+            </span>
+            <div className="flex items-center gap-1.5 cursor-pointer">
+              <span className="font-outfit text-[17px] font-bold text-zinc-900">
+                ${activeBookingDraft.totalPrice?.toFixed(2)}
+              </span>
+              <ChevronUp className="w-4 h-4 text-zinc-900" />
+            </div>
+          </div>
 
-        <button
-          onClick={() => router.push("/datetime")}
-          className="px-8 h-14 rounded-full bg-primary text-white font-sans text-base font-bold hover:bg-primary/95 focus:outline-none transition-all active:scale-95 shadow-md flex items-center justify-center"
-        >
-          Select Time & Date
-        </button>
+          <button
+            onClick={() => router.push("/datetime")}
+            className="w-[180px] h-[52px] rounded-xl bg-[#14181B] text-white font-sans text-[15px] font-bold hover:bg-zinc-800 focus:outline-none transition-all active:scale-95 shadow-md flex items-center justify-center"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );
