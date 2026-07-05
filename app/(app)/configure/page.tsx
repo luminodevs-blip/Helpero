@@ -14,6 +14,7 @@ export default function ConfigurePage() {
   const [addons, setAddons] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showSnackbar, setShowSnackbar] = useState(false);
 
   useEffect(() => {
     if (!activeBookingDraft) {
@@ -72,6 +73,15 @@ export default function ConfigurePage() {
   const hasSelectedSomething = 
     customizeAddons.length === 0 || 
     customizeAddons.some((addon) => getAddonQty(addon.id) > 0);
+
+  const handleNext = () => {
+    if (!hasSelectedSomething) {
+      setShowSnackbar(true);
+      setTimeout(() => setShowSnackbar(false), 3000);
+      return;
+    }
+    router.push("/addons");
+  };
 
   return (
     <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[100px] relative flex flex-col shadow-md font-sans">
@@ -213,17 +223,21 @@ export default function ConfigurePage() {
           </div>
 
           <button
-            onClick={() => router.push("/addons")}
-            disabled={!hasSelectedSomething}
-            className={`w-[200px] h-[50px] rounded-[10px] font-sans text-[18px] font-semibold flex items-center justify-center transition-all ${
-              hasSelectedSomething 
-                ? "bg-[#14181B] text-white hover:bg-zinc-800 active:scale-95 shadow-md" 
-                : "bg-zinc-200 text-zinc-400 cursor-not-allowed"
-            }`}
+            onClick={handleNext}
+            className="w-[200px] h-[50px] rounded-[10px] font-sans text-[18px] font-semibold flex items-center justify-center transition-all bg-[#14181B] text-white hover:bg-zinc-800 active:scale-95 shadow-md"
           >
             Next
           </button>
         </div>
+      </div>
+
+      {/* Snackbar */}
+      <div 
+        className={`fixed bottom-[110px] left-1/2 -translate-x-1/2 bg-zinc-900 text-white px-5 py-3 rounded-xl shadow-lg z-50 font-sans text-[14px] font-medium transition-all duration-300 pointer-events-none whitespace-nowrap ${
+          showSnackbar ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+        }`}
+      >
+        Please select at least one option
       </div>
     </div>
   );
