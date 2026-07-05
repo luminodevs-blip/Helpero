@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
 import { supabase } from "@/lib/supabase";
@@ -13,6 +13,32 @@ export default function AddonsPage() {
 
   const [addons, setAddons] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Swipe-to-close refs
+  const touchStartY = useRef<number | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartY.current === null) return;
+    
+    // Only allow swipe down to close if we are at the top of the scroll view
+    if (scrollRef.current && scrollRef.current.scrollTop > 0) {
+      touchStartY.current = null;
+      return;
+    }
+
+    const currentY = e.changedTouches[0].clientY;
+    const diff = currentY - touchStartY.current;
+    
+    if (diff > 50) { // 50px threshold for swipe down
+      setSelectedAddonDetails(null);
+    }
+    touchStartY.current = null;
+  };
   const [error, setError] = useState<string | null>(null);
   const [selectedAddonDetails, setSelectedAddonDetails] = useState<any | null>(null);
 
@@ -264,7 +290,11 @@ export default function AddonsPage() {
             className="fixed inset-0 bg-black/40 backdrop-blur-sm animate-sheet-fade"
             onClick={() => setSelectedAddonDetails(null)}
           />
-          <div className="relative w-full max-w-md bg-white rounded-t-[10px] sm:rounded-[10px] overflow-hidden flex flex-col max-h-[95vh] animate-sheet-slide">
+          <div 
+            className="relative w-full max-w-md bg-white rounded-t-[10px] sm:rounded-[10px] overflow-hidden flex flex-col max-h-[95vh] animate-sheet-slide"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
             {/* Image Header */}
             <div className="relative w-full h-[140px] bg-zinc-100 shrink-0">
               {/* Drag Handle */}
@@ -284,7 +314,7 @@ export default function AddonsPage() {
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto px-5 pt-4 pb-[180px]">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 pt-4 pb-[180px]">
               <div className="flex justify-between items-center mb-[18px]">
                 <div className="flex flex-col">
                   <h3 className="font-outfit text-[16px] font-medium text-zinc-900 mb-1">
