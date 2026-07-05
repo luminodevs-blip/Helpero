@@ -327,8 +327,6 @@ export default function DateTimePage() {
           )}
         </div>
 
-      </div>
-
       </div> {/* End Scrollable Body Content */}
 
       {/* Progress Bar & Footer Sticky Container */}
