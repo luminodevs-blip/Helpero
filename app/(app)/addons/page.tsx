@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
 import { supabase } from "@/lib/supabase";
 import { updateBookingAddon } from "@/lib/booking";
-import { ArrowLeft, Plus, Check, Loader2, ChevronUp, Info } from "lucide-react";
+import { ArrowLeft, Plus, Minus, Check, Loader2, ChevronUp, Info } from "lucide-react";
 
 export default function AddonsPage() {
   const router = useRouter();
