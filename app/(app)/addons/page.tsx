@@ -121,7 +121,7 @@ export default function AddonsPage() {
                       className="flex flex-col cursor-pointer transition-opacity hover:opacity-90 active:opacity-70 group"
                     >
                       {/* Image Thumbnail */}
-                      <div className="relative w-full aspect-square rounded-xl bg-zinc-100 overflow-hidden mb-2 border border-zinc-100">
+                      <div className="relative w-full aspect-square rounded-[12px] bg-zinc-100 overflow-hidden mb-2 border border-zinc-100">
                         {addon.image_url ? (
                           <img
                             src={addon.image_url}
@@ -135,25 +135,25 @@ export default function AddonsPage() {
                         )}
 
                         {/* Plus / Check Button */}
-                        <div className="absolute bottom-2 right-2 w-7 h-7 rounded-md bg-[#7B82F4] text-white flex items-center justify-center shadow-sm">
+                        <div className="absolute bottom-1.5 right-1.5 w-[28px] h-[28px] rounded-[8px] bg-[#7B82F4]/85 backdrop-blur-[2px] text-white flex items-center justify-center shadow-sm">
                           {isSelected ? (
                             <Check className="h-4 w-4" strokeWidth={3} />
                           ) : (
-                            <Plus className="h-4 w-4" strokeWidth={2.5} />
+                            <Plus className="w-[18px] h-[18px]" strokeWidth={2.5} />
                           )}
                         </div>
                       </div>
 
                       {/* Details */}
-                      <div className="flex flex-col">
+                      <div className="flex flex-col px-0.5">
                         <p className="font-outfit text-[14px] font-bold text-zinc-900 leading-tight mb-0.5 line-clamp-1">
                           {addon.name}
                         </p>
-                        <button className="text-[12px] font-medium text-[#7B82F4] self-start hover:underline mb-1">
+                        <button className="text-[11px] font-medium text-[#7B82F4] self-start hover:underline mb-1.5">
                           Learn more
                         </button>
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="font-sans text-[13px] font-semibold text-zinc-900">
+                          <span className="font-outfit text-[13px] font-bold text-zinc-900">
                             ${addon.price?.toFixed(2) || "0.00"}
                           </span>
                           {originalPrice && (
