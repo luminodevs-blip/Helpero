@@ -196,12 +196,12 @@ export default function ConfigurePage() {
         
         {/* Footer */}
         <div className="py-4 px-5 flex items-center justify-between">
-          <div className="flex flex-col">
-            <span className="text-[13px] font-medium text-zinc-500">
+          <div className="flex flex-col gap-0.5">
+            <span className="font-sans text-[16px] font-normal text-[#57636C]">
               Total
             </span>
             <div className="flex items-center gap-1.5 cursor-pointer">
-              <span className="font-outfit text-[17px] font-bold text-zinc-900">
+              <span className="font-outfit text-[18px] font-semibold text-zinc-900">
                 ${activeBookingDraft.totalPrice?.toFixed(2)}
               </span>
               <ChevronUp className="w-4 h-4 text-zinc-900" />
@@ -210,7 +210,7 @@ export default function ConfigurePage() {
 
           <button
             onClick={() => router.push("/addons")}
-            className="w-[180px] h-[52px] rounded-xl bg-[#14181B] text-white font-sans text-[15px] font-bold hover:bg-zinc-800 focus:outline-none transition-all active:scale-95 shadow-md flex items-center justify-center"
+            className="w-[200px] h-[50px] rounded-[10px] bg-[#14181B] text-white font-sans text-[18px] font-semibold hover:bg-zinc-800 focus:outline-none transition-all active:scale-95 shadow-md flex items-center justify-center"
           >
             Next
           </button>
