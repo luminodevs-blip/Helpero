@@ -207,7 +207,7 @@ export default function CheckoutPage() {
             How would you like to pay?
           </h2>
           
-          <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200/80 bg-[#FAFAFA] mb-[16px]">
+          <div className="flex items-center justify-between h-[66px] px-4 rounded-[10px] border border-zinc-200/80 bg-[#FAFAFA] mb-[16px]">
             <div className="flex items-center gap-3">
               <div className="h-8 w-10 bg-white border border-zinc-200 rounded flex items-center justify-center shadow-sm shrink-0">
                 <CreditCard className="h-5 w-5 text-zinc-700" />
