@@ -348,7 +348,7 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          <div className="w-full h-px bg-zinc-100 mt-4 mb-4" />
+          <div className="w-full h-px bg-zinc-100 !my-[16px]" />
 
           {/* Legal note */}
           <p className="font-sans text-[13px] leading-relaxed text-zinc-900">
