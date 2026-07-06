@@ -1,0 +1,10 @@
+const fs = require('fs');
+const env = fs.readFileSync('.env.local', 'utf8');
+const key = env.match(/NEXT_PUBLIC_SUPABASE_ANON_KEY=(.*)/)[1];
+
+fetch(`https://hwgmjlsoeebgounmthmr.supabase.co/rest/v1/orders?id=eq.101&select=id,order_items(service_name,service:services(image_url,service_categories(image_url)))`, {
+  headers: {
+    apikey: key,
+    Authorization: `Bearer ${key}`
+  }
+}).then(r => r.json()).then(data => console.log(JSON.stringify(data, null, 2)));
