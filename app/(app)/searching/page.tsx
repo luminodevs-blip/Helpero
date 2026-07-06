@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
 import { supabase } from "@/lib/supabase";
+import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import {
   MapPin,
   Clock,
@@ -237,34 +238,58 @@ function SearchingContent() {
   // ── Phase 2: Map + "Finding your specialist" ──
   const lat = order.house?.lat || 43.6532;
   const lng = order.house?.lng || -79.3832;
-  const staticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=14&size=450x800&scale=2&style=element:geometry%7Ccolor:0xe8e8e8&style=element:labels%7Cvisibility:off&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}`;
+
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""
+  });
 
   return (
     <div className="w-full max-w-md mx-auto h-screen relative overflow-hidden flex flex-col border-x border-zinc-100 shadow-md bg-[#F1F4F8]">
 
       {/* ── Map background ── */}
-      <div className="absolute inset-0 z-0">
-        <div
-          className="w-full h-full bg-cover bg-center"
-          style={{ backgroundImage: `url(${staticMapUrl})`, backgroundColor: "#d4d4d8" }}
-        />
+      <div className="absolute inset-0 z-0 bg-[#E8E8E8]">
+        {isLoaded && (
+          <GoogleMap
+            mapContainerStyle={{ width: "100%", height: "100%" }}
+            center={{ lat, lng }}
+            zoom={14}
+            options={{
+              disableDefaultUI: true,
+              keyboardShortcuts: false,
+              gestureHandling: 'none',
+              styles: [
+                {
+                  featureType: "all",
+                  elementType: "labels",
+                  stylers: [{ visibility: "off" }]
+                },
+                {
+                  featureType: "water",
+                  elementType: "geometry",
+                  stylers: [{ color: "#d4d4d8" }]
+                }
+              ]
+            }}
+          />
+        )}
       </div>
 
       {/* ── Pulsing house marker (center) ── */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10" style={{ bottom: "280px", top: "unset", position: "absolute", left: "50%", top: "38%", transform: "translate(-50%, -50%)" }}>
-        <div className="relative flex items-center justify-center">
-          {/* Outer pulse rings */}
-          <div className="absolute h-[120px] w-[120px] rounded-full bg-[#7B82F4]/20 animate-ping" />
-          <div className="absolute h-[80px] w-[80px] rounded-full bg-[#7B82F4]/30 animate-ping" style={{ animationDelay: "0.7s" }} />
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10" style={{ bottom: "280px", top: "unset", position: "absolute", left: "50%", top: "38%", transform: "translate(-50%, -50%)" }}>
+        
+        <div className="relative flex items-center justify-center mb-3">
+          <div className="absolute h-[100px] w-[100px] rounded-full bg-[#7B82F4]/20 animate-pulse" />
+          <div className="absolute h-[80px] w-[80px] rounded-full bg-[#7B82F4]/30" />
           {/* House icon circle */}
-          <div className="relative h-[60px] w-[60px] rounded-full bg-[#7B82F4] flex items-center justify-center shadow-xl border-4 border-white/30 z-10">
-            <Home className="h-[40px] w-[40px] text-white" />
-          </div>
-          {/* Pin stem */}
-          <div className="absolute -bottom-[28px] left-1/2 -translate-x-1/2 z-10">
-            <div className="w-[14px] h-[14px] rounded-full bg-zinc-900 border-2 border-white shadow" />
+          <div className="relative h-[60px] w-[60px] rounded-full bg-[#7B82F4] flex items-center justify-center shadow-lg z-10">
+            <Home className="h-[32px] w-[32px] text-white" strokeWidth={2} />
           </div>
         </div>
+        
+        {/* Black dot */}
+        <div className="w-2.5 h-2.5 bg-zinc-900 rounded-full border-2 border-white shadow-sm" />
+
       </div>
 
       {/* ── Bottom sheet ── */}
