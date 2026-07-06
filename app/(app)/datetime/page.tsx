@@ -298,12 +298,10 @@ export default function DateTimePage() {
           >
             {selectedAddress?.lat && selectedAddress?.lng ? (
               <>
-                <iframe
-                  className="absolute top-1/2 left-1/2 w-[110%] h-[250px] -translate-x-1/2 -translate-y-1/2"
-                  frameBorder="0"
-                  style={{ border: 0, pointerEvents: 'none' }}
-                  src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${selectedAddress.lat},${selectedAddress.lng}&zoom=16&map_id=51e65d1a42c6dcc2d42df44f`}
-                  allowFullScreen
+                <img
+                  className="w-full h-full object-cover"
+                  src={`https://maps.googleapis.com/maps/api/staticmap?center=${selectedAddress.lat},${selectedAddress.lng}&zoom=16&size=640x320&scale=2&map_id=51e65d1a42c6dcc2d42df44f&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`}
+                  alt="Service Location"
                 />
                 {/* Custom Black Marker covering the red one */}
                 <div 
