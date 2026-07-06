@@ -139,7 +139,7 @@ export default function ScheduleBottomSheet({
 
           <div className="w-full h-px bg-zinc-100 mt-[14px] mb-[20px] -mx-5 px-5 w-[calc(100%+40px)]" />
 
-          <h2 className="font-outfit text-[18px] font-semibold text-zinc-900 mb-1">
+          <h2 className="font-outfit text-[18px] font-semibold text-zinc-900 mb-[2px]">
             Choose a time
           </h2>
           <p className="text-[15.5px] text-zinc-500 font-normal mb-4">
