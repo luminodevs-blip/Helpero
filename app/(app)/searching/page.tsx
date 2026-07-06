@@ -268,17 +268,17 @@ function SearchingContent() {
       </div>
 
       {/* ── Bottom sheet ── */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 p-4">
-        <div className="bg-white rounded-[24px] p-5 shadow-2xl space-y-4">
+      <div className="absolute bottom-0 left-0 right-0 z-20 p-4 pb-8">
+        <div className="bg-white rounded-[32px] py-[36px] px-6 shadow-2xl space-y-6">
 
           {/* Header */}
-          <div>
+          <div className="text-center">
             <h3 className="font-outfit text-[28px] font-bold text-zinc-900 leading-tight">
               {order.status === "assigned" && order.specialist
                 ? "Specialist Found! 🎉"
                 : "Finding your specialist"}
             </h3>
-            <p className="text-[16px] font-normal text-zinc-500 mt-1 leading-snug">
+            <p className="text-[16px] font-normal text-zinc-500 mt-2 leading-snug">
               {order.status === "assigned" && order.specialist
                 ? `${order.specialist.first_name} is on the way to you.`
                 : "Matching you with the highest rated pro in Toronto."}
