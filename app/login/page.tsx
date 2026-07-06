@@ -249,7 +249,7 @@ export default function LoginPage() {
                   alignItems: "center",
                   gap: 6,
                   border: "1.5px solid #e5e7eb",
-                  borderRadius: 16,
+                  borderRadius: 8,
                   background: "#f9fafb",
                   padding: "0 14px",
                   height: 54,
@@ -288,7 +288,7 @@ export default function LoginPage() {
                 style={{
                   flex: 1,
                   border: "1.5px solid #e5e7eb",
-                  borderRadius: 16,
+                  borderRadius: 8,
                   background: "#f9fafb",
                   padding: "0 18px",
                   height: 54,
