@@ -100,7 +100,7 @@ export default function ServiceTermsBottomSheet({
           </h2>
         </div>
 
-        <div ref={scrollRef} className="px-5 pt-6 overflow-y-auto scrollbar-hide flex-1 pb-[100px]">
+        <div ref={scrollRef} className="px-5 pt-[20px] overflow-y-auto scrollbar-hide flex-1 pb-[100px]">
           <div className="space-y-4 font-sans text-[14.5px] font-medium text-[#57636C] leading-relaxed">
             <p>
               If our cleaner is unable to access the premises at the scheduled time, the service will be considered incomplete.
