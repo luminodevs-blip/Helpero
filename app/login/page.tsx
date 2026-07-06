@@ -258,8 +258,11 @@ export default function LoginPage() {
                   userSelect: "none",
                 }}
               >
+                <span style={{ fontSize: 20, lineHeight: 1 }}>
+                  {selectedCountry.flag}
+                </span>
                 <span style={{ fontSize: 16, fontWeight: 500, color: "#111111" }}>
-                  {selectedCountry.short} {selectedCountry.code}
+                  {selectedCountry.code}
                 </span>
                 <svg
                   width="10"
