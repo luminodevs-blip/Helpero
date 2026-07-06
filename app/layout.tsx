@@ -3,6 +3,7 @@ import { Outfit, Readex_Pro } from "next/font/google";
 import { ClientAuthProvider } from "@/app/contexts/ClientAuthContext";
 import { CartAnimationProvider } from "@/app/contexts/CartAnimationContext";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import OneSignalInit from "@/components/OneSignalInit";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -95,6 +96,9 @@ export default function RootLayout({
 
         {/* PWA Service Worker */}
         <ServiceWorkerRegistration />
+
+        {/* OneSignal Push Notifications */}
+        <OneSignalInit />
 
         {/* Landscape Blocker Overlay */}
         <div className="hidden landscape:flex fixed inset-0 z-[9999] bg-primary text-white flex-col items-center justify-center p-8 text-center sm:hidden">
