@@ -64,7 +64,7 @@ export default function ProfilePage() {
       label: "Vouchers",
       icon: Tag,
       subtitle: "Redeem promo codes & vouchers",
-      action: () => alert("Coming soon"),
+      action: () => router.push("/vouchers"),
     },
     {
       label: "Addresses",

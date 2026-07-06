@@ -15,22 +15,26 @@ export default function OneSignalInit() {
     script.onload = () => {
       (window as any).OneSignalDeferred = (window as any).OneSignalDeferred || [];
       (window as any).OneSignalDeferred.push(async (OneSignal: any) => {
-        await OneSignal.init({
-          appId: ONESIGNAL_APP_ID,
-          serviceWorkerPath: "/OneSignalSDKWorker.js",
-          notifyButton: {
-            enable: false, // We handle permission prompts manually
-          },
-          allowLocalhostAsSecureOrigin: true,
-        });
+        try {
+          await OneSignal.init({
+            appId: ONESIGNAL_APP_ID,
+            serviceWorkerPath: "/OneSignalSDKWorker.js",
+            notifyButton: {
+              enable: false, // We handle permission prompts manually
+            },
+            allowLocalhostAsSecureOrigin: true,
+          });
 
-        // Auto-subscribe user after init
-        const isSubscribed = await OneSignal.User.PushSubscription.optedIn;
-        if (!isSubscribed) {
-          await OneSignal.Slidedown.promptPush();
+          // Auto-subscribe user after init
+          const isSubscribed = await OneSignal.User.PushSubscription.optedIn;
+          if (!isSubscribed) {
+            await OneSignal.Slidedown.promptPush();
+          }
+
+          console.log("[OneSignal] Initialized. Subscribed:", isSubscribed);
+        } catch (err) {
+          console.warn("[OneSignal] Initialization skipped or failed:", err);
         }
-
-        console.log("[OneSignal] Initialized. Subscribed:", isSubscribed);
       });
     };
     document.head.appendChild(script);

@@ -55,6 +55,7 @@ body::before {
 * {
   scrollbar-width: none;       /* Firefox */
   -ms-overflow-style: none;    /* IE / Edge */
+  letter-spacing: 0.2px;
 }
 *::-webkit-scrollbar {
   display: none;               /* Chrome / Safari / WebKit */
