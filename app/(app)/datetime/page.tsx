@@ -182,13 +182,13 @@ export default function DateTimePage() {
   ];
 
   const formatDuration = (minutes?: number) => {
-    if (!minutes) return "0m";
+    if (!minutes) return "0min";
     const hrs = Math.floor(minutes / 60);
     const mins = minutes % 60;
     if (hrs > 0) {
-      return `${hrs}h ${mins}m`;
+      return `${hrs}h ${mins > 0 ? `${mins}min` : ''}`.trim();
     }
-    return `${mins}m`;
+    return `${mins}min`;
   };
 
   const totalAmount = ((activeBookingDraft?.totalPrice || 0) + (selectedSlot?.fee || 0)).toFixed(2);

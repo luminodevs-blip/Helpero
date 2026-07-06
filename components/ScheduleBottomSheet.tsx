@@ -78,10 +78,11 @@ export default function ScheduleBottomSheet({
   const timeSlots = generateTimeSlots();
 
   const formatDuration = (minutes: number) => {
+    if (!minutes) return "0min";
     const hrs = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    if (hrs > 0) return `${hrs}h ${mins > 0 ? `${mins}m` : ''}`;
-    return `${mins}m`;
+    if (hrs > 0) return `${hrs}h ${mins > 0 ? `${mins}min` : ''}`.trim();
+    return `${mins}min`;
   };
 
   const isSameDay = (d1: Date, d2: Date) => {

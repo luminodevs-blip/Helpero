@@ -2,7 +2,7 @@ import { BookingDraft, SelectedAddonStruct } from "./types";
 
 export function updateBookingAddon(
   draft: BookingDraft,
-  addon: { id: string; name: string; price: number; durationMinutes: number },
+  addon: any,
   action: "add" | "remove"
 ): BookingDraft {
   const updatedAddons = [...draft.selectedAddons];
@@ -23,10 +23,10 @@ export function updateBookingAddon(
         id: addon.id,
         name: addon.name,
         qty: 1,
-        unitPrice: addon.price,
-        totalPrice: addon.price,
-        unitDuration: addon.durationMinutes,
-        totalDuration: addon.durationMinutes,
+        unitPrice: addon.price || addon.unit_price || 0,
+        totalPrice: addon.price || addon.unit_price || 0,
+        unitDuration: addon.durationMinutes || addon.duration_minutes || 0,
+        totalDuration: addon.durationMinutes || addon.duration_minutes || 0,
       });
     }
   } else if (action === "remove") {
