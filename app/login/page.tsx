@@ -199,7 +199,7 @@ export default function LoginPage() {
             background: "#ffffff",
             borderRadius: "10px 10px 0 0",
             marginTop: -22,
-            padding: "24px 24px 20px",
+            padding: "20px 24px 20px",
             position: "relative",
             zIndex: 10,
             flexGrow: 1,
@@ -214,7 +214,7 @@ export default function LoginPage() {
               fontSize: 24,
               fontWeight: 600,
               color: "#111111",
-              margin: "0 0 20px",
+              margin: "0 0 22px",
             }}
           >
             Welcome to Helpero
@@ -439,6 +439,7 @@ export default function LoginPage() {
               color: "#6b7280",
               lineHeight: 1.6,
               margin: 0,
+              marginBottom: 60,
             }}
           >
             By continuing, you agree to our{" "}
