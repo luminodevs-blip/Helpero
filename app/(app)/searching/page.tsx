@@ -303,86 +303,134 @@ function SearchingContent() {
 
       {/* ── Bottom sheet ── */}
       <div className="absolute bottom-0 left-0 right-0 z-20 p-4 pb-8">
-        <div className="bg-white rounded-[30px] py-[36px] px-6 shadow-2xl space-y-6">
-
-          {/* Header */}
-          <div className="text-center">
-            <h3 className="font-outfit text-[28px] font-bold text-zinc-900 leading-tight">
-              {order.status === "assigned" && order.specialist
-                ? "Specialist Found! 🎉"
-                : "Finding your specialist"}
-            </h3>
-            <p className="text-[16px] font-normal text-zinc-500 mt-2 leading-snug">
-              {order.status === "assigned" && order.specialist
-                ? `${order.specialist.first_name} is on the way to you.`
-                : "Matching you with the highest rated pro in Toronto."}
-            </p>
-          </div>
-
-          {/* Progress bar (only while searching) */}
-          {order.status !== "assigned" && <ProgressBar />}
-
-          {/* Specialist row (when assigned) */}
-          {order.status === "assigned" && order.specialist && (
-            <div className="flex items-center gap-3 pt-1">
-              {order.specialist.avatar_url ? (
-                <img src={order.specialist.avatar_url} alt="" className="h-12 w-12 rounded-2xl object-cover border border-zinc-100" />
-              ) : (
-                <div className="h-12 w-12 rounded-2xl bg-[#7B82F4]/10 flex items-center justify-center">
-                  <User className="h-5 w-5 text-[#7B82F4]" />
-                </div>
-              )}
-              <div className="flex-1">
-                <p className="font-outfit font-bold text-zinc-900 text-[15px]">
-                  {order.specialist.first_name} {order.specialist.last_name}
-                </p>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                  <span className="text-xs font-bold text-zinc-700">{order.specialist.rating.toFixed(1)}</span>
-                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-500 ml-1" />
-                  <span className="text-[11px] text-emerald-600 font-semibold">Verified</span>
+        <div className="bg-white rounded-[30px] pt-[32px] pb-[24px] overflow-hidden shadow-2xl">
+          
+          {order.status === "assigned" && order.specialist ? (
+            <div className="space-y-6">
+              {/* Specialist Header */}
+              <div className="px-6 flex items-center gap-4">
+                {order.specialist.avatar_url ? (
+                  <img src={order.specialist.avatar_url} alt="" className="h-16 w-16 rounded-[14px] object-cover border-2 border-[#7B82F4]" />
+                ) : (
+                  <div className="h-16 w-16 rounded-[14px] bg-[#9198F7] border border-[#7B82F4] flex items-end justify-center overflow-hidden shrink-0">
+                    <User className="h-12 w-12 text-white/90 translate-y-2" />
+                  </div>
+                )}
+                <div>
+                  <p className="text-[10px] font-bold text-[#7B82F4] uppercase tracking-wider mb-0.5">
+                    Specialist Assigned
+                  </p>
+                  <h3 className="font-outfit text-[22px] font-bold text-zinc-900 leading-tight">
+                    {order.specialist.first_name} {order.specialist.last_name}
+                  </h3>
+                  <div className="flex items-center gap-1 mt-1 text-xs text-zinc-500 font-medium">
+                    <Star className="h-3.5 w-3.5 fill-[#7B82F4] text-[#7B82F4]" />
+                    <span className="font-semibold text-zinc-700">{order.specialist.rating.toFixed(2)}</span>
+                    <span>(121)</span>
+                    <span className="mx-0.5">·</span>
+                    <span>Helpero Pro</span>
+                  </div>
                 </div>
               </div>
-              <a href={`tel:${order.specialist.phone_number}`}
-                className="h-10 w-10 rounded-xl bg-[#F1F4F8] flex items-center justify-center">
-                <Phone className="h-4 w-4 text-zinc-700" />
-              </a>
+
+              {/* Divider */}
+              <div className="mx-6 h-px bg-zinc-100" />
+
+              {/* Details */}
+              <div className="px-6 space-y-3">
+                <div className="flex items-start justify-between">
+                  <span className="text-[14px] font-bold text-zinc-900 w-24">Arrival:</span>
+                  <span className="text-[14px] font-medium text-zinc-700 text-right">
+                    {order.scheduled_start_at ? new Date(order.scheduled_start_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : "24 Apr, 14:45"}
+                  </span>
+                </div>
+                <div className="flex items-start justify-between">
+                  <span className="text-[14px] font-bold text-zinc-900 w-24">To:</span>
+                  <span className="text-[14px] font-medium text-zinc-700 text-right flex-1 truncate text-ellipsis">
+                    {order.house?.full_address || "123 Maple St, North York"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Service & Price Box */}
+              <div className="px-6 py-5 bg-[#F4F5F7] border-y border-zinc-100 flex items-center gap-3">
+                <div className="h-10 w-10 shrink-0 flex items-center justify-center">
+                  {order.service_icon_url ? (
+                    <img src={order.service_icon_url} alt={order.service_name} className="h-10 w-10 object-contain drop-shadow-sm" />
+                  ) : (
+                    <span className="text-2xl">🧹</span>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <p className="font-outfit font-medium text-zinc-900 text-[15px]">{order.service_name || "Standard Cleaning"}</p>
+                  <p className="text-[13px] font-medium text-zinc-500">
+                    {order.service_duration ? `${Math.floor(order.service_duration / 60)} hours ${order.service_duration % 60} minutes` : "3 hours 55 minutes"}
+                  </p>
+                </div>
+                <p className="font-outfit font-bold text-zinc-900 text-[16px]">
+                  ${Number(order.final_total_price).toFixed(2)}
+                </p>
+              </div>
+
+              {/* Order History Button */}
+              <div className="px-6">
+                <button
+                  onClick={() => router.push("/orders")}
+                  className="w-full h-[52px] bg-zinc-900 rounded-[14px] text-white font-bold text-[16px] flex items-center justify-center transition-transform active:scale-[0.98]"
+                >
+                  Order History
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="px-6 space-y-6">
+              {/* Header */}
+              <div className="text-center">
+                <h3 className="font-outfit text-[28px] font-bold text-zinc-900 leading-tight">
+                  Finding your specialist
+                </h3>
+                <p className="text-[16px] font-normal text-zinc-500 mt-2 leading-snug">
+                  Matching you with the highest rated pro in Toronto.
+                </p>
+              </div>
+
+              {/* Progress bar */}
+              <ProgressBar />
+
+              {/* Divider */}
+              <div className="h-px bg-zinc-100" />
+
+              {/* Service row */}
+              <div className="flex items-center gap-3">
+                <div className="h-11 w-11 rounded-xl bg-[#F1F4F8] flex items-center justify-center shrink-0 overflow-hidden">
+                  {order.service_icon_url ? (
+                    <img src={order.service_icon_url} alt={order.service_name} className="h-8 w-8 object-contain" />
+                  ) : (
+                    <span className="text-xl">🧹</span>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <p className="font-outfit font-medium text-zinc-900 text-[18px]">{order.service_name || "Standard Cleaning"}</p>
+                  <p className="text-[15px] font-normal text-zinc-400">
+                    {order.service_duration ? `${Math.floor(order.service_duration / 60)} hours ${order.service_duration % 60} minutes` : "3 hours 45 minutes"}
+                  </p>
+                </div>
+                <p className="font-outfit font-semibold text-zinc-900 text-[17px]">
+                  ${Number(order.final_total_price).toFixed(2)}
+                </p>
+              </div>
+
+              {/* Cancel button */}
+              <button
+                onClick={handleCancelOrder}
+                disabled={cancelling}
+                className="w-full h-12 border border-zinc-200 rounded-xl text-zinc-500 font-normal text-[18px] flex items-center justify-center gap-2 hover:bg-zinc-50 transition-all"
+              >
+                {cancelling ? <Loader2 className="h-4 w-4 animate-spin" /> : "Cancel order"}
+              </button>
             </div>
           )}
 
-          {/* Divider */}
-          <div className="h-px bg-zinc-100" />
-
-          {/* Service row */}
-          <div className="flex items-center gap-3">
-            <div className="h-11 w-11 rounded-xl bg-[#F1F4F8] flex items-center justify-center shrink-0 overflow-hidden">
-              {order.service_icon_url ? (
-                <img src={order.service_icon_url} alt={order.service_name} className="h-8 w-8 object-contain" />
-              ) : (
-                <span className="text-xl">🧹</span>
-              )}
-            </div>
-            <div className="flex-1">
-              <p className="font-outfit font-medium text-zinc-900 text-[18px]">{order.service_name || "Standard Cleaning"}</p>
-              <p className="text-[15px] font-normal text-zinc-400">
-                {order.service_duration ? `${Math.floor(order.service_duration / 60)} hours ${order.service_duration % 60} minutes` : "3 hours 45 minutes"}
-              </p>
-            </div>
-            <p className="font-outfit font-semibold text-zinc-900 text-[17px]">
-              ${Number(order.final_total_price).toFixed(2)}
-            </p>
-          </div>
-
-          {/* Cancel button */}
-          {order.status !== "assigned" && (
-            <button
-              onClick={handleCancelOrder}
-              disabled={cancelling}
-              className="w-full h-12 border border-zinc-200 rounded-xl text-zinc-500 font-normal text-[18px] flex items-center justify-center gap-2 hover:bg-zinc-50 transition-all"
-            >
-              {cancelling ? <Loader2 className="h-4 w-4 animate-spin" /> : "Cancel order"}
-            </button>
-          )}
         </div>
       </div>
     </div>
