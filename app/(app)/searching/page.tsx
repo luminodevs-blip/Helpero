@@ -36,6 +36,7 @@ interface OrderDetails {
   scheduled_start_at: string;
   service_name?: string;
   service_duration?: number;
+  service_icon_url?: string;
   house: {
     full_address: string;
     lat: number;
@@ -87,7 +88,8 @@ function SearchingContent() {
           .select(`
             id, status, final_total_price, scheduled_start_at,
             house:houses ( full_address, lat, lng, name_label ),
-            specialist:profiles!specialist_id ( id, first_name, last_name, avatar_url, phone_number )
+            specialist:profiles!specialist_id ( id, first_name, last_name, avatar_url, phone_number ),
+            order_items ( service_name, service:services ( image_url, duration_minutes ) )
           `)
           .eq("id", bookingId)
           .single();
@@ -99,6 +101,9 @@ function SearchingContent() {
           status: raw.status || "searching",
           final_total_price: raw.final_total_price || 0,
           scheduled_start_at: raw.scheduled_start_at || "",
+          service_name: raw.order_items?.[0]?.service_name,
+          service_icon_url: raw.order_items?.[0]?.service?.image_url,
+          service_duration: raw.order_items?.[0]?.service?.duration_minutes,
           house: raw.house ? {
             full_address: raw.house.full_address,
             lat: Number(raw.house.lat),
@@ -141,19 +146,23 @@ function SearchingContent() {
           .select(`
             id, status, final_total_price, scheduled_start_at,
             house:houses ( full_address, lat, lng, name_label ),
-            specialist:profiles!specialist_id ( id, first_name, last_name, avatar_url, phone_number )
+            specialist:profiles!specialist_id ( id, first_name, last_name, avatar_url, phone_number ),
+            order_items ( service_name, service:services ( image_url, duration_minutes ) )
           `)
           .eq("id", bookingId).single();
         if (data) {
           const raw = data as any;
-          setOrder({
+          setOrder(prev => ({
             id: raw.id,
             status: raw.status || "searching",
             final_total_price: raw.final_total_price || 0,
             scheduled_start_at: raw.scheduled_start_at || "",
+            service_name: raw.order_items?.[0]?.service_name || prev?.service_name,
+            service_icon_url: raw.order_items?.[0]?.service?.image_url || prev?.service_icon_url,
+            service_duration: raw.order_items?.[0]?.service?.duration_minutes || prev?.service_duration,
             house: raw.house ? { full_address: raw.house.full_address, lat: Number(raw.house.lat), lng: Number(raw.house.lng), name_label: raw.house.name_label } : null,
             specialist: raw.specialist ? { id: raw.specialist.id, first_name: raw.specialist.first_name, last_name: raw.specialist.last_name, avatar_url: raw.specialist.avatar_url, rating: raw.specialist.rating || 4.9, phone_number: raw.specialist.phone_number || "" } : null,
-          });
+          }));
         }
       })
       .subscribe();
@@ -346,12 +355,18 @@ function SearchingContent() {
 
           {/* Service row */}
           <div className="flex items-center gap-3">
-            <div className="h-11 w-11 rounded-xl bg-[#F1F4F8] flex items-center justify-center text-xl">
-              🧹
+            <div className="h-11 w-11 rounded-xl bg-[#F1F4F8] flex items-center justify-center shrink-0 overflow-hidden">
+              {order.service_icon_url ? (
+                <img src={order.service_icon_url} alt={order.service_name} className="h-8 w-8 object-contain" />
+              ) : (
+                <span className="text-xl">🧹</span>
+              )}
             </div>
             <div className="flex-1">
-              <p className="font-outfit font-medium text-zinc-900 text-[18px]">Standard Cleaning</p>
-              <p className="text-[15px] font-normal text-zinc-400">3 hours 45 minutes</p>
+              <p className="font-outfit font-medium text-zinc-900 text-[18px]">{order.service_name || "Standard Cleaning"}</p>
+              <p className="text-[15px] font-normal text-zinc-400">
+                {order.service_duration ? `${Math.floor(order.service_duration / 60)} hours ${order.service_duration % 60} minutes` : "3 hours 45 minutes"}
+              </p>
             </div>
             <p className="font-outfit font-semibold text-zinc-900 text-[17px]">
               ${Number(order.final_total_price).toFixed(2)}
