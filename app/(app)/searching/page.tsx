@@ -198,7 +198,7 @@ function SearchingContent() {
   }
 
   // ── Phase 1: Securing your booking (purple loading screen) ──
-  if (phase === "securing" || order.status === "pending_payment") {
+  if (phase === "securing") {
     return (
       <div className="w-full max-w-md mx-auto h-screen bg-[#7B82F4] flex flex-col items-center justify-center text-white px-8 text-center animate-in fade-in duration-300">
         <div className="relative h-28 w-28 flex items-center justify-center mb-8">
