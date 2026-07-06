@@ -127,7 +127,7 @@ export default function SettingsPage() {
       <div className="flex-1 pb-10">
         {/* User Card */}
         <div
-          onClick={() => router.push("/profile")}
+          onClick={() => router.push("/profile/edit")}
           className="flex items-center justify-between px-5 py-5 border-b border-zinc-100 hover:bg-zinc-50 transition-colors cursor-pointer"
         >
           <div className="flex items-center gap-4">

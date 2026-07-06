@@ -134,7 +134,7 @@ export default function ProfilePage() {
             <p className="text-[15px] font-medium text-zinc-500 truncate">{displaySubMasked}</p>
           </div>
           <button
-            onClick={() => alert("Edit profile coming soon")}
+            onClick={() => router.push("/profile/edit")}
             className="h-9 w-9 rounded-full bg-zinc-50 border border-zinc-200 flex items-center justify-center flex-shrink-0 hover:bg-zinc-100 transition-colors"
           >
             <Pencil className="h-4 w-4 text-zinc-500" />

@@ -64,6 +64,9 @@ export interface UserProfile {
   lastName?: string;
   phoneNumber?: string;
   avatarUrl?: string;
+  email?: string;
+  birthdate?: string;
+  gender?: string;
   currentHouseId?: number | null;
   savedAddresses: AddressStruct[];
 }

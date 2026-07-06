@@ -125,6 +125,9 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
               lastName: profileData.last_name,
               phoneNumber: profileData.phone_number,
               avatarUrl: profileData.avatar_url,
+              email: profileData.email,
+              birthdate: profileData.birthdate,
+              gender: profileData.gender,
               currentHouseId: currentHouseId,
               savedAddresses: mappedAddresses,
             }
