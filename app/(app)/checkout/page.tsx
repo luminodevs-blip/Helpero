@@ -348,10 +348,10 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          <div className="w-full h-px bg-zinc-100 !my-[16px]" />
+          <div className="w-full h-px bg-zinc-100 !mt-[16px] !mb-0" />
 
           {/* Legal note */}
-          <p className="font-sans text-[13px] leading-relaxed text-zinc-900">
+          <p className="font-sans text-[13px] leading-relaxed text-zinc-900 !mt-[10px]">
             By confirming booking , I agree to the <a href="#" className="underline">service policy</a> and <a href="#" className="underline">refund policy</a>, I also agree to pay for the full amount of booking
           </p>
         </div>
