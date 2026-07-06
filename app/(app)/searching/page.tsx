@@ -66,8 +66,9 @@ function SearchingContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [cancelling, setCancelling] = useState(false);
-  // Phase: "securing" → (auto) → "searching"
-  const [phase, setPhase] = useState<"securing" | "map">("securing");
+  const fromPayment = searchParams.get("fromPayment") === "true";
+  // Phase: "securing" → (auto) → "map"
+  const [phase, setPhase] = useState<"securing" | "map">(fromPayment ? "securing" : "map");
 
   useEffect(() => {
     if (!bookingId) { router.replace("/"); return; }
@@ -117,7 +118,10 @@ function SearchingContent() {
     fetchOrder();
 
     // After 3s on "securing" screen, transition to map
-    const timer = setTimeout(() => setPhase("map"), 3000);
+    let timer: NodeJS.Timeout;
+    if (fromPayment) {
+      timer = setTimeout(() => setPhase("map"), 3000);
+    }
 
     // Real-time listener
     const channel = supabase
@@ -149,10 +153,10 @@ function SearchingContent() {
       .subscribe();
 
     return () => {
-      clearTimeout(timer);
+      if (timer) clearTimeout(timer);
       supabase.removeChannel(channel);
     };
-  }, [bookingId, router]);
+  }, [bookingId, router, fromPayment]);
 
   const handleCancelOrder = async () => {
     if (!bookingId || cancelling) return;

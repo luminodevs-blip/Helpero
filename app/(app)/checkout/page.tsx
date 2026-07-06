@@ -533,7 +533,7 @@ export default function CheckoutPage() {
           // Capture bookingId before any state resets
           const targetId = createdBookingId;
           if (targetId) {
-            router.push(`/searching?bookingId=${targetId}`);
+            router.push(`/searching?bookingId=${targetId}&fromPayment=true`);
           } else {
             router.push("/orders");
           }
