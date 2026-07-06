@@ -142,7 +142,7 @@ export default function ScheduleBottomSheet({
           <h2 className="font-outfit text-[18px] font-semibold text-zinc-900 mb-[2px]">
             Choose a time
           </h2>
-          <p className="text-[15.5px] text-zinc-500 font-normal mb-4">
+          <p className="text-[15.5px] text-zinc-500 font-normal mb-[20px]">
             Service duration — {formatDuration(serviceDurationMinutes)}
           </p>
 
