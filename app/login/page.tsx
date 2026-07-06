@@ -107,7 +107,7 @@ export default function LoginPage() {
         {/* ── PURPLE HEADER ───────────────────────────────────── */}
         <div
           className="relative overflow-hidden"
-          style={{ background: "#7B82F4", flex: 1, minHeight: 260 }}
+          style={{ background: "#7B82F4", height: 260, flexShrink: 0 }}
         >
           {/* Floating pill: Offices — top-center */}
           <div
@@ -193,16 +193,17 @@ export default function LoginPage() {
           />
         </div>
 
-        {/* ── WHITE CARD ──────────────────────────────────────── */}
         <div
           style={{
             background: "#ffffff",
-            borderRadius: "10px 10px 0 0",
+            borderRadius: "28px 28px 0 0",
             marginTop: -22,
             padding: "20px 24px 20px",
             position: "relative",
             zIndex: 10,
-            flexShrink: 0,
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           {/* Title */}
