@@ -3,14 +3,37 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { KeyRound, Mail } from "lucide-react";
+import { KeyRound, Mail, X } from "lucide-react";
+
+const countries = [
+  { name: "United States", code: "+1", flag: "🇺🇸", short: "US" },
+  { name: "Canada", code: "+1", flag: "🇨🇦", short: "CA" },
+  { name: "United Kingdom", code: "+44", flag: "🇬🇧", short: "GB" },
+  { name: "Germany", code: "+49", flag: "🇩🇪", short: "DE" },
+  { name: "Poland", code: "+48", flag: "🇵🇱", short: "PL" },
+  { name: "Norway", code: "+47", flag: "🇳🇴", short: "NO" },
+  { name: "Japan", code: "+81", flag: "🇯🇵", short: "JP" },
+  { name: "Hungary", code: "+36", flag: "🇭🇺", short: "HU" },
+  { name: "Latvia", code: "+371", flag: "🇱🇻", short: "LV" },
+  { name: "Switzerland", code: "+41", flag: "🇨🇭", short: "CH" },
+  { name: "New Zealand", code: "+64", flag: "🇳🇿", short: "NZ" },
+  { name: "Philippines", code: "+63", flag: "🇵🇭", short: "PH" },
+];
 
 export default function LoginPage() {
   const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [countryCode, setCountryCode] = useState("+1");
+  const [selectedCountry, setSelectedCountry] = useState(countries[1]); // Default to Canada
+  const [isCountryModalOpen, setIsCountryModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const filteredCountries = countries.filter(c => 
+    c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    c.code.includes(searchQuery)
+  );
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const cleaned = e.target.value.replace(/\D/g, "");
@@ -154,6 +177,7 @@ export default function LoginPage() {
             <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
               {/* Country selector */}
               <div
+                onClick={() => setIsCountryModalOpen(true)}
                 style={{
                   position: "relative",
                   display: "flex",
@@ -169,9 +193,8 @@ export default function LoginPage() {
                   userSelect: "none",
                 }}
               >
-                <span style={{ fontSize: 18 }}>🇨🇦</span>
                 <span style={{ fontSize: 14, fontWeight: 700, color: "#111111" }}>
-                  {countryCode}
+                  {selectedCountry.short} {selectedCountry.code}
                 </span>
                 <svg
                   width="10"
@@ -188,22 +211,6 @@ export default function LoginPage() {
                     strokeLinejoin="round"
                   />
                 </svg>
-                <select
-                  value={countryCode}
-                  onChange={(e) => setCountryCode(e.target.value)}
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    opacity: 0,
-                    cursor: "pointer",
-                    width: "100%",
-                  }}
-                >
-                  <option value="+1">🇨🇦 Canada +1</option>
-                  <option value="+7">🇷🇺 Russia +7</option>
-                  <option value="+44">🇬🇧 UK +44</option>
-                  <option value="+380">🇺🇦 Ukraine +380</option>
-                </select>
               </div>
 
               {/* Phone input */}
@@ -388,6 +395,75 @@ export default function LoginPage() {
             </a>
             . You&apos;ll receive notifications, which you can manage in your profile settings.
           </p>
+
+          {isCountryModalOpen && (
+            <div className="absolute inset-0 z-50 flex flex-col justify-end bg-black/45 animate-fade-in">
+              {/* Backdrop */}
+              <div 
+                className="absolute inset-0 cursor-default" 
+                onClick={() => setIsCountryModalOpen(false)} 
+              />
+              
+              {/* Modal Container */}
+              <div className="relative bg-white rounded-t-[28px] max-h-[75%] flex flex-col overflow-hidden shadow-2xl animate-slide-up">
+                {/* Header */}
+                <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b border-zinc-100">
+                  <span className="font-outfit text-[20px] font-extrabold text-zinc-900">
+                    Select Country
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsCountryModalOpen(false)}
+                    className="h-8 w-8 rounded-full bg-zinc-100 hover:bg-zinc-200 flex items-center justify-center text-zinc-600 transition-colors focus:outline-none"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+
+                {/* Search Input */}
+                <div className="px-6 py-4">
+                  <input
+                    type="text"
+                    placeholder="Search by country or code"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full h-12 px-4 bg-[#F1F4F8] text-[15px] font-semibold text-zinc-900 placeholder-zinc-400 rounded-2xl border border-transparent focus:border-zinc-200 outline-none transition-all"
+                  />
+                </div>
+
+                {/* Country List */}
+                <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-1">
+                  {filteredCountries.map((c) => (
+                    <div
+                      key={c.short}
+                      onClick={() => {
+                        setSelectedCountry(c);
+                        setCountryCode(c.code);
+                        setIsCountryModalOpen(false);
+                        setSearchQuery("");
+                      }}
+                      className="flex items-center justify-between py-3.5 px-2 hover:bg-zinc-50 rounded-2xl cursor-pointer transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl shrink-0 leading-none">{c.flag}</span>
+                        <span className="font-sans text-[15px] font-semibold text-zinc-900">
+                          {c.name}
+                        </span>
+                      </div>
+                      <span className="font-sans text-[15px] font-bold text-zinc-900">
+                        {c.code}
+                      </span>
+                    </div>
+                  ))}
+                  {filteredCountries.length === 0 && (
+                    <div className="text-center py-12 text-zinc-400 text-sm font-semibold">
+                      No countries found
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
