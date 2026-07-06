@@ -50,7 +50,6 @@ const CheckoutForm = ({ onSuccess }: { onSuccess: () => void }) => {
       <PaymentElement
         options={{
           wallets: { applePay: "never", googlePay: "never" },
-          fields: { billingDetails: { email: "never", phone: "never", name: "never" } },
         }}
       />
       {errorMessage && (
