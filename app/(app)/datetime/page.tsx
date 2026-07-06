@@ -6,6 +6,7 @@ import { useClientAuth } from "@/app/contexts/ClientAuthContext";
 import { ArrowLeft, Clock, Zap, CalendarDays, ChevronRight, Loader2, Home, User, ChevronUp } from "lucide-react";
 import { MdLocationOn } from "react-icons/md";
 import AddressSelector from "@/components/AddressSelector";
+import ScheduleBottomSheet from "@/components/ScheduleBottomSheet";
 
 // ─── Types ───────────────────────────────────────────────────────────
 interface ArrivalSlot {
@@ -48,6 +49,7 @@ export default function DateTimePage() {
   const [selectedSlot, setSelectedSlot] = useState<ArrivalSlot | null>(null);
   const [securing, setSecuring] = useState(false);
   const [isAddressSelectorOpen, setIsAddressSelectorOpen] = useState(false);
+  const [isScheduleOpen, setIsScheduleOpen] = useState(false);
 
   // Redirect if no active draft
   useEffect(() => {
@@ -119,7 +121,25 @@ export default function DateTimePage() {
   if (!activeBookingDraft) return null;
 
   const handleSelectSlot = (slot: ArrivalSlot) => {
-    setSelectedSlot(slot);
+    if (slot.mode === "scheduled") {
+      setIsScheduleOpen(true);
+    } else {
+      setSelectedSlot(slot);
+    }
+  };
+
+  const handleScheduleConfirm = (date: Date, timeStr: string) => {
+    const scheduledSlot = slots.find((s) => s.mode === "scheduled");
+    if (!scheduledSlot) return;
+
+    const dayName = date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+    const updatedSlot = {
+      ...scheduledSlot,
+      displayDate: dayName,
+      displayTime: timeStr,
+      timeStart: timeStr,
+    };
+    setSelectedSlot(updatedSlot);
   };
 
   const handleConfirm = async () => {
@@ -158,7 +178,7 @@ export default function DateTimePage() {
   const slotsByMode = [
     ...(prioritySlots.length > 0 ? [prioritySlots[0]] : []),
     ...(standardSlots.length > 0 ? [standardSlots[0]] : []),
-    ...(scheduledSlots.length > 0 ? [scheduledSlots[0]] : []),
+    ...(scheduledSlots.length > 0 ? [selectedSlot?.mode === 'scheduled' ? selectedSlot : scheduledSlots[0]] : []),
   ];
 
   const formatDuration = (minutes?: number) => {
@@ -394,6 +414,12 @@ export default function DateTimePage() {
       <AddressSelector 
         isOpen={isAddressSelectorOpen} 
         onClose={() => setIsAddressSelectorOpen(false)} 
+      />
+      <ScheduleBottomSheet
+        isOpen={isScheduleOpen}
+        onClose={() => setIsScheduleOpen(false)}
+        onSelect={handleScheduleConfirm}
+        serviceDurationMinutes={activeBookingDraft.totalDuration}
       />
     </div>
   );
