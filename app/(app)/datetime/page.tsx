@@ -300,7 +300,7 @@ export default function DateTimePage() {
               <>
                 <img
                   className="w-full h-full object-cover"
-                  src={`https://maps.googleapis.com/maps/api/staticmap?center=${selectedAddress.lat},${selectedAddress.lng}&zoom=16&size=640x320&scale=2&map_id=51e65d1a42c6dcc2d42df44f&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`}
+                  src={`https://maps.googleapis.com/maps/api/staticmap?center=${selectedAddress.lat},${selectedAddress.lng}&zoom=16&size=640x320&scale=2&map_id=51e65d1a42c6dcc2d42df44f&key=AIzaSyBraQ6yVwpcq2NnWG1lUjiAOWp9_ck0sy0`}
                   alt="Service Location"
                 />
                 {/* Custom Black Marker covering the red one */}
