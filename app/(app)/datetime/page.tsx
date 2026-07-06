@@ -302,7 +302,7 @@ export default function DateTimePage() {
                   className="absolute top-1/2 left-1/2 w-[110%] h-[250px] -translate-x-1/2 -translate-y-1/2"
                   frameBorder="0"
                   style={{ border: 0, pointerEvents: 'none' }}
-                  src={`https://maps.google.com/maps?q=${selectedAddress.lat},${selectedAddress.lng}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
+                  src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${selectedAddress.lat},${selectedAddress.lng}&zoom=16&map_id=51e65d1a42c6dcc2d42df44f`}
                   allowFullScreen
                 />
                 {/* Custom Black Marker covering the red one */}
