@@ -170,7 +170,7 @@ function VerifyOtpPageContent() {
         background: "#ffffff",
         display: "flex",
         flexDirection: "column",
-        padding: "0 24px",
+        padding: "0 16px",
         maxWidth: 430,
         margin: "0 auto",
         boxSizing: "border-box",
