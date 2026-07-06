@@ -28,25 +28,25 @@ export default function AddressSelector({ isOpen, onClose }: AddressSelectorProp
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-xs">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-[2px]">
       {/* Tap backdrop to close */}
       <div className="absolute inset-0" onClick={onClose} />
 
       {/* Slide up sheet */}
-      <div className="relative w-full max-w-md bg-bg-secondary rounded-t-[24px] shadow-2xl z-10 overflow-hidden flex flex-col max-h-[80vh] border-t border-alternate">
+      <div className="relative w-full max-w-md bg-white rounded-t-[28px] shadow-2xl z-10 overflow-hidden flex flex-col max-h-[80vh] border-t border-zinc-100 animate-slide-up">
         {/* Handle Bar */}
         <div className="flex justify-center py-3">
-          <div className="w-10 h-1 rounded-full bg-alternate" />
+          <div className="w-10 h-1 rounded-full bg-zinc-200" />
         </div>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 pb-4 border-b border-alternate">
-          <h3 className="font-outfit text-xl font-bold text-text-primary">
+        <div className="flex items-center justify-between px-6 pb-4 border-b border-zinc-100">
+          <h3 className="font-outfit text-xl font-bold text-zinc-900">
             Your Addresses
           </h3>
           <button
             onClick={onClose}
-            className="p-1 rounded-full hover:bg-bg-primary text-text-secondary focus:outline-none transition-colors"
+            className="p-1.5 rounded-full hover:bg-zinc-100 text-zinc-500 focus:outline-none transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
@@ -62,27 +62,27 @@ export default function AddressSelector({ isOpen, onClose }: AddressSelectorProp
                 onClick={() => handleSelect(addr)}
                 className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${
                   isSelected
-                    ? "border-primary bg-primary/5 text-primary"
-                    : "border-alternate bg-bg-primary hover:bg-bg-primary/85 text-text-primary"
+                    ? "border-[#7B82F4] bg-[#7B82F4]/5"
+                    : "border-zinc-200 bg-[#F1F4F8] hover:bg-zinc-100"
                 }`}
               >
                 <div className="flex items-start gap-3">
                   <div className={`p-2 rounded-xl mt-0.5 ${
-                    isSelected ? "bg-primary text-white" : "bg-bg-secondary border border-alternate text-text-secondary"
+                    isSelected ? "bg-[#7B82F4] text-white" : "bg-white border border-zinc-200 text-zinc-500"
                   }`}>
                     <MapPin className="h-4 w-4" />
                   </div>
                   <div>
-                    <p className={`text-sm font-bold leading-tight ${isSelected ? "text-primary" : "text-text-primary"}`}>
+                    <p className={`text-sm font-bold leading-tight ${isSelected ? "text-[#7B82F4]" : "text-zinc-900"}`}>
                       {addr.nameLabel}
                     </p>
-                    <p className="text-xs text-text-secondary mt-1 max-w-[240px] truncate leading-normal">
+                    <p className="text-xs text-zinc-500 mt-1 max-w-[240px] truncate leading-normal">
                       {addr.fullAddress}
                     </p>
                   </div>
                 </div>
                 {isSelected && (
-                  <div className="h-5 w-5 rounded-full bg-primary text-white flex items-center justify-center">
+                  <div className="h-5 w-5 rounded-full bg-[#7B82F4] text-white flex items-center justify-center shrink-0">
                     <Check className="h-3.5 w-3.5" strokeWidth={3} />
                   </div>
                 )}
@@ -91,17 +91,17 @@ export default function AddressSelector({ isOpen, onClose }: AddressSelectorProp
           })}
 
           {savedAddresses.length === 0 && (
-            <div className="text-center py-6 text-sm text-text-secondary font-medium">
+            <div className="text-center py-6 text-sm text-zinc-400 font-medium">
               No addresses saved yet
             </div>
           )}
         </div>
 
         {/* Add New Address Button footer */}
-        <div className="p-6 border-t border-alternate bg-bg-secondary">
+        <div className="p-6 border-t border-zinc-100 bg-white">
           <button
             onClick={handleAddNew}
-            className="flex items-center justify-center gap-2 w-full h-14 rounded-full border-2 border-dashed border-primary text-primary font-sans text-base font-bold hover:bg-primary/5 focus:outline-none transition-colors"
+            className="flex items-center justify-center gap-2 w-full h-14 rounded-full border-2 border-dashed border-[#7B82F4] text-[#7B82F4] font-sans text-base font-bold hover:bg-[#7B82F4]/5 focus:outline-none transition-colors"
           >
             <Plus className="h-5 w-5" />
             Add New Address
@@ -111,3 +111,4 @@ export default function AddressSelector({ isOpen, onClose }: AddressSelectorProp
     </div>
   );
 }
+
