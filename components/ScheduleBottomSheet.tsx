@@ -107,7 +107,7 @@ export default function ScheduleBottomSheet({
         </div>
 
         <div className="px-5 pb-4 overflow-y-auto scrollbar-hide flex-1">
-          <h2 className="font-outfit text-[17px] font-bold text-zinc-900 mb-3">
+          <h2 className="font-outfit text-[18px] font-semibold text-zinc-900 mb-3">
             Choose day
           </h2>
 
@@ -120,16 +120,16 @@ export default function ScheduleBottomSheet({
                 <button
                   key={idx}
                   onClick={() => setSelectedDate(date)}
-                  className={`shrink-0 w-[64px] h-[72px] rounded-[10px] border flex flex-col items-center justify-center gap-0.5 transition-colors ${
+                  className={`shrink-0 w-[60px] h-[70px] rounded-[10px] border flex flex-col items-center justify-center gap-0.5 transition-colors ${
                     selected
                       ? "bg-[#7B82F4] border-[#7B82F4] text-white"
                       : "bg-zinc-50 border-zinc-200 text-zinc-900 hover:bg-zinc-100"
                   }`}
                 >
-                  <span className={`text-[14px] font-medium ${selected ? "text-white/90" : "text-zinc-500"}`}>
+                  <span className={`text-[16px] font-normal ${selected ? "text-white/90" : "text-zinc-500"}`}>
                     {dayName}
                   </span>
-                  <span className={`text-[18px] font-bold leading-tight ${selected ? "text-white" : "text-zinc-900"}`}>
+                  <span className={`text-[17px] font-medium leading-tight ${selected ? "text-white" : "text-zinc-900"}`}>
                     {dayNum}
                   </span>
                 </button>
@@ -139,10 +139,10 @@ export default function ScheduleBottomSheet({
 
           <div className="w-full h-px bg-zinc-100 my-5 -mx-5 px-5 w-[calc(100%+40px)]" />
 
-          <h2 className="font-outfit text-[17px] font-bold text-zinc-900 mb-1">
+          <h2 className="font-outfit text-[18px] font-semibold text-zinc-900 mb-1">
             Choose a time
           </h2>
-          <p className="text-[14px] text-zinc-500 font-medium mb-4">
+          <p className="text-[15.5px] text-zinc-500 font-normal mb-4">
             Service duration — {formatDuration(serviceDurationMinutes)}
           </p>
 
@@ -153,7 +153,7 @@ export default function ScheduleBottomSheet({
                 <button
                   key={time}
                   onClick={() => setSelectedTime(time)}
-                  className={`h-[44px] rounded-[10px] border text-[13px] font-semibold transition-colors flex items-center justify-center ${
+                  className={`h-[44px] rounded-[8px] border text-[14px] font-medium transition-colors flex items-center justify-center ${
                     selected
                       ? "bg-[#7B82F4]/5 border-[#7B82F4] text-zinc-900"
                       : "bg-white border-zinc-200 text-zinc-700 hover:border-zinc-300"
@@ -169,7 +169,7 @@ export default function ScheduleBottomSheet({
         <div className="p-5 border-t border-zinc-100 bg-white pb-8 shrink-0">
           <button
             onClick={handleUpdate}
-            className="w-full h-[52px] bg-[#14181B] text-white rounded-[12px] font-sans text-[16px] font-bold flex items-center justify-center hover:bg-zinc-800 transition-colors active:scale-[0.98]"
+            className="w-full h-[50px] bg-[#14181B] text-white rounded-[12px] font-sans text-[18px] font-semibold flex items-center justify-center hover:bg-zinc-800 transition-colors active:scale-[0.98]"
           >
             Update booking
           </button>
