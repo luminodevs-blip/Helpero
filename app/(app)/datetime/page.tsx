@@ -136,11 +136,27 @@ export default function DateTimePage() {
     if (!scheduledSlot) return;
 
     const dayName = date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+    
+    // Convert date + "08:00 AM" to ISO string
+    let isoTimeStart = date.toISOString();
+    const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+    if (match) {
+      let hours = parseInt(match[1]);
+      const minutes = parseInt(match[2]);
+      const ampm = match[3].toUpperCase();
+      if (ampm === "PM" && hours < 12) hours += 12;
+      if (ampm === "AM" && hours === 12) hours = 0;
+      
+      const properDate = new Date(date);
+      properDate.setHours(hours, minutes, 0, 0);
+      isoTimeStart = properDate.toISOString();
+    }
+
     const updatedSlot = {
       ...scheduledSlot,
       displayDate: dayName,
       displayTime: timeStr,
-      timeStart: timeStr,
+      timeStart: isoTimeStart,
     };
     setSelectedSlot(updatedSlot);
   };
