@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { X, Info } from "lucide-react";
+import ServiceTermsBottomSheet from "./ServiceTermsBottomSheet";
 
 interface EntryMethodBottomSheetProps {
   isOpen: boolean;
@@ -28,6 +29,7 @@ export default function EntryMethodBottomSheet({
   const [selectedMethod, setSelectedMethod] = useState(initialMethod);
   const [notes, setNotes] = useState(initialNotes);
   const [isClosing, setIsClosing] = useState(false);
+  const [isServiceTermsOpen, setIsServiceTermsOpen] = useState(false);
 
   // Swipe-to-close refs
   const touchStartY = useRef<number | null>(null);
@@ -131,7 +133,10 @@ export default function EntryMethodBottomSheet({
             >
               <X className="w-6 h-6" strokeWidth={2} />
             </button>
-            <button className="p-1 -mr-1 rounded-full text-zinc-900">
+            <button 
+              onClick={() => setIsServiceTermsOpen(true)}
+              className="p-1 -mr-1 rounded-full text-zinc-900 hover:bg-zinc-100 transition-colors"
+            >
               <Info className="w-5 h-5" strokeWidth={2} />
             </button>
           </div>
@@ -207,6 +212,11 @@ export default function EntryMethodBottomSheet({
           </button>
         </div>
       </div>
+      
+      <ServiceTermsBottomSheet 
+        isOpen={isServiceTermsOpen} 
+        onClose={() => setIsServiceTermsOpen(false)} 
+      />
     </>
   );
 }
