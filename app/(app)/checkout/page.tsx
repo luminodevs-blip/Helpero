@@ -460,7 +460,7 @@ export default function CheckoutPage() {
           />
           {/* Modal */}
           <div className="relative w-full max-w-md bg-white rounded-t-[10px] sm:rounded-[10px] flex flex-col transform transition-transform duration-300">
-            <div className="p-5 pb-4 flex justify-center">
+            <div className="pt-[24px] px-5 pb-4 flex justify-center">
               <h3 className="font-outfit text-[18px] font-semibold text-zinc-900">
                 How's this fee calculated?
               </h3>
