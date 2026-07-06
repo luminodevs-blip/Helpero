@@ -46,7 +46,7 @@ const CheckoutForm = ({ onSuccess }: { onSuccess: () => void }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6 pb-10">
       <PaymentElement
         options={{
           wallets: { applePay: "never", googlePay: "never" },
