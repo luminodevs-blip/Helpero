@@ -47,7 +47,12 @@ const CheckoutForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      <PaymentElement />
+      <PaymentElement
+        options={{
+          wallets: { applePay: "never", googlePay: "never" },
+          fields: { billingDetails: { email: "never", phone: "never", name: "never" } },
+        }}
+      />
       {errorMessage && (
         <div className="text-red-500 text-[13px] font-medium leading-tight">
           {errorMessage}
@@ -98,7 +103,7 @@ export default function StripePaymentModal({
             appearance: {
               theme: "stripe",
               variables: {
-                colorPrimary: "#18181b", // zinc-900
+                colorPrimary: "#18181b",
                 borderRadius: "10px",
               },
             },
