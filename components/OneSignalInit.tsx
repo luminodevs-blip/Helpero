@@ -13,8 +13,8 @@ export default function OneSignalInit() {
     script.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
     script.defer = true;
     script.onload = () => {
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      window.OneSignalDeferred.push(async (OneSignal: any) => {
+      (window as any).OneSignalDeferred = (window as any).OneSignalDeferred || [];
+      (window as any).OneSignalDeferred.push(async (OneSignal: any) => {
         await OneSignal.init({
           appId: ONESIGNAL_APP_ID,
           serviceWorkerPath: "/OneSignalSDKWorker.js",
