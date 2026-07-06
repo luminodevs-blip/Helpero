@@ -257,8 +257,8 @@ function SearchingContent() {
           <div className="absolute h-[120px] w-[120px] rounded-full bg-[#7B82F4]/20 animate-ping" />
           <div className="absolute h-[80px] w-[80px] rounded-full bg-[#7B82F4]/30 animate-ping" style={{ animationDelay: "0.7s" }} />
           {/* House icon circle */}
-          <div className="relative h-[52px] w-[52px] rounded-full bg-[#7B82F4] flex items-center justify-center shadow-xl border-4 border-white/30 z-10">
-            <Home className="h-6 w-6 text-white" />
+          <div className="relative h-[60px] w-[60px] rounded-full bg-[#7B82F4] flex items-center justify-center shadow-xl border-4 border-white/30 z-10">
+            <Home className="h-[40px] w-[40px] text-white" />
           </div>
           {/* Pin stem */}
           <div className="absolute -bottom-[28px] left-1/2 -translate-x-1/2 z-10">
