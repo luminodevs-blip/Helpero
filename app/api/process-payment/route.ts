@@ -2,15 +2,15 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2026-06-24.dahlia",
-});
-
 export async function POST(req: Request) {
   try {
     if (!process.env.STRIPE_SECRET_KEY) {
       return NextResponse.json({ error: "Stripe is not configured" }, { status: 500 });
     }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2026-06-24.dahlia" as any,
+    });
 
     // Extract user JWT from Authorization header (sent by the client)
     const authHeader = req.headers.get("authorization");
