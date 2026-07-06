@@ -202,12 +202,12 @@ export default function CheckoutPage() {
         )}
 
         {/* ── Payment Method ── */}
-        <div className="flex flex-col gap-[20px]">
-          <h2 className="font-outfit text-[17px] font-medium text-zinc-900">
+        <div className="flex flex-col">
+          <h2 className="font-outfit text-[17px] font-medium text-zinc-900 mb-[20px]">
             How would you like to pay?
           </h2>
           
-          <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200/80 bg-[#FAFAFA]">
+          <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200/80 bg-[#FAFAFA] mb-[16px]">
             <div className="flex items-center gap-3">
               <div className="h-8 w-10 bg-white border border-zinc-200 rounded flex items-center justify-center shadow-sm shrink-0">
                 <CreditCard className="h-5 w-5 text-zinc-700" />
@@ -239,7 +239,7 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        <div className="w-full h-px bg-zinc-100" />
+        <div className="w-full h-px bg-zinc-100 !mt-[16px]" />
 
         {/* ── Order details ── */}
         <div className="space-y-2">
