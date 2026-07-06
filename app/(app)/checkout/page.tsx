@@ -520,18 +520,20 @@ export default function CheckoutPage() {
         </div>
       )}
 
-      {/* Stripe Payment Modal */}
       <StripePaymentModal
         isOpen={isStripeModalOpen}
         onClose={() => setIsStripeModalOpen(false)}
         clientSecret={stripeClientSecret || ""}
         onSuccess={() => {
-          setIsStripeModalOpen(false);
+          // Clean up cart/draft first, but DON'T close modal yet —
+          // the success animation is still playing inside it (1.8s)
           const updatedCart = cart.filter((item) => item.serviceId !== activeBookingDraft?.serviceId);
           updateCart(updatedCart);
           setActiveDraft(null);
-          if (createdBookingId) {
-            router.push(`/searching?bookingId=${createdBookingId}`);
+          // Capture bookingId before any state resets
+          const targetId = createdBookingId;
+          if (targetId) {
+            router.push(`/searching?bookingId=${targetId}`);
           } else {
             router.push("/orders");
           }

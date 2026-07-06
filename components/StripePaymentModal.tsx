@@ -44,11 +44,11 @@ const CheckoutForm = ({ onSuccess }: CheckoutFormProps) => {
       setErrorMessage(error.message || "An unexpected error occurred.");
       setIsLoading(false);
     } else {
-      // Show success animation then call onSuccess
-      setIsPaid(true);
+      // Show success animation, then navigate
       setIsLoading(false);
+      setIsPaid(true);
       setTimeout(() => {
-        onSuccess();
+        onSuccess(); // router.push happens here — animation has played
       }, 1800);
     }
   };
