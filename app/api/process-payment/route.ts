@@ -1,41 +1,33 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
-// Initialize Stripe (requires STRIPE_SECRET_KEY in .env.local)
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_mock_fallback", {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   apiVersion: "2026-06-24.dahlia",
 });
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { amount, currency = "cad", customerId } = body;
-
-    // Fallback if no secret key is provided yet
     if (!process.env.STRIPE_SECRET_KEY) {
-      return NextResponse.json({
-        clientSecret: "pi_mock_secret_for_ui_testing",
-        ephemeralKey: "ek_mock",
-        customer: "cus_mock"
-      });
+      return NextResponse.json(
+        { error: "Stripe is not configured" },
+        { status: 500 }
+      );
     }
 
-    let customer = customerId;
-    if (!customer) {
-      const newCustomer = await stripe.customers.create();
-      customer = newCustomer.id;
+    const body = await req.json();
+    const { amount, currency = "cad" } = body;
+
+    if (!amount || amount <= 0) {
+      return NextResponse.json(
+        { error: "Invalid amount" },
+        { status: 400 }
+      );
     }
 
-    const ephemeralKey = await stripe.ephemeralKeys.create(
-      { customer },
-      { apiVersion: "2026-06-24.dahlia" }
-    );
-
+    // Create a PaymentIntent — no need for a Customer object for web payments
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100), // convert to cents
+      amount: Math.round(amount * 100), // convert dollars to cents
       currency,
-      customer,
-      // In the web, automatic_payment_methods enables Apple/Google pay and other local methods
       automatic_payment_methods: {
         enabled: true,
       },
@@ -43,8 +35,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
-      ephemeralKey: ephemeralKey.secret,
-      customer,
     });
   } catch (error: any) {
     console.error("Stripe payment intent error:", error);
