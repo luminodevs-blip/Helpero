@@ -176,10 +176,10 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      <div className="w-full h-px bg-zinc-100 mb-6 shrink-0" />
+      <div className="w-full h-px bg-zinc-100 shrink-0" />
 
       {/* Main scrollable body */}
-      <div className="flex-1 overflow-y-auto px-5 space-y-8 pb-10">
+      <div className="flex-1 overflow-y-auto px-5 pt-[20px] pb-10 space-y-8">
         
         {/* ── Slot expired warning ── */}
         {slotExpired && (
@@ -202,7 +202,7 @@ export default function CheckoutPage() {
         )}
 
         {/* ── Payment Method ── */}
-        <div className="space-y-4">
+        <div className="flex flex-col gap-[20px]">
           <h2 className="font-outfit text-[17px] font-medium text-zinc-900">
             How would you like to pay?
           </h2>
