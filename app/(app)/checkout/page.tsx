@@ -242,7 +242,7 @@ export default function CheckoutPage() {
         <div className="w-full h-px bg-zinc-100 !mt-[16px]" />
 
         {/* ── Order details ── */}
-        <div className="space-y-2">
+        <div className="space-y-2 !mt-[24px]">
           <h2 className="font-outfit text-[17px] font-medium text-zinc-900 mb-4">
             Order details
           </h2>
