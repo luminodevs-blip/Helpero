@@ -5,6 +5,17 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { ArrowLeft, Loader2 } from "lucide-react";
 
+function formatPhoneDisplay(phone: string): string {
+  if (!phone.startsWith("+")) return phone;
+  const digits = phone.slice(1); // remove +
+  // Country code: 1 digit for +1 (US/CA), 2 digits for most others
+  const ccLength = digits.startsWith("1") ? 1 : 2;
+  const cc = digits.slice(0, ccLength);
+  const rest = digits.slice(ccLength);
+  const groups = rest.match(/.{1,4}/g) || [];
+  return `+${cc} ${groups.join(" ")}`;
+}
+
 function VerifyOtpPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -201,7 +212,7 @@ function VerifyOtpPageContent() {
           A confirmation code has been sent to:
         </p>
         <p style={{ fontSize: 15, color: "#111111", fontWeight: 700, margin: 0 }}>
-          {phone}
+          {formatPhoneDisplay(phone)}
         </p>
       </div>
 
