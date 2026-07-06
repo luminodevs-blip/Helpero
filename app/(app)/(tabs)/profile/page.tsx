@@ -58,7 +58,7 @@ export default function ProfilePage() {
       label: "Payments",
       icon: CreditCard,
       subtitle: "Manage your payment methods",
-      action: () => alert("Coming soon"),
+      action: () => router.push("/profile/payments"),
     },
     {
       label: "Vouchers",

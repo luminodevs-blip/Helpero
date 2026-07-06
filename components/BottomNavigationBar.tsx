@@ -13,6 +13,7 @@ interface ActiveOrder {
   scheduled_start_at: string | null;
   visit_fee: number;
   final_total_price: number;
+  order_items?: { service_name: string }[];
 }
 
 export default function BottomNavigationBar() {
@@ -33,7 +34,7 @@ export default function BottomNavigationBar() {
       try {
         const { data, error } = await supabase
           .from("orders")
-          .select("id, status, scheduled_start_at, visit_fee, final_total_price")
+          .select("id, status, scheduled_start_at, visit_fee, final_total_price, order_items ( service_name )")
           .eq("user_id", user.id)
           .in("status", ["pending_payment", "searching", "assigned"])
           .order("created_at", { ascending: false })
@@ -130,7 +131,9 @@ export default function BottomNavigationBar() {
                   {getStatusText()}
                 </span>
                 <span className="text-[12px] text-white/90 underline font-medium mt-0.5">
-                  Standart Cleaning +2
+                  {activeOrder.order_items && activeOrder.order_items.length > 0
+                    ? activeOrder.order_items[0].service_name + (activeOrder.order_items.length > 1 ? ` +${activeOrder.order_items.length - 1}` : "")
+                    : "Cleaning Service"}
                 </span>
               </div>
             </div>

@@ -9,6 +9,7 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { X, Loader2, CheckCircle2 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_test_placeholder"
@@ -16,9 +17,10 @@ const stripePromise = loadStripe(
 
 interface CheckoutFormProps {
   onSuccess: () => void;
+  bookingId: number;
 }
 
-const CheckoutForm = ({ onSuccess }: CheckoutFormProps) => {
+const CheckoutForm = ({ onSuccess, bookingId }: CheckoutFormProps) => {
   const stripe = useStripe();
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
@@ -47,6 +49,19 @@ const CheckoutForm = ({ onSuccess }: CheckoutFormProps) => {
       // Show success animation, then navigate
       setIsLoading(false);
       setIsPaid(true);
+
+      // Trigger server-side assignment immediately as a background task
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        fetch("/api/assign-specialist", {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${session?.access_token || ""}`
+          },
+          body: JSON.stringify({ bookingId })
+        }).catch(err => console.error("Error triggering assign-specialist from modal:", err));
+      });
+
       setTimeout(() => {
         onSuccess(); // router.push happens here — animation has played
       }, 1800);
@@ -99,6 +114,7 @@ interface StripePaymentModalProps {
   onClose: () => void;
   clientSecret: string;
   onSuccess: () => void;
+  bookingId: number;
 }
 
 export default function StripePaymentModal({
@@ -106,6 +122,7 @@ export default function StripePaymentModal({
   onClose,
   clientSecret,
   onSuccess,
+  bookingId,
 }: StripePaymentModalProps) {
   if (!isOpen || !clientSecret) return null;
 
@@ -138,7 +155,7 @@ export default function StripePaymentModal({
             },
           }}
         >
-          <CheckoutForm onSuccess={onSuccess} />
+          <CheckoutForm onSuccess={onSuccess} bookingId={bookingId} />
         </Elements>
       </div>
     </div>

@@ -18,23 +18,69 @@ import {
 import { supabase } from "@/lib/supabase";
 
 // ─── Countdown timer hook ─────────────────────────────────────────────
-function useCountdown(seconds: number) {
-  const [timeLeft, setTimeLeft] = useState(seconds);
-  useEffect(() => {
-    if (timeLeft <= 0) return;
-    const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
-    return () => clearInterval(timer);
-  }, [timeLeft]);
-  const mm = String(Math.floor(timeLeft / 60)).padStart(2, "0");
-  const ss = String(timeLeft % 60).padStart(2, "0");
-  return { timeLeft, formatted: `${mm}:${ss}`, expired: timeLeft <= 0 };
-}
+function useCountdown(initialSeconds: number | null, onExpire: () => void) {
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
+  useEffect(() => {
+    if (initialSeconds !== null) {
+      setTimeLeft(initialSeconds);
+    }
+  }, [initialSeconds]);
+
+  useEffect(() => {
+    if (timeLeft === null) return;
+    if (timeLeft <= 0) {
+      onExpire();
+      return;
+    }
+    const timer = setInterval(() => setTimeLeft((t) => (t !== null ? t - 1 : null)), 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft, onExpire]);
+
+  const displayTime = useMemo(() => {
+    if (timeLeft === null) return "10:00";
+    const mm = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+    const ss = String(timeLeft % 60).padStart(2, "0");
+    return `${mm}:${ss}`;
+  }, [timeLeft]);
+
+  return { timeLeft, formatted: displayTime, expired: timeLeft !== null && timeLeft <= 0 };
+}
 export default function CheckoutPage() {
   const router = useRouter();
   const { activeBookingDraft, selectedAddress, user, cart, updateCart, setActiveDraft } = useClientAuth();
 
-  const { formatted: countdownTime, expired: slotExpired } = useCountdown(600); // 10 min
+  const [isTimerExpired, setIsTimerExpired] = useState(false);
+  const [initialSeconds, setInitialSeconds] = useState<number | null>(null);
+  const { formatted: countdownTime, expired: slotExpired } = useCountdown(initialSeconds, () => {
+    setIsTimerExpired(true);
+  });
+
+  useEffect(() => {
+    if (!user || !activeBookingDraft?.visit?.arrivalTimeSlot) return;
+
+    const fetchIntent = async () => {
+      const { data, error } = await supabase
+        .from("booking_intents")
+        .select("expires_at")
+        .eq("user_id", user.id)
+        .gt("expires_at", new Date().toISOString())
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (data?.expires_at) {
+        const expiresTime = new Date(data.expires_at).getTime();
+        const nowTime = new Date().getTime();
+        const diffSeconds = Math.max(0, Math.floor((expiresTime - nowTime) / 1000));
+        setInitialSeconds(diffSeconds);
+      } else {
+        setIsTimerExpired(true);
+      }
+    };
+
+    fetchIntent();
+  }, [user, activeBookingDraft, router]);
 
   const [promoCode, setPromoCode] = useState<string | null>(null);
   const [promoDiscount, setPromoDiscount] = useState(0);
@@ -49,6 +95,18 @@ export default function CheckoutPage() {
   const [isStripeModalOpen, setIsStripeModalOpen] = useState(false);
   const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null);
   const [createdBookingId, setCreatedBookingId] = useState<number | null>(null);
+
+  // Payment Method state
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<"apple_pay" | "bank_card">("bank_card");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("preferred_payment_method");
+    if (saved === "apple_pay" || saved === "bank_card") {
+      setSelectedPaymentMethod(saved);
+    } else {
+      setSelectedPaymentMethod("bank_card");
+    }
+  }, []);
 
   // Compute actual time range
   const displayTimeRange = useMemo(() => {
@@ -68,17 +126,38 @@ export default function CheckoutPage() {
   }, [activeBookingDraft]);
 
   useEffect(() => {
-    if (!activeBookingDraft) {
+    if (!activeBookingDraft && !createdBookingId) {
       router.replace("/");
     }
-  }, [activeBookingDraft, router]);
+  }, [activeBookingDraft, createdBookingId, router]);
 
-  // Redirect if slot expired
-  useEffect(() => {
-    if (slotExpired) {
-      router.replace("/datetime");
-    }
-  }, [slotExpired, router]);
+  if (isTimerExpired) {
+    return (
+      <div className="w-full max-w-md mx-auto h-screen bg-[#F1F4F8] flex flex-col items-center justify-center px-6 text-center">
+        <div className="bg-white p-6 rounded-[28px] shadow-lg flex flex-col items-center space-y-6 w-full">
+          <div className="h-16 w-16 bg-[#7B82F4]/10 rounded-full flex items-center justify-center">
+            <AlertCircle className="h-8 w-8 text-[#7B82F4]" />
+          </div>
+          
+          <div className="space-y-2">
+            <h3 className="font-outfit text-xl font-extrabold text-zinc-900">
+              Slot Reservation Expired
+            </h3>
+            <p className="font-sans text-sm font-semibold text-zinc-500 leading-relaxed">
+              The reservation time for the selected slot has expired. Please select a new time for your order.
+            </p>
+          </div>
+
+          <button
+            onClick={() => router.push("/datetime")}
+            className="w-full h-[50px] rounded-xl bg-[#7B82F4] text-white font-sans text-base font-semibold hover:bg-[#6c73e0] transition-colors active:scale-[0.98]"
+          >
+            Select New Time
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (!activeBookingDraft) return null;
 
@@ -248,13 +327,20 @@ export default function CheckoutPage() {
           <div className="flex items-center justify-between h-[66px] px-4 rounded-[10px] border border-zinc-200/80 bg-[#FAFAFA] mb-[16px]">
             <div className="flex items-center gap-3">
               <div className="h-8 w-10 bg-white border border-zinc-200 rounded flex items-center justify-center shadow-sm shrink-0">
-                <CreditCard className="h-5 w-5 text-zinc-700" />
+                {selectedPaymentMethod === "apple_pay" ? (
+                  <span className="font-sans font-extrabold text-[12px] bg-black text-white px-1.5 py-0.5 rounded-[4px]"> Pay</span>
+                ) : (
+                  <CreditCard className="h-5 w-5 text-zinc-700" />
+                )}
               </div>
               <span className="font-sans text-[16px] font-normal text-zinc-900">
-                Bank Card
+                {selectedPaymentMethod === "apple_pay" ? "Apple Pay" : "Bank Card"}
               </span>
             </div>
-            <button className="text-[16px] font-normal text-[#7B82F4] hover:opacity-80 transition-opacity">
+            <button
+              onClick={() => router.push("/profile/payments?fromCheckout=true")}
+              className="text-[16px] font-normal text-[#7B82F4] hover:opacity-80 transition-opacity"
+            >
               Change
             </button>
           </div>
@@ -524,14 +610,13 @@ export default function CheckoutPage() {
         isOpen={isStripeModalOpen}
         onClose={() => setIsStripeModalOpen(false)}
         clientSecret={stripeClientSecret || ""}
+        bookingId={Number(activeBookingDraft?.bookingId || createdBookingId || 0)}
         onSuccess={() => {
-          // Clean up cart/draft first, but DON'T close modal yet —
-          // the success animation is still playing inside it (1.8s)
+          // Capture bookingId before any state resets
+          const targetId = activeBookingDraft?.bookingId || createdBookingId;
           const updatedCart = cart.filter((item) => item.serviceId !== activeBookingDraft?.serviceId);
           updateCart(updatedCart);
           setActiveDraft(null);
-          // Capture bookingId before any state resets
-          const targetId = createdBookingId;
           if (targetId) {
             router.push(`/searching?bookingId=${targetId}&fromPayment=true`);
           } else {

@@ -9,6 +9,7 @@ import AddressSelector from "@/components/AddressSelector";
 import ScheduleBottomSheet from "@/components/ScheduleBottomSheet";
 import EntryMethodBottomSheet, { ENTRY_METHODS } from "@/components/EntryMethodBottomSheet";
 import { Key, Building2, Archive } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 // ─── Types ───────────────────────────────────────────────────────────
 interface ArrivalSlot {
@@ -177,9 +178,20 @@ export default function DateTimePage() {
   };
 
   const handleConfirm = async () => {
-    if (!selectedSlot || !activeBookingDraft) return;
+    if (!selectedSlot || !activeBookingDraft || !selectedAddress) return;
     setSecuring(true);
     try {
+      const { error: rpcError } = await supabase.rpc("secure_booking_slot", {
+        p_house_id: selectedAddress.id,
+        p_duration_min: activeBookingDraft.totalDuration || 60,
+        p_mode_slug: selectedSlot.mode,
+        p_target_start: selectedSlot.timeStart,
+      });
+
+      if (rpcError) {
+        throw new Error(rpcError.message);
+      }
+
       const updatedDraft = {
         ...activeBookingDraft,
         visit: {

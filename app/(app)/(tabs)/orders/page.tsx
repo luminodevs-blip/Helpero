@@ -65,7 +65,10 @@ export default function OrdersPage() {
               service_name,
               service_id,
               services:service_id (
-                image_url
+                image_url,
+                cat:service_categories (
+                  image_url
+                )
               )
             )
           `)
@@ -87,7 +90,7 @@ export default function OrdersPage() {
             } : null,
             visit_fee: Number(o.visit_fee || 0),
             service_name: firstItem?.service_name || "Service",
-            service_image_url: firstItem?.services?.image_url || null,
+            service_image_url: firstItem?.services?.cat?.image_url || firstItem?.services?.image_url || null,
           };
         });
 

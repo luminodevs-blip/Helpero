@@ -26,6 +26,7 @@ interface Specialist {
   last_name: string;
   avatar_url: string | null;
   rating: number;
+  reviews_count?: number;
   phone_number: string;
 }
 
@@ -96,6 +97,25 @@ function SearchingContent() {
 
         if (fetchErr) throw fetchErr;
         const raw = data as any;
+        let specialistData = null;
+        if (raw.specialist) {
+          const { data: specDetails } = await supabase
+            .from("specialists")
+            .select("rating, reviews_count")
+            .eq("id", raw.specialist.id)
+            .maybeSingle();
+
+          specialistData = {
+            id: raw.specialist.id,
+            first_name: raw.specialist.first_name,
+            last_name: raw.specialist.last_name,
+            avatar_url: raw.specialist.avatar_url,
+            rating: specDetails ? Number(specDetails.rating) : 5.0,
+            reviews_count: specDetails ? Number(specDetails.reviews_count) : 0,
+            phone_number: raw.specialist.phone_number || "",
+          };
+        }
+
         setOrder({
           id: raw.id,
           status: raw.status || "searching",
@@ -110,15 +130,22 @@ function SearchingContent() {
             lng: Number(raw.house.lng),
             name_label: raw.house.name_label,
           } : null,
-          specialist: raw.specialist ? {
-            id: raw.specialist.id,
-            first_name: raw.specialist.first_name,
-            last_name: raw.specialist.last_name,
-            avatar_url: raw.specialist.avatar_url,
-            rating: raw.specialist.rating || 4.9,
-            phone_number: raw.specialist.phone_number || "",
-          } : null,
+          specialist: specialistData,
         });
+
+        // Trigger Next.js simulated auto-assignment API as a fallback in case webhook failed
+        if (raw.status === "pending_payment" || raw.status === "searching") {
+          supabase.auth.getSession().then(({ data: { session } }) => {
+            fetch("/api/assign-specialist", {
+              method: "POST",
+              headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${session?.access_token || ""}`
+              },
+              body: JSON.stringify({ bookingId: raw.id })
+            }).catch(err => console.error("Error triggering auto-assignment:", err));
+          });
+        }
       } catch (err: any) {
         setError(err.message || "Failed to load order");
       } finally {
@@ -178,9 +205,9 @@ function SearchingContent() {
     setCancelling(true);
     try {
       const { error: cancelErr } = await supabase
-        .from("orders").update({ status: "cancelled" }).eq("id", bookingId);
+        .from("orders").update({ status: "canceled" }).eq("id", bookingId);
       if (cancelErr) throw cancelErr;
-      setOrder((prev) => prev ? { ...prev, status: "cancelled" } : null);
+      setOrder((prev) => prev ? { ...prev, status: "canceled" } : null);
     } catch (err: any) {
       alert(err.message || "Failed to cancel order");
     } finally {
@@ -232,7 +259,7 @@ function SearchingContent() {
   }
 
   // ── Cancelled ──
-  if (order.status === "cancelled") {
+  if (order.status === "canceled") {
     return (
       <div className="w-full max-w-md mx-auto h-screen bg-[#F1F4F8] flex flex-col items-center justify-center px-8 text-center">
         <div className="h-20 w-20 bg-red-100 rounded-full flex items-center justify-center text-red-500 mb-6">
@@ -255,6 +282,25 @@ function SearchingContent() {
 
   return (
     <div className="w-full max-w-md mx-auto h-screen relative overflow-hidden flex flex-col border-x border-zinc-100 shadow-md bg-[#F1F4F8]">
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes radar-pulse {
+          0% {
+            transform: scale(0.8);
+            opacity: 0.8;
+          }
+          100% {
+            transform: scale(2.6);
+            opacity: 0;
+          }
+        }
+        .radar-wave {
+          animation: radar-pulse 3s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+        }
+        .radar-wave-delayed {
+          animation: radar-pulse 3s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+          animation-delay: 1.5s;
+        }
+      `}} />
 
       {/* ── Map background ── */}
       <div className="absolute inset-0 z-0 bg-[#E8E8E8]">
@@ -264,6 +310,7 @@ function SearchingContent() {
             center={{ lat, lng }}
             zoom={14}
             options={{
+              mapId: "51e65d1a42c6dcc2d42df44f",
               disableDefaultUI: true,
               keyboardShortcuts: false,
               gestureHandling: 'none',
@@ -285,19 +332,16 @@ function SearchingContent() {
       </div>
 
       {/* ── Pulsing house marker (center) ── */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10" style={{ bottom: "280px", top: "unset", position: "absolute", left: "50%", top: "38%", transform: "translate(-50%, -50%)" }}>
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10" style={{ bottom: "280px", position: "absolute", left: "50%", top: "38%", transform: "translate(-50%, -50%)" }}>
         
         <div className="relative flex items-center justify-center mb-3">
-          <div className="absolute h-[100px] w-[100px] rounded-full bg-[#7B82F4]/20 animate-pulse" />
-          <div className="absolute h-[80px] w-[80px] rounded-full bg-[#7B82F4]/30" />
+          <div className="absolute h-[60px] w-[60px] rounded-full bg-[#7B82F4]/25 radar-wave" />
+          <div className="absolute h-[60px] w-[60px] rounded-full bg-[#7B82F4]/25 radar-wave-delayed" />
           {/* House icon circle */}
           <div className="relative h-[60px] w-[60px] rounded-full bg-[#7B82F4] flex items-center justify-center shadow-lg z-10">
             <Home className="h-[32px] w-[32px] text-white" strokeWidth={2} />
           </div>
         </div>
-        
-        {/* Black dot */}
-        <div className="w-2.5 h-2.5 bg-zinc-900 rounded-full border-2 border-white shadow-sm" />
 
       </div>
 
@@ -325,8 +369,8 @@ function SearchingContent() {
                   </h3>
                   <div className="flex items-center gap-1 mt-1 text-xs text-zinc-500 font-medium">
                     <Star className="h-3.5 w-3.5 fill-[#7B82F4] text-[#7B82F4]" />
-                    <span className="font-semibold text-zinc-700">{order.specialist.rating.toFixed(2)}</span>
-                    <span>(121)</span>
+                     <span className="font-semibold text-zinc-700">{order.specialist.rating.toFixed(1)}</span>
+                     <span>({order.specialist.reviews_count ?? 0})</span>
                     <span className="mx-0.5">·</span>
                     <span>Helpero Pro</span>
                   </div>

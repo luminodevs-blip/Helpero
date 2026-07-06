@@ -62,6 +62,17 @@ export async function POST(req: Request) {
       automatic_payment_methods: { enabled: true },
     });
 
+    // Update order with the payment intent ID so the Stripe webhook can find it
+    const { error: updateError } = await supabase
+      .from("orders")
+      .update({ payment_id: paymentIntent.id })
+      .eq("id", orderId);
+
+    if (updateError) {
+      console.error("Failed to update order payment_id:", updateError);
+      return NextResponse.json({ error: "Failed to update order with payment ID" }, { status: 500 });
+    }
+
     return NextResponse.json({ clientSecret: paymentIntent.client_secret });
 
   } catch (error: any) {
