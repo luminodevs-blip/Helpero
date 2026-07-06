@@ -51,11 +51,26 @@ function VerifyOtpPageContent() {
     const cleanValue = value.replace(/\D/g, "");
     if (!cleanValue) return;
 
+    if (cleanValue.length > 1) {
+      const digits = cleanValue.split("").slice(0, 6);
+      const newOtp = [...otp];
+      for (let i = 0; i < digits.length; i++) {
+        const targetIdx = index + i;
+        if (targetIdx < 6) {
+          newOtp[targetIdx] = digits[i];
+        }
+      }
+      setOtp(newOtp);
+      const focusIndex = Math.min(5, index + digits.length - 1);
+      inputRefs.current[focusIndex]?.focus();
+      return;
+    }
+
     const newOtp = [...otp];
-    newOtp[index] = cleanValue.slice(-1);
+    newOtp[index] = cleanValue;
     setOtp(newOtp);
 
-    if (index < 5 && cleanValue) {
+    if (index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
@@ -249,6 +264,7 @@ function VerifyOtpPageContent() {
               type="text"
               inputMode="numeric"
               maxLength={1}
+              autoComplete={idx === 0 ? "one-time-code" : "off"}
               value={digit}
               placeholder="–"
               ref={(el) => {
