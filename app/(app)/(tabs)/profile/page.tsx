@@ -76,7 +76,7 @@ export default function ProfilePage() {
       label: "Support Center",
       icon: Headphones,
       subtitle: "Get help from our team",
-      action: () => alert("Coming soon"),
+      action: () => router.push("/support"),
     },
     {
       label: "Settings",
