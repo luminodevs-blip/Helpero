@@ -7,6 +7,8 @@ import { ArrowLeft, Clock, Zap, CalendarDays, ChevronRight, Loader2, Home, User,
 import { MdLocationOn } from "react-icons/md";
 import AddressSelector from "@/components/AddressSelector";
 import ScheduleBottomSheet from "@/components/ScheduleBottomSheet";
+import EntryMethodBottomSheet, { ENTRY_METHODS } from "@/components/EntryMethodBottomSheet";
+import { Key, Building2, Archive } from "lucide-react";
 
 // ─── Types ───────────────────────────────────────────────────────────
 interface ArrivalSlot {
@@ -50,6 +52,7 @@ export default function DateTimePage() {
   const [securing, setSecuring] = useState(false);
   const [isAddressSelectorOpen, setIsAddressSelectorOpen] = useState(false);
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
+  const [isEntryMethodOpen, setIsEntryMethodOpen] = useState(false);
 
   // Redirect if no active draft
   useEffect(() => {
@@ -142,6 +145,20 @@ export default function DateTimePage() {
     setSelectedSlot(updatedSlot);
   };
 
+  const handleEntryMethodSelect = (method: string, notes: string) => {
+    if (!activeBookingDraft) return;
+    const updatedDraft = {
+      ...activeBookingDraft,
+      entryMethod: method,
+      entryNotes: notes,
+    };
+    setActiveDraft(updatedDraft);
+    const updatedCart = cart.map((item) =>
+      item.serviceId === activeBookingDraft.serviceId ? updatedDraft : item
+    );
+    updateCart(updatedCart);
+  };
+
   const handleConfirm = async () => {
     if (!selectedSlot || !activeBookingDraft) return;
     setSecuring(true);
@@ -192,6 +209,27 @@ export default function DateTimePage() {
   };
 
   const totalAmount = ((activeBookingDraft?.totalPrice || 0) + (selectedSlot?.fee || 0)).toFixed(2);
+
+  const entryMethodId = activeBookingDraft?.entryMethod || "home";
+  const currentEntryMethod = ENTRY_METHODS.find((m) => m.id === entryMethodId) || ENTRY_METHODS[0];
+  const entryNotesDisplay = activeBookingDraft?.entryNotes
+    ? "Tap to edit instructions"
+    : "Tap to add entry instructions";
+
+  const getEntryMethodIcon = (methodId: string) => {
+    switch (methodId) {
+      case "home":
+        return <User className="h-6 w-6 text-[#57636C]" style={{ fill: 'currentColor' }} />;
+      case "concierge":
+        return <Key className="h-6 w-6 text-[#57636C]" style={{ fill: 'currentColor' }} />;
+      case "doorcode":
+        return <Building2 className="h-6 w-6 text-[#57636C]" style={{ fill: 'currentColor' }} />;
+      case "lockbox":
+        return <Archive className="h-6 w-6 text-[#57636C]" style={{ fill: 'currentColor' }} />;
+      default:
+        return <User className="h-6 w-6 text-[#57636C]" style={{ fill: 'currentColor' }} />;
+    }
+  };
 
   return (
     <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[100px] relative flex flex-col shadow-md font-sans border-x border-zinc-100">
@@ -361,12 +399,15 @@ export default function DateTimePage() {
                 <ChevronRight className="h-4 w-4 text-zinc-400" />
               </div>
               <div className="w-full h-px bg-zinc-100" />
-              <div className="flex items-center justify-between pt-[14px] pb-[20px]">
+              <div 
+                className="flex items-center justify-between pt-[14px] pb-[20px] cursor-pointer hover:bg-zinc-50 transition-colors rounded-xl -mx-2 px-2"
+                onClick={() => setIsEntryMethodOpen(true)}
+              >
                 <div className="flex items-center gap-3">
-                  <User className="h-6 w-6 text-[#57636C]" style={{ fill: 'currentColor' }} />
+                  {getEntryMethodIcon(currentEntryMethod.id)}
                   <div>
-                    <p className="font-sans text-[15px] font-medium text-zinc-900">I'll be home (Meet at door)</p>
-                    <p className="font-sans text-[14px] font-normal text-[#57636C]">Tap to add entry instructions</p>
+                    <p className="font-sans text-[15px] font-medium text-zinc-900">{currentEntryMethod.title}</p>
+                    <p className="font-sans text-[14px] font-normal text-[#57636C]">{entryNotesDisplay}</p>
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-zinc-400" />
@@ -420,6 +461,13 @@ export default function DateTimePage() {
         onClose={() => setIsScheduleOpen(false)}
         onSelect={handleScheduleConfirm}
         serviceDurationMinutes={activeBookingDraft.totalDuration}
+      />
+      <EntryMethodBottomSheet
+        isOpen={isEntryMethodOpen}
+        onClose={() => setIsEntryMethodOpen(false)}
+        onSelect={handleEntryMethodSelect}
+        initialMethod={activeBookingDraft.entryMethod}
+        initialNotes={activeBookingDraft.entryNotes}
       />
     </div>
   );
