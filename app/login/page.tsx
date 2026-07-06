@@ -20,6 +20,24 @@ const countries = [
   { name: "Philippines", code: "+63", flag: "🇵🇭", short: "PH" },
 ];
 
+const formatPhoneNumber = (value: string, countryShort: string) => {
+  const digits = value.replace(/\D/g, "");
+  if (countryShort === "US" || countryShort === "CA") {
+    if (digits.length <= 3) return digits;
+    if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+  }
+  if (countryShort === "GB") {
+    if (digits.length <= 4) return digits;
+    if (digits.length <= 7) return `${digits.slice(0, 4)} ${digits.slice(4)}`;
+    return `${digits.slice(0, 4)} ${digits.slice(4, 7)}-${digits.slice(7, 10)}`;
+  }
+  // Generic spacing for other countries (e.g. XXX XXX XXX)
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `${digits.slice(0, 3)} ${digits.slice(3)}`;
+  return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 11)}`;
+};
+
 export default function LoginPage() {
   const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -37,15 +55,23 @@ export default function LoginPage() {
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const cleaned = e.target.value.replace(/\D/g, "");
-    if (cleaned.length <= 10) setPhoneNumber(cleaned);
+    const maxDigits = selectedCountry.short === "US" || selectedCountry.short === "CA" ? 10 : 11;
+    if (cleaned.length <= maxDigits) {
+      setPhoneNumber(cleaned);
+    }
   };
 
   const handlePhoneSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     const digitOnly = phoneNumber.replace(/\D/g, "");
-    if (digitOnly.length < 10) {
-      setError("Please enter a valid 10-digit phone number");
+    const minDigits = selectedCountry.short === "US" || selectedCountry.short === "CA" ? 10 : 8;
+    if (digitOnly.length < minDigits) {
+      setError(
+        selectedCountry.short === "US" || selectedCountry.short === "CA"
+          ? "Please enter a valid 10-digit phone number"
+          : "Please enter a valid phone number"
+      );
       return;
     }
     const fullPhone = `${countryCode}${digitOnly}`;
@@ -81,7 +107,7 @@ export default function LoginPage() {
         {/* ── PURPLE HEADER ───────────────────────────────────── */}
         <div
           className="relative overflow-hidden flex-shrink-0"
-          style={{ background: "#7B61FF", height: 310 }}
+          style={{ background: "#7B82F4", height: 310 }}
         >
           {/* Floating pill: Offices — top-center, a bit right */}
           <div
@@ -110,16 +136,16 @@ export default function LoginPage() {
             <span style={{ fontSize: 13, fontWeight: 700, color: "#1a1a1a" }}>Apart</span>
           </div>
 
-          {/* Illustration — bottom-center */}
+          {/* Illustration — height 260, offset 24 left */}
           <img
             src="/Handyman_and_cleaner_in_harmony.png"
             alt="Handyman and cleaner"
             style={{
               position: "absolute",
               bottom: 0,
-              left: "50%",
-              transform: "translateX(-50%)",
-              height: 278,
+              left: 24,
+              width: "calc(100% - 48px)",
+              height: 260,
               objectFit: "contain",
               userSelect: "none",
               pointerEvents: "none",
@@ -217,7 +243,7 @@ export default function LoginPage() {
               <input
                 type="tel"
                 required
-                value={phoneNumber}
+                value={formatPhoneNumber(phoneNumber, selectedCountry.short)}
                 onChange={handlePhoneChange}
                 placeholder="Phone number"
                 style={{
@@ -232,7 +258,7 @@ export default function LoginPage() {
                   color: "#111111",
                   outline: "none",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#7B61FF")}
+                onFocus={(e) => (e.target.style.borderColor = "#7B82F4")}
                 onBlur={(e) => (e.target.style.borderColor = "#e5e7eb")}
               />
             </div>
@@ -248,7 +274,7 @@ export default function LoginPage() {
                 width: "100%",
                 height: 54,
                 borderRadius: 16,
-                background: loading ? "#a5a0e0" : "#7B61FF",
+                background: loading ? "#b0b4f8" : "#7B82F4",
                 color: "#ffffff",
                 fontSize: 15,
                 fontWeight: 700,
@@ -380,7 +406,7 @@ export default function LoginPage() {
               href="https://helpero.ca/terms"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "#7B61FF", textDecoration: "underline" }}
+              style={{ color: "#7B82F4", textDecoration: "underline" }}
             >
               Terms and Conditions
             </a>{" "}
@@ -389,7 +415,7 @@ export default function LoginPage() {
               href="https://helpero.ca/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "#7B61FF", textDecoration: "underline" }}
+              style={{ color: "#7B82F4", textDecoration: "underline" }}
             >
               Privacy Policy
             </a>
