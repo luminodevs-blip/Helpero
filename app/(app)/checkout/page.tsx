@@ -277,7 +277,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[140px] relative flex flex-col border-x border-zinc-100 shadow-md font-sans">
+    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[140px] relative flex flex-col border-x border-zinc-100 shadow-md font-sans animate-page-fade-in">
       {/* Header */}
       <div className="bg-white px-5 pt-[52px] pb-[16px] flex items-center relative shrink-0">
         <button

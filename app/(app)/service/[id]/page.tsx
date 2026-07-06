@@ -51,6 +51,11 @@ export default function ServiceDetailPage() {
     loadService();
   }, [serviceId]);
 
+  // Prefetch configure page to make transition instant
+  useEffect(() => {
+    router.prefetch("/configure");
+  }, [router]);
+
   const handleConfigureAndBook = () => {
     if (!service) return;
 
@@ -118,7 +123,7 @@ export default function ServiceDetailPage() {
   ];
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen bg-bg-primary pb-32 relative flex flex-col border-x border-alternate shadow-md">
+    <div className="w-full max-w-md mx-auto min-h-screen bg-bg-primary pb-32 relative flex flex-col border-x border-alternate shadow-md animate-page-fade-in">
       {/* 1. Hero Image Cover */}
       <div className="h-72 w-full relative overflow-hidden bg-primary">
         {service.image_url ? (

@@ -100,6 +100,11 @@ export default function AddonsPage() {
     loadAddons();
   }, [activeBookingDraft?.serviceId, router]);
 
+  // Prefetch datetime page to make transition instant
+  useEffect(() => {
+    router.prefetch("/datetime");
+  }, [router]);
+
   if (!activeBookingDraft) return null;
 
   const handleQtyChange = (addon: any, action: "add" | "remove") => {
@@ -122,7 +127,7 @@ export default function AddonsPage() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[100px] relative flex flex-col shadow-md font-sans">
+    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[100px] relative flex flex-col shadow-md font-sans animate-page-fade-in">
       {/* 1. Header */}
       <div className="bg-white px-5 pt-12 pb-5 flex items-center justify-between sticky top-0 z-30">
         <button

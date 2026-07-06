@@ -112,7 +112,7 @@ export default function SearchPage() {
   );
 
   return (
-    <div className="flex flex-col flex-1 bg-white">
+    <div className="flex flex-col flex-1 bg-white animate-page-fade-in">
 
       {/* ── PINNED BAR: instant, no animation, identical to original ── */}
       {pinned && (

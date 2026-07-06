@@ -64,8 +64,17 @@ export default function HomePage() {
     loadHomeData();
   }, []);
 
+  // Prefetch category details to make page navigation instant
+  useEffect(() => {
+    if (categories.length > 0) {
+      categories.forEach((cat) => {
+        router.prefetch(`/category/${cat.id}`);
+      });
+    }
+  }, [categories, router]);
+
   return (
-    <div className="flex flex-col flex-1 bg-white">
+    <div className="flex flex-col flex-1 bg-white animate-page-fade-in">
       {/* 1. Header (Address selector + Cart + Search) */}
       <HomeAppBar categories={categories} categoriesPinned={categoriesPinned} />
 

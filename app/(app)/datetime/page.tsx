@@ -63,6 +63,11 @@ export default function DateTimePage() {
     }
   }, [activeBookingDraft, router]);
 
+  // Prefetch checkout step for instant transition
+  useEffect(() => {
+    router.prefetch("/checkout");
+  }, [router]);
+
   // Fetch availability from the Edge Function
   const fetchSlots = useCallback(async () => {
     if (!activeBookingDraft || !selectedAddress) return;
@@ -261,7 +266,7 @@ export default function DateTimePage() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[100px] relative flex flex-col shadow-md font-sans border-x border-zinc-100">
+    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[100px] relative flex flex-col shadow-md font-sans border-x border-zinc-100 animate-page-fade-in">
       
       {/* 1. Header */}
       <div className="bg-white px-5 pt-12 pb-5 flex items-center justify-between sticky top-0 z-30">

@@ -183,7 +183,7 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="flex flex-col flex-1 bg-white pb-32">
+    <div className="flex flex-col flex-1 bg-white pb-32 animate-page-fade-in">
       {/* ── 1. HEADER ── */}
       <div className="bg-[#7b82f4] text-white pt-10 pb-[52px] px-5 relative overflow-hidden flex-shrink-0">
         <div className="absolute inset-0 bg-radial-gradient from-white/10 to-transparent pointer-events-none opacity-40" />

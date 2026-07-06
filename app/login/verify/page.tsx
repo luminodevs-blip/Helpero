@@ -180,6 +180,7 @@ function VerifyOtpPageContent() {
 
   return (
     <div
+      className="animate-page-fade-in"
       style={{
         minHeight: "100dvh",
         background: "#ffffff",
