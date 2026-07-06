@@ -173,16 +173,17 @@ export default function LoginPage() {
             <span style={{ fontSize: 16, fontWeight: 600, color: "#1a1a1a" }}>Apart</span>
           </div>
 
-          {/* Illustration — height 260, offset 24 left */}
+          {/* Illustration — 16px top+bottom padding */}
           <img
             src="/Handyman_and_cleaner_in_harmony.png"
             alt="Handyman and cleaner"
             style={{
               position: "absolute",
-              bottom: 0,
+              bottom: 16,
+              top: 16,
               left: 24,
               width: "calc(100% - 48px)",
-              height: 260,
+              height: "calc(100% - 32px)",
               objectFit: "contain",
               userSelect: "none",
               pointerEvents: "none",
@@ -469,7 +470,7 @@ export default function LoginPage() {
               />
               
               {/* Modal Container */}
-              <div className="relative bg-white rounded-t-[28px] max-h-[75%] flex flex-col overflow-hidden shadow-2xl animate-slide-up">
+              <div className="relative bg-white rounded-t-[28px] h-full flex flex-col overflow-hidden shadow-2xl animate-slide-up">
                 {/* Header */}
                 <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b border-zinc-100">
                   <span className="font-outfit text-[20px] font-extrabold text-zinc-900">
