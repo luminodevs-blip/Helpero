@@ -102,7 +102,7 @@ export default function ScheduleBottomSheet({
         }`}
         style={{ maxHeight: "85vh" }}
       >
-        <div className="w-full flex justify-center pt-[12px] shrink-0">
+        <div className="w-full flex justify-center pt-[16px] shrink-0">
           <div className="w-10 h-1 bg-zinc-200 rounded-full" />
         </div>
 
