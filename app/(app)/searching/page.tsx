@@ -81,7 +81,7 @@ function SearchingContent() {
           .select(`
             id, status, final_total_price, scheduled_start_at,
             house:houses ( full_address, lat, lng, name_label ),
-            specialist:profiles!specialist_id ( id, first_name, last_name, avatar_url, rating, phone_number )
+            specialist:profiles!specialist_id ( id, first_name, last_name, avatar_url, phone_number )
           `)
           .eq("id", bookingId)
           .single();
@@ -135,7 +135,7 @@ function SearchingContent() {
           .select(`
             id, status, final_total_price, scheduled_start_at,
             house:houses ( full_address, lat, lng, name_label ),
-            specialist:profiles ( id, first_name, last_name, avatar_url, rating, phone_number )
+            specialist:profiles!specialist_id ( id, first_name, last_name, avatar_url, phone_number )
           `)
           .eq("id", bookingId).single();
         if (data) {
