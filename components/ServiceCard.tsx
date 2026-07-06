@@ -222,6 +222,7 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
               <img
                 src={service.image_url}
                 alt={service.name}
+                loading="lazy"
                 className="h-full w-full object-cover"
               />
             ) : (

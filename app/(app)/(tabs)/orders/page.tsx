@@ -265,7 +265,7 @@ export default function OrdersPage() {
                     <div className="flex items-center gap-4">
                       <div className="w-[60px] h-[60px] rounded-xl bg-zinc-50 flex items-center justify-center overflow-hidden flex-shrink-0">
                         {ord.service_image_url ? (
-                          <img src={ord.service_image_url} alt={ord.service_name} className="w-full h-full object-cover mix-blend-multiply opacity-80" />
+                          <img src={ord.service_image_url} alt={ord.service_name} loading="lazy" className="w-full h-full object-cover mix-blend-multiply opacity-80" />
                         ) : (
                           <div className="w-full h-full bg-zinc-200" />
                         )}
