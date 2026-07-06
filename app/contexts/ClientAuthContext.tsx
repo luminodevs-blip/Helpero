@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 import { AddressStruct, BookingDraft, UserProfile } from "@/lib/types";
+import SplashScreen from "@/components/SplashScreen";
 
 interface ClientAuthContextProps {
   user: User | null;
@@ -233,7 +234,7 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
         signOut,
       }}
     >
-      {children}
+      {isLoading ? <SplashScreen /> : children}
     </ClientAuthContext.Provider>
   );
 }
