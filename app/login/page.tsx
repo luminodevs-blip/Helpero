@@ -112,7 +112,7 @@ export default function LoginPage() {
           {/* Floating pill: Offices — top-center, a bit right */}
           <div
             className="absolute flex items-center gap-1 bg-white rounded-2xl shadow-md px-4 py-2"
-            style={{ top: 38, left: "50%", transform: "translateX(-16px)" }}
+            style={{ top: 40, left: "50%", transform: "translateX(-16px)" }}
           >
             <span style={{ fontSize: 14 }}>☕</span>
             <span style={{ fontSize: 13, fontWeight: 700, color: "#1a1a1a" }}>Offices</span>
@@ -121,7 +121,7 @@ export default function LoginPage() {
           {/* Floating pill: Houses — left */}
           <div
             className="absolute flex items-center gap-1 bg-white rounded-2xl shadow-md px-4 py-2"
-            style={{ top: 108, left: 18 }}
+            style={{ top: 80, left: 16 }}
           >
             <span style={{ fontSize: 14 }}>🏠</span>
             <span style={{ fontSize: 13, fontWeight: 700, color: "#1a1a1a" }}>Houses</span>
@@ -130,7 +130,7 @@ export default function LoginPage() {
           {/* Floating pill: Apart — right */}
           <div
             className="absolute flex items-center gap-1 bg-white rounded-2xl shadow-md px-4 py-2"
-            style={{ top: 118, right: 18 }}
+            style={{ top: 95, right: 16 }}
           >
             <span style={{ fontSize: 14 }}>🏢</span>
             <span style={{ fontSize: 13, fontWeight: 700, color: "#1a1a1a" }}>Apart</span>
