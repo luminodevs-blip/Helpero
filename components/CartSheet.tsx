@@ -120,7 +120,7 @@ export default function CartSheet() {
             onClick={() => setCartSheetOpen(false)}
             className="p-1 rounded-full hover:bg-zinc-100 text-zinc-800 transition-colors z-10"
           >
-            <X size={20} strokeWidth={2.5} />
+            <X size={24} strokeWidth={2.5} />
           </button>
           
           <h2 className="font-outfit text-[20px] font-semibold text-zinc-950 absolute left-1/2 -translate-x-1/2">
