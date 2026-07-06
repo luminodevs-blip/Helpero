@@ -170,7 +170,7 @@ export default function CheckoutPage() {
           <ArrowLeft className="h-5 w-5" />
         </button>
         <div className="flex-1 flex justify-center">
-          <h1 className="font-outfit text-[18px] font-bold text-zinc-900">
+          <h1 className="font-outfit text-[20px] font-semibold text-zinc-900">
             Checkout
           </h1>
         </div>
@@ -203,7 +203,7 @@ export default function CheckoutPage() {
 
         {/* ── Payment Method ── */}
         <div className="space-y-4">
-          <h2 className="font-outfit text-[16px] font-semibold text-zinc-900">
+          <h2 className="font-outfit text-[17px] font-medium text-zinc-900">
             How would you like to pay?
           </h2>
           
@@ -212,11 +212,11 @@ export default function CheckoutPage() {
               <div className="h-8 w-10 bg-white border border-zinc-200 rounded flex items-center justify-center shadow-sm shrink-0">
                 <CreditCard className="h-5 w-5 text-zinc-700" />
               </div>
-              <span className="font-sans text-[14px] font-medium text-zinc-900">
+              <span className="font-sans text-[16px] font-normal text-zinc-900">
                 Bank Card
               </span>
             </div>
-            <button className="text-[14px] font-medium text-[#7B82F4] hover:opacity-80 transition-opacity">
+            <button className="text-[16px] font-normal text-[#7B82F4] hover:opacity-80 transition-opacity">
               Change
             </button>
           </div>
@@ -224,11 +224,11 @@ export default function CheckoutPage() {
           {/* Promo Banner */}
           <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[#7B82F4] to-[#A2A6F6] p-5 text-white">
             <div className="relative z-10">
-              <h3 className="font-outfit text-[16px] font-bold leading-tight mb-4">
+              <h3 className="font-outfit text-[18px] font-semibold leading-tight mb-4">
                 Buy Helpero credit<br />
                 Get free credit
               </h3>
-              <button className="text-[13px] font-medium flex items-center gap-1 hover:opacity-80 transition-opacity">
+              <button className="text-[16px] font-normal flex items-center gap-1 hover:opacity-80 transition-opacity">
                 Purchase now <ArrowLeft className="h-3.5 w-3.5 rotate-180" />
               </button>
             </div>
@@ -243,7 +243,7 @@ export default function CheckoutPage() {
 
         {/* ── Order details ── */}
         <div className="space-y-2">
-          <h2 className="font-outfit text-[16px] font-semibold text-zinc-900 mb-4">
+          <h2 className="font-outfit text-[17px] font-medium text-zinc-900 mb-4">
             Order details
           </h2>
           
@@ -262,10 +262,10 @@ export default function CheckoutPage() {
                 </div>
               )}
               <div className="flex flex-col">
-                <span className="font-sans text-[14px] font-medium text-zinc-900">
+                <span className="font-sans text-[16px] font-medium text-zinc-900">
                   {activeBookingDraft.serviceName}
                 </span>
-                <span className="font-sans text-[13px] text-[#57636C]">
+                <span className="font-sans text-[14px] font-normal text-[#57636C]">
                   1 position
                 </span>
               </div>
@@ -315,19 +315,19 @@ export default function CheckoutPage() {
 
           {/* Price Breakdown */}
           <div className="pt-2 space-y-3">
-            <div className="flex justify-between font-sans text-[14px]">
+            <div className="flex justify-between font-sans text-[15px] font-normal">
               <span className="text-zinc-900">Sub total</span>
               <span className="text-zinc-900">${subtotal.toFixed(2)}</span>
             </div>
             
             {visitFee > 0 && (
-              <div className="flex justify-between font-sans text-[14px]">
+              <div className="flex justify-between font-sans text-[15px] font-normal">
                 <span className="text-zinc-900">Booking Fee</span>
                 <span className="text-zinc-900">${visitFee.toFixed(2)}</span>
               </div>
             )}
             
-            <div className="flex justify-between font-sans text-[14px] items-center">
+            <div className="flex justify-between font-sans text-[15px] font-normal items-center">
               <div className="flex items-center gap-1.5 text-zinc-900">
                 Taxes & Fees
                 <Info className="h-3.5 w-3.5 text-zinc-400" />
@@ -336,13 +336,13 @@ export default function CheckoutPage() {
             </div>
 
             {promoDiscount > 0 && (
-              <div className="flex justify-between font-sans text-[14px] text-[#7B82F4]">
+              <div className="flex justify-between font-sans text-[15px] font-normal text-[#7B82F4]">
                 <span>Discount</span>
                 <span>-${promoDiscount.toFixed(2)}</span>
               </div>
             )}
 
-            <div className="flex justify-between font-outfit text-[16px] font-bold text-zinc-900 pt-2">
+            <div className="flex justify-between font-outfit text-[17px] font-medium text-zinc-900 pt-2">
               <span>Total</span>
               <span>${grandTotal.toFixed(2)}</span>
             </div>
@@ -374,7 +374,7 @@ export default function CheckoutPage() {
           <button
             onClick={handleBookNow}
             disabled={loading || slotExpired}
-            className="w-full h-[50px] rounded-[10px] bg-[#14181B] text-white font-sans text-[16px] font-semibold hover:bg-zinc-800 disabled:opacity-50 transition-colors active:scale-[0.98] shadow-md flex items-center justify-center gap-2"
+            className="w-full h-[50px] rounded-[10px] bg-[#14181B] text-white font-sans text-[18px] font-semibold hover:bg-zinc-800 disabled:opacity-50 transition-colors active:scale-[0.98] shadow-md flex items-center justify-center gap-2"
           >
             {loading ? (
               <Loader2 className="h-5 w-5 animate-spin" />
