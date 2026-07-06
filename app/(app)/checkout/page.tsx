@@ -161,30 +161,23 @@ export default function CheckoutPage() {
         throw new Error(orderError.message);
       }
 
-      // 3. Fetch server-calculated total for Stripe
-      const { data: createdOrder, error: fetchError } = await supabase
-        .from("orders")
-        .select("id, final_total_price")
-        .eq("id", orderId)
-        .single();
-
-      if (fetchError || !createdOrder) {
-        throw new Error("Failed to fetch order details");
-      }
-
       // 4. Update draft with booking ID
-      const updatedDraft = { ...activeBookingDraft, bookingId: createdOrder.id, status: "pending_payment" };
+      const updatedDraft = { ...activeBookingDraft, bookingId: orderId, status: "pending_payment" };
       setActiveDraft(updatedDraft);
-      setCreatedBookingId(createdOrder.id);
+      setCreatedBookingId(orderId);
 
-      // 5. Initialize Stripe with the SERVER-calculated amount
+      // 5. Initialize Stripe — server reads price from DB using our JWT
+      //    We send ONLY orderId. Amount comes entirely from the database.
+      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch("/api/process-payment", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session?.access_token}`,
+        },
         body: JSON.stringify({
-          amount: createdOrder.final_total_price,
+          orderId,
           currency: "cad",
-          orderId: createdOrder.id,
         }),
       });
 
