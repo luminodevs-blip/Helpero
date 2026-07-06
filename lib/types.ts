@@ -22,7 +22,7 @@ export interface SelectedAddonStruct {
 
 // ─── Visit/slot details (Step 2: Arrival time) ───────────────────────
 export interface VisitDetails {
-  mode: "express" | "standard" | "scheduled";
+  mode: "priority" | "standard" | "scheduled";
   arrivalTimeSlot: string;       // ISO datetime sent to API
   arrivalDateDisplay: string;    // "Today", "Tomorrow", "Jun 28"
   displayTime: string;           // "10:00 – 11:00"

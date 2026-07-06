@@ -13,7 +13,7 @@ import { Key, Building2, Archive } from "lucide-react";
 // ─── Types ───────────────────────────────────────────────────────────
 interface ArrivalSlot {
   id: string;
-  mode: "express" | "standard" | "scheduled";
+  mode: "priority" | "standard" | "scheduled";
   timeStart: string;
   timeEnd: string | null;
   fee: number;
@@ -24,9 +24,9 @@ interface ArrivalSlot {
 }
 
 const MODE_CONFIG = {
-  express: {
+  priority: {
     icon: Zap,
-    label: "Express",
+    label: "Priority",
     color: "text-primary",
   },
   standard: {
@@ -47,6 +47,7 @@ export default function DateTimePage() {
 
   const [slots, setSlots] = useState<ArrivalSlot[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<"standard" | "scheduled" | "priority">("standard");
   const [error, setError] = useState<string | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<ArrivalSlot | null>(null);
   const [securing, setSecuring] = useState(false);
@@ -105,8 +106,8 @@ export default function DateTimePage() {
 
       setSlots(fetchedSlots);
 
-      // Auto-select express or standard slot
-      const defaultSlot = fetchedSlots.find((s) => s.mode === "express") || fetchedSlots.find((s) => s.mode === "standard");
+      // Auto-select priority or standard slot
+      const defaultSlot = fetchedSlots.find((s) => s.mode === "priority") || fetchedSlots.find((s) => s.mode === "standard");
       if (defaultSlot && !selectedSlot) {
         setSelectedSlot(defaultSlot);
       }
@@ -204,12 +205,12 @@ export default function DateTimePage() {
     }
   };
 
-  const expressSlots = slots.filter((s) => s.mode === "express");
+  const prioritySlots = slots.filter((s) => s.mode === "priority");
   const standardSlots = slots.filter((s) => s.mode === "standard");
   const scheduledSlots = slots.filter((s) => s.mode === "scheduled");
 
   const slotsByMode = [
-    ...(expressSlots.length > 0 ? [expressSlots[0]] : []),
+    ...(prioritySlots.length > 0 ? [prioritySlots[0]] : []),
     ...(standardSlots.length > 0 ? [standardSlots[0]] : []),
     ...(scheduledSlots.length > 0 ? [selectedSlot?.mode === 'scheduled' ? selectedSlot : scheduledSlots[0]] : []),
   ];
