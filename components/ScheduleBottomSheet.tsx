@@ -102,11 +102,11 @@ export default function ScheduleBottomSheet({
         }`}
         style={{ maxHeight: "85vh" }}
       >
-        <div className="w-full flex justify-center pt-3 pb-2 shrink-0">
+        <div className="w-full flex justify-center pt-[12px] shrink-0">
           <div className="w-10 h-1 bg-zinc-200 rounded-full" />
         </div>
 
-        <div className="px-5 pb-4 overflow-y-auto scrollbar-hide flex-1">
+        <div className="px-5 pt-[24px] pb-4 overflow-y-auto scrollbar-hide flex-1">
           <h2 className="font-outfit text-[18px] font-semibold text-zinc-900 mb-3">
             Choose day
           </h2>
