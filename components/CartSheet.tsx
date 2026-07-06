@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
 import { supabase } from "@/lib/supabase";
 import { BookingDraft } from "@/lib/types";
-import { X, MoreHorizontal, Loader2 } from "lucide-react";
+import { X, MoreHorizontal, Loader2, Trash2 } from "lucide-react";
 
 export default function CartSheet() {
   const router = useRouter();
@@ -19,7 +19,8 @@ export default function CartSheet() {
   } = useClientAuth();
 
   const [categories, setCategories] = useState<any[]>([]);
-  const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<BookingDraft | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Close sheet on escape key
@@ -33,18 +34,7 @@ export default function CartSheet() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [cartSheetOpen, setCartSheetOpen]);
 
-  // Close item menu on click outside
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setActiveMenuId(null);
-      }
-    };
-    if (activeMenuId) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [activeMenuId]);
+  // Close item menu on click outside (no longer needed, using bottom sheet)
 
   // Load categories to display correct image
   useEffect(() => {
@@ -97,7 +87,8 @@ export default function CartSheet() {
     if (activeBookingDraft?.currentCartId === item.currentCartId) {
       setActiveDraft(null);
     }
-    setActiveMenuId(null);
+    setDeleteConfirmOpen(false);
+    setItemToDelete(null);
   };
 
   // Helper to format duration
@@ -118,7 +109,7 @@ export default function CartSheet() {
 
       {/* Sheet Container */}
       <div
-        className="relative bg-white w-full max-w-md rounded-t-[28px] shadow-2xl flex flex-col max-h-[85vh] transition-transform duration-300 transform translate-y-0 animate-slide-up pb-safe z-10"
+        className="relative bg-white w-full max-w-md rounded-t-[28px] shadow-2xl flex flex-col h-[100dvh] transition-transform duration-300 transform translate-y-0 animate-slide-up pb-safe z-10"
         style={{
           boxShadow: "0 -8px 24px rgba(0, 0, 0, 0.08)",
         }}
@@ -213,39 +204,14 @@ export default function CartSheet() {
                       {/* Right: Actions menu */}
                       <div className="relative">
                         <button
-                          onClick={() =>
-                            setActiveMenuId(
-                              activeMenuId === item.currentCartId ? null : (item.currentCartId || null)
-                            )
-                          }
+                          onClick={() => {
+                            setItemToDelete(item);
+                            setDeleteConfirmOpen(true);
+                          }}
                           className="h-8 w-8 rounded-full bg-zinc-100 hover:bg-zinc-200 flex items-center justify-center text-zinc-700 transition-colors"
                         >
                           <MoreHorizontal size={18} />
                         </button>
-
-                        {/* Dropdown Menu */}
-                        {activeMenuId === item.currentCartId && (
-                          <div
-                            ref={menuRef}
-                            className="absolute right-0 mt-2 w-36 bg-white rounded-xl shadow-lg border border-zinc-100 py-1.5 z-25 animate-fade-in"
-                            style={{
-                              boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)",
-                            }}
-                          >
-                            <button
-                              onClick={() => handleEditItem(item)}
-                              className="w-full px-4 py-2 text-left text-sm font-semibold text-zinc-800 hover:bg-zinc-50 transition-colors"
-                            >
-                              Edit setup
-                            </button>
-                            <button
-                              onClick={() => handleDeleteItem(item)}
-                              className="w-full px-4 py-2 text-left text-sm font-semibold text-rose-600 hover:bg-rose-50/50 transition-colors"
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        )}
                       </div>
                     </div>
 
@@ -304,6 +270,38 @@ export default function CartSheet() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Bottom Sheet */}
+      {deleteConfirmOpen && (
+        <div className="fixed inset-0 z-[10000] flex items-end justify-center">
+          {/* Backdrop */}
+          <div
+            onClick={() => {
+              setDeleteConfirmOpen(false);
+              setItemToDelete(null);
+            }}
+            className="absolute inset-0 bg-black/55 transition-opacity duration-300 animate-fade-in"
+          />
+
+          {/* Sheet */}
+          <div
+            className="relative bg-white w-full max-w-md rounded-t-[28px] shadow-2xl flex flex-col p-5 pb-[34px] transition-transform duration-300 transform translate-y-0 animate-slide-up z-10"
+            style={{
+              boxShadow: "0 -8px 32px rgba(0, 0, 0, 0.12)",
+            }}
+          >
+            <button
+              onClick={() => {
+                if (itemToDelete) handleDeleteItem(itemToDelete);
+              }}
+              className="w-full py-3 flex items-center gap-3.5 text-[#f43f5e] hover:bg-rose-50/50 rounded-xl px-2 transition-colors text-left"
+            >
+              <Trash2 size={20} strokeWidth={2} />
+              <span className="text-[16px] font-semibold font-sans">Clear cart</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       <style dangerouslySetInnerHTML={{
         __html: `
