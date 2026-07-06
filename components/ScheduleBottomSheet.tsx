@@ -107,7 +107,7 @@ export default function ScheduleBottomSheet({
         </div>
 
         <div className="px-5 pt-[24px] pb-4 overflow-y-auto scrollbar-hide flex-1">
-          <h2 className="font-outfit text-[18px] font-semibold text-zinc-900 mb-3">
+          <h2 className="font-outfit text-[18px] font-semibold text-zinc-900 mb-[20px]">
             Choose day
           </h2>
 
