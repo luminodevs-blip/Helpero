@@ -172,8 +172,8 @@ export default function LoginPage() {
           <h2
             style={{
               fontFamily: "'Outfit', sans-serif",
-              fontSize: 22,
-              fontWeight: 800,
+              fontSize: 24,
+              fontWeight: 600,
               color: "#111111",
               margin: "0 0 20px",
             }}
@@ -219,7 +219,7 @@ export default function LoginPage() {
                   userSelect: "none",
                 }}
               >
-                <span style={{ fontSize: 14, fontWeight: 700, color: "#111111" }}>
+                <span style={{ fontSize: 16, fontWeight: 500, color: "#111111" }}>
                   {selectedCountry.short} {selectedCountry.code}
                 </span>
                 <svg
@@ -253,7 +253,7 @@ export default function LoginPage() {
                   background: "#f9fafb",
                   padding: "0 18px",
                   height: 54,
-                  fontSize: 15,
+                  fontSize: 16,
                   fontWeight: 500,
                   color: "#111111",
                   outline: "none",
@@ -272,12 +272,12 @@ export default function LoginPage() {
                 alignItems: "center",
                 justifyContent: "center",
                 width: "100%",
-                height: 54,
-                borderRadius: 16,
+                height: 56,
+                borderRadius: 8,
                 background: loading ? "#b0b4f8" : "#7B82F4",
                 color: "#ffffff",
-                fontSize: 15,
-                fontWeight: 700,
+                fontSize: 18,
+                fontWeight: 600,
                 border: "none",
                 cursor: loading ? "not-allowed" : "pointer",
                 transition: "background 0.15s",
@@ -322,7 +322,7 @@ export default function LoginPage() {
             }}
           >
             <div style={{ flex: 1, height: 1, background: "#e5e7eb" }} />
-            <span style={{ fontSize: 13, color: "#9ca3af", fontWeight: 500 }}>or</span>
+            <span style={{ fontSize: 14, color: "#9ca3af", fontWeight: 500 }}>or</span>
             <div style={{ flex: 1, height: 1, background: "#e5e7eb" }} />
           </div>
 
@@ -395,7 +395,8 @@ export default function LoginPage() {
           <p
             style={{
               textAlign: "center",
-              fontSize: 11,
+              fontSize: 14,
+              fontWeight: 400,
               color: "#6b7280",
               lineHeight: 1.6,
               margin: 0,
