@@ -243,12 +243,12 @@ export default function CheckoutPage() {
 
         {/* ── Order details ── */}
         <div className="space-y-2 !mt-[24px]">
-          <h2 className="font-outfit text-[17px] font-medium text-zinc-900 mb-4">
+          <h2 className="font-outfit text-[17px] font-medium text-zinc-900">
             Order details
           </h2>
           
           {/* Service Item */}
-          <div className="flex items-center justify-between py-2">
+          <div className="flex items-center justify-between py-2 !mt-[20px]">
             <div className="flex items-center gap-3">
               {activeBookingDraft.serviceImageUrl ? (
                 <img
