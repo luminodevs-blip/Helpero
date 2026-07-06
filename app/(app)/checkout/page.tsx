@@ -276,7 +276,7 @@ export default function CheckoutPage() {
           <div className="w-full h-px bg-zinc-100 !my-0" />
 
           {/* Promocode */}
-          <div>
+          <div className="!mt-[12px]">
             <div 
               className="flex items-center justify-between py-2 cursor-pointer hover:bg-zinc-50 rounded-lg -mx-2 px-2 transition-colors"
               onClick={() => setIsPromoExpanded(!isPromoExpanded)}
@@ -311,7 +311,7 @@ export default function CheckoutPage() {
             )}
           </div>
 
-          <div className="w-full h-px bg-zinc-100 my-2" />
+          <div className="w-full h-px bg-zinc-100 !mt-[12px] !mb-0" />
 
           {/* Price Breakdown */}
           <div className="pt-2 space-y-3">
