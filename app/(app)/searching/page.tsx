@@ -269,7 +269,7 @@ function SearchingContent() {
 
       {/* ── Bottom sheet ── */}
       <div className="absolute bottom-0 left-0 right-0 z-20 p-4 pb-8">
-        <div className="bg-white rounded-[32px] py-[36px] px-6 shadow-2xl space-y-6">
+        <div className="bg-white rounded-[30px] py-[36px] px-6 shadow-2xl space-y-6">
 
           {/* Header */}
           <div className="text-center">
