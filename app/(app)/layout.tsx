@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
 
+import CartSheet from "@/components/CartSheet";
+
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, profile, selectedAddress, isLoading } = useClientAuth();
   const router = useRouter();
@@ -52,5 +54,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     );
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <CartSheet />
+    </>
+  );
 }

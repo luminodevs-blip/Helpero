@@ -16,6 +16,8 @@ interface ClientAuthContextProps {
   isLoading: boolean;
   cart: BookingDraft[];
   activeBookingDraft: BookingDraft | null;
+  cartSheetOpen: boolean;
+  setCartSheetOpen: (open: boolean) => void;
   setAddress: (address: AddressStruct) => Promise<void>;
   refreshAddresses: () => Promise<void>;
   updateCart: (newCart: BookingDraft[]) => void;
@@ -203,6 +205,9 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
     }
   };
 
+  // Cart sheet state
+  const [cartSheetOpen, setCartSheetOpen] = useState(false);
+
   const updateCart = (newCart: BookingDraft[]) => {
     setCart(newCart);
   };
@@ -227,6 +232,8 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
         isLoading,
         cart,
         activeBookingDraft,
+        cartSheetOpen,
+        setCartSheetOpen,
         setAddress,
         refreshAddresses,
         updateCart,

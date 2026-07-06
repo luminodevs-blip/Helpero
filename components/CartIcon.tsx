@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
 import { ShoppingCart } from "lucide-react";
 
@@ -10,12 +9,11 @@ interface CartIconProps {
 }
 
 export default function CartIcon({ className = "" }: CartIconProps) {
-  const router = useRouter();
-  const { cart } = useClientAuth();
+  const { cart, setCartSheetOpen } = useClientAuth();
 
   return (
     <div 
-      onClick={() => router.push("/cart")}
+      onClick={() => setCartSheetOpen(true)}
       className={`relative cursor-pointer hover:scale-105 active:scale-95 transition-all ${className}`}
     >
       <div className="flex items-center justify-center h-[42px] w-[42px] rounded-full border border-white/40 bg-white/10">
