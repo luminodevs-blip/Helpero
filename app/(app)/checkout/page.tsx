@@ -248,7 +248,10 @@ export default function CheckoutPage() {
           </h2>
           
           {/* Service Item */}
-          <div className="flex items-center justify-between !mt-[20px] !mb-[20px]">
+          <div 
+            className="flex items-center justify-between !mt-[20px] !mb-[20px] cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={() => router.push(`/service/${activeBookingDraft.serviceId}`)}
+          >
             <div className="flex items-center gap-3">
               {activeBookingDraft.serviceImageUrl ? (
                 <img
@@ -270,7 +273,7 @@ export default function CheckoutPage() {
                 </span>
               </div>
             </div>
-            <ChevronRight className="h-4 w-4 text-zinc-400 rotate-90" />
+            <ChevronRight className="h-5 w-5 text-zinc-400" />
           </div>
 
           <div className="w-full h-px bg-zinc-100 !my-0" />
