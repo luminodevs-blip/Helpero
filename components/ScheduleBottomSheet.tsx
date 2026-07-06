@@ -106,7 +106,7 @@ export default function ScheduleBottomSheet({
           <div className="w-10 h-1 bg-zinc-200 rounded-full" />
         </div>
 
-        <div className="px-5 pt-[24px] pb-4 overflow-y-auto scrollbar-hide flex-1">
+        <div className="px-5 pt-[24px] pb-[60px] overflow-y-auto scrollbar-hide flex-1">
           <h2 className="font-outfit text-[18px] font-semibold text-zinc-900 mb-[20px]">
             Choose day
           </h2>
@@ -146,7 +146,7 @@ export default function ScheduleBottomSheet({
             Service duration — {formatDuration(serviceDurationMinutes)}
           </p>
 
-          <div className="grid grid-cols-3 gap-[12px] mb-6">
+          <div className="grid grid-cols-3 gap-[12px]">
             {timeSlots.map((time) => {
               const selected = time === selectedTime;
               return (
