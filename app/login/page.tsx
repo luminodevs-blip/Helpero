@@ -173,17 +173,17 @@ export default function LoginPage() {
             <span style={{ fontSize: 16, fontWeight: 600, color: "#1a1a1a" }}>Apart</span>
           </div>
 
-          {/* Illustration — starts 16px below Offices chip (top 40 + height 40 + gap 16 = 96) */}
+          {/* Illustration — 16px below Offices chip, 16px above white card */}
           <img
             src="/Handyman_and_cleaner_in_harmony.png"
             alt="Handyman and cleaner"
             style={{
               position: "absolute",
               top: 96,
-              bottom: 0,
+              bottom: 16,
               left: 24,
               width: "calc(100% - 48px)",
-              height: "calc(100% - 96px)",
+              height: "calc(100% - 112px)",
               objectFit: "contain",
               objectPosition: "bottom center",
               userSelect: "none",
