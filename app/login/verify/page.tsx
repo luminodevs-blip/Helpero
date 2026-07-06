@@ -177,7 +177,7 @@ function VerifyOtpPageContent() {
       }}
     >
       {/* Back Button */}
-      <div style={{ paddingTop: 56, marginBottom: 32 }}>
+      <div style={{ paddingTop: 56, marginBottom: 34 }}>
         <button
           onClick={() => router.push("/login")}
           style={{
@@ -190,7 +190,7 @@ function VerifyOtpPageContent() {
             color: "#374151",
           }}
         >
-          <ArrowLeft size={20} color="#374151" />
+          <ArrowLeft size={24} color="#374151" />
         </button>
       </div>
 
@@ -199,8 +199,8 @@ function VerifyOtpPageContent() {
         <h2
           style={{
             fontFamily: "'Outfit', sans-serif",
-            fontSize: 28,
-            fontWeight: 700,
+            fontSize: 24,
+            fontWeight: 600,
             color: "#111111",
             margin: "0 0 10px",
             lineHeight: 1.2,
@@ -208,10 +208,10 @@ function VerifyOtpPageContent() {
         >
           Confirm phone
         </h2>
-        <p style={{ fontSize: 14, color: "#6b7280", margin: "0 0 4px", fontWeight: 400 }}>
+        <p style={{ fontSize: 16, color: "#6b7280", margin: "0 0 4px", fontWeight: 400 }}>
           A confirmation code has been sent to:
         </p>
-        <p style={{ fontSize: 15, color: "#111111", fontWeight: 700, margin: 0 }}>
+        <p style={{ fontSize: 16, color: "#111111", fontWeight: 400, margin: 0 }}>
           {formatPhoneDisplay(phone)}
         </p>
       </div>
@@ -297,8 +297,8 @@ function VerifyOtpPageContent() {
               background: "none",
               border: "none",
               cursor: canResend ? "pointer" : "default",
-              fontSize: 14,
-              fontWeight: 500,
+              fontSize: 16,
+              fontWeight: 400,
               color: canResend ? "#7B82F4" : "#9ca3af",
               padding: "8px 0",
             }}
