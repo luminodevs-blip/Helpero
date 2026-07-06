@@ -123,7 +123,7 @@ export default function EntryMethodBottomSheet({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <div className="flex items-center justify-between px-5 pt-[24px] pb-[16px] shrink-0 border-b border-transparent">
+        <div className="flex items-center justify-between px-5 pt-[24px] pb-[4px] shrink-0 border-b border-transparent">
           <button
             onClick={handleClose}
             className="p-1 -ml-1 rounded-full hover:bg-zinc-100 text-zinc-900 focus:outline-none transition-colors"
@@ -140,7 +140,7 @@ export default function EntryMethodBottomSheet({
           </button>
         </div>
 
-        <p className="text-[15px] font-sans font-normal text-zinc-500 text-center mb-6 px-5 shrink-0">
+        <p className="text-[14.5px] font-sans font-normal text-zinc-500 text-center mb-[24px] px-5 shrink-0">
           Choose how the cleaner can enter your home.
         </p>
 
@@ -161,10 +161,10 @@ export default function EntryMethodBottomSheet({
                   {method.emoji}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-outfit text-[15.5px] font-medium text-zinc-900 leading-tight">
+                  <h3 className="font-outfit text-[16px] font-medium text-zinc-900 leading-tight">
                     {method.title}
                   </h3>
-                  <p className="font-sans text-[13.5px] font-normal text-zinc-500 mt-0.5">
+                  <p className="font-sans text-[14px] font-normal text-zinc-500 mt-0.5">
                     {method.subtitle}
                   </p>
                 </div>
@@ -184,14 +184,14 @@ export default function EntryMethodBottomSheet({
           })}
 
           <div className="mt-8">
-            <h4 className="font-outfit text-[15.5px] font-semibold text-zinc-900 mb-2.5">
+            <h4 className="font-outfit text-[14.5px] font-medium text-zinc-900 mb-[14px]">
               Access notes (optional)
             </h4>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Example: gate code, parking instructions, call upon arrival..."
-              className="w-full bg-[#F5F7FB] border border-transparent focus:border-[#7B82F4] rounded-[14px] p-4 font-sans text-[14.5px] text-zinc-900 placeholder:text-zinc-400 outline-none resize-none transition-colors"
+              className="w-full bg-[#F5F7FB] border border-transparent focus:border-[#7B82F4] rounded-[14px] p-4 font-sans text-[14px] font-normal text-zinc-900 placeholder:text-zinc-400 outline-none resize-none transition-colors"
               rows={4}
             />
           </div>
@@ -200,7 +200,7 @@ export default function EntryMethodBottomSheet({
         <div className="absolute bottom-0 left-0 right-0 p-5 bg-white border-t border-zinc-100 pb-[40px] shrink-0">
           <button
             onClick={handleUpdate}
-            className="w-full h-[52px] bg-[#14181B] text-white rounded-[12px] font-sans text-[18px] font-semibold flex items-center justify-center hover:bg-zinc-800 transition-colors active:scale-[0.98] shadow-md"
+            className="w-full h-[50px] bg-[#14181B] text-white rounded-[8px] font-sans text-[16px] font-semibold flex items-center justify-center hover:bg-zinc-800 transition-colors active:scale-[0.98] shadow-md"
           >
             Update Booking
           </button>
