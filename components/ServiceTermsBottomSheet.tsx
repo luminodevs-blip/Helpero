@@ -117,10 +117,10 @@ export default function ServiceTermsBottomSheet({
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 p-5 bg-white border-t border-zinc-100 pb-[40px] shrink-0">
+        <div className="absolute bottom-0 left-0 right-0 px-5 pt-[34px] pb-[40px] bg-white border-t border-zinc-100 shrink-0">
           <button
             onClick={handleClose}
-            className="w-full h-[50px] bg-[#14181B] text-white rounded-[8px] font-sans text-[16px] font-semibold flex items-center justify-center hover:bg-zinc-800 transition-colors active:scale-[0.98] shadow-md"
+            className="w-full h-[50px] bg-[#14181B] text-white rounded-[10px] font-sans text-[16px] font-semibold flex items-center justify-center hover:bg-zinc-800 transition-colors active:scale-[0.98] shadow-md"
           >
             Got it
           </button>
