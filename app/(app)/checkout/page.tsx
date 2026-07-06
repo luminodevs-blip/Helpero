@@ -144,7 +144,16 @@ export default function CheckoutPage() {
         throw new Error(rpcError.message);
       }
 
-      // 2. Create order record in the orders table
+      // 2. Resolve mode slug → UUID
+      const ARRIVAL_MODE_MAP: Record<string, string> = {
+        priority:  "2bafdcc6-4340-47ef-a412-26e108ad45cb",
+        standard:  "180f6035-575d-4947-9226-81a888c4dd2f",
+        scheduled: "b46ffadd-8017-4e25-82eb-6550988ab31d",
+      };
+      const modeSlug = activeBookingDraft.visit?.mode ?? "standard";
+      const arrivalModeId = ARRIVAL_MODE_MAP[modeSlug] ?? ARRIVAL_MODE_MAP["standard"];
+
+      // 3. Create order record in the orders table
       const { data: booking, error: bookingError } = await supabase
         .from("orders")
         .insert({
@@ -152,7 +161,7 @@ export default function CheckoutPage() {
           house_id: selectedAddress.id,
           scheduled_start_at: activeBookingDraft.visit?.arrivalTimeSlot,
           scheduled_end_at: null,
-          arrival_mode_id: activeBookingDraft.visit?.mode,
+          arrival_mode_id: arrivalModeId,
           total_items_price: subtotal,
           total_tax_amount: taxAmount,
           final_total_price: grandTotal,
