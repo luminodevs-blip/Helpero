@@ -82,7 +82,7 @@ export default function ProfilePage() {
       label: "Settings",
       icon: Settings,
       subtitle: "App preferences & account",
-      action: () => alert("Coming soon"),
+      action: () => router.push("/settings"),
     },
   ];
 
