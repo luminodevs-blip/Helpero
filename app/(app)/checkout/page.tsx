@@ -461,7 +461,7 @@ export default function CheckoutPage() {
           {/* Modal */}
           <div className="relative w-full max-w-md bg-white rounded-t-[28px] sm:rounded-[28px] flex flex-col transform transition-transform duration-300">
             <div className="p-5 pb-4 flex justify-center">
-              <h3 className="font-outfit text-[17px] font-semibold text-zinc-900">
+              <h3 className="font-outfit text-[18px] font-semibold text-zinc-900">
                 How's this fee calculated?
               </h3>
             </div>
@@ -469,15 +469,15 @@ export default function CheckoutPage() {
             <div className="w-full h-px bg-zinc-100" />
 
             <div className="p-5">
-              <p className="font-sans text-[14px] leading-[1.6] text-zinc-800 mb-6">
+              <p className="font-sans text-[14.5px] font-normal leading-[1.6] text-zinc-800 mb-6">
                 Your total is based on the size of your home, the services you select, and any extras you add. No hidden fees — you always see the final price before booking.
               </p>
 
               <button 
                 onClick={() => setIsFeeModalOpen(false)}
-                className="w-full h-[52px] bg-zinc-900 text-white rounded-xl font-medium text-[15px] hover:bg-zinc-800 transition-colors"
+                className="w-full h-[50px] bg-[#14181B] text-white rounded-[10px] font-semibold text-[16px] hover:bg-zinc-800 transition-colors mb-[40px]"
               >
-                Close
+                Agree and close
               </button>
             </div>
           </div>
