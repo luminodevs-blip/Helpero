@@ -71,6 +71,11 @@ function SearchingContent() {
   // Phase: "securing" → (auto) → "map"
   const [phase, setPhase] = useState<"securing" | "map">(fromPayment ? "securing" : "map");
 
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""
+  });
+
   useEffect(() => {
     if (!bookingId) { router.replace("/"); return; }
 
@@ -238,11 +243,6 @@ function SearchingContent() {
   // ── Phase 2: Map + "Finding your specialist" ──
   const lat = order.house?.lat || 43.6532;
   const lng = order.house?.lng || -79.3832;
-
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""
-  });
 
   return (
     <div className="w-full max-w-md mx-auto h-screen relative overflow-hidden flex flex-col border-x border-zinc-100 shadow-md bg-[#F1F4F8]">
