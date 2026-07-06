@@ -42,6 +42,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isServiceDetailsExpanded, setIsServiceDetailsExpanded] = useState(false);
+  const [isFeeModalOpen, setIsFeeModalOpen] = useState(false);
 
   useEffect(() => {
     if (!activeBookingDraft) {
@@ -385,7 +386,13 @@ export default function CheckoutPage() {
             <div className="flex justify-between font-sans text-[15px] font-normal items-center">
               <div className="flex items-center gap-1.5 text-zinc-900">
                 Taxes & Fees
-                <Info className="h-3.5 w-3.5 text-zinc-400" />
+                <button 
+                  type="button" 
+                  className="p-1 -m-1 hover:opacity-80 transition-opacity"
+                  onClick={() => setIsFeeModalOpen(true)}
+                >
+                  <Info className="h-3.5 w-3.5 text-zinc-400" />
+                </button>
               </div>
               <span className="text-zinc-900">${taxAmount.toFixed(2)}</span>
             </div>
@@ -442,6 +449,40 @@ export default function CheckoutPage() {
           </button>
         </div>
       </div>
+
+      {/* ── Fee Modal ── */}
+      {isFeeModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/40 transition-opacity" 
+            onClick={() => setIsFeeModalOpen(false)}
+          />
+          {/* Modal */}
+          <div className="relative w-full max-w-md bg-white rounded-t-[28px] sm:rounded-[28px] flex flex-col transform transition-transform duration-300">
+            <div className="p-5 pb-4 flex justify-center">
+              <h3 className="font-outfit text-[17px] font-semibold text-zinc-900">
+                How's this fee calculated?
+              </h3>
+            </div>
+            
+            <div className="w-full h-px bg-zinc-100" />
+
+            <div className="p-5">
+              <p className="font-sans text-[14px] leading-[1.6] text-zinc-800 mb-6">
+                Your total is based on the size of your home, the services you select, and any extras you add. No hidden fees — you always see the final price before booking.
+              </p>
+
+              <button 
+                onClick={() => setIsFeeModalOpen(false)}
+                className="w-full h-[52px] bg-zinc-900 text-white rounded-xl font-medium text-[15px] hover:bg-zinc-800 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
