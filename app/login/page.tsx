@@ -173,18 +173,19 @@ export default function LoginPage() {
             <span style={{ fontSize: 16, fontWeight: 600, color: "#1a1a1a" }}>Apart</span>
           </div>
 
-          {/* Illustration — 16px top+bottom padding */}
+          {/* Illustration — starts 16px below Offices chip (top 40 + height 40 + gap 16 = 96) */}
           <img
             src="/Handyman_and_cleaner_in_harmony.png"
             alt="Handyman and cleaner"
             style={{
               position: "absolute",
-              bottom: 16,
-              top: 16,
+              top: 96,
+              bottom: 0,
               left: 24,
               width: "calc(100% - 48px)",
-              height: "calc(100% - 32px)",
+              height: "calc(100% - 96px)",
               objectFit: "contain",
+              objectPosition: "bottom center",
               userSelect: "none",
               pointerEvents: "none",
             }}
@@ -196,7 +197,7 @@ export default function LoginPage() {
         <div
           style={{
             background: "#ffffff",
-            borderRadius: "28px 28px 0 0",
+            borderRadius: "10px 10px 0 0",
             marginTop: -22,
             padding: "24px 24px 20px",
             position: "relative",
