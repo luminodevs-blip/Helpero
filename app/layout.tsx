@@ -30,9 +30,9 @@ export const viewport: Viewport = {
 
 // ── Metadata with OpenGraph + Twitter Card ─────────────────────────────────
 export const metadata: Metadata = {
-  title: "Helpero — Premium Home Services",
+  title: "Helpero — On-Demand Services Near You",
   description:
-    "Book trusted cleaners, handymen, and home service professionals in minutes. Serving Toronto and the GTA.",
+    "Helpero connects you with trusted professionals for cleaning, repairs, delivery, and other on-demand services near you.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -51,9 +51,9 @@ export const metadata: Metadata = {
     type: "website",
     url: APP_URL,
     siteName: "Helpero",
-    title: "Helpero — Premium Home Services",
+    title: "Helpero — On-Demand Services Near You",
     description:
-      "Book trusted cleaners, handymen, and home service professionals in minutes. Serving Toronto and the GTA.",
+      "Helpero connects you with trusted professionals for cleaning, repairs, delivery, and other on-demand services near you.",
     images: [
       {
         url: `${APP_URL}/og-image.png`,
@@ -65,9 +65,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Helpero — Premium Home Services",
+    title: "Helpero — On-Demand Services Near You",
     description:
-      "Book trusted cleaners, handymen, and home service professionals in minutes.",
+      "Helpero connects you with trusted professionals for cleaning, repairs, delivery, and other on-demand services near you.",
     images: [`${APP_URL}/og-image.png`],
   },
 };
