@@ -89,7 +89,7 @@ function SearchingContent() {
             id, status, final_total_price, scheduled_start_at,
             house:houses ( full_address, lat, lng, name_label ),
             specialist:profiles!specialist_id ( id, first_name, last_name, avatar_url, phone_number ),
-            order_items ( service_name, service:services ( image_url, duration_minutes ) )
+            order_items ( service_name, service:services ( image_url, duration_minutes, category:service_categories ( image_url ) ) )
           `)
           .eq("id", bookingId)
           .single();
@@ -102,7 +102,7 @@ function SearchingContent() {
           final_total_price: raw.final_total_price || 0,
           scheduled_start_at: raw.scheduled_start_at || "",
           service_name: raw.order_items?.[0]?.service_name,
-          service_icon_url: raw.order_items?.[0]?.service?.image_url,
+          service_icon_url: raw.order_items?.[0]?.service?.category?.image_url || raw.order_items?.[0]?.service?.image_url,
           service_duration: raw.order_items?.[0]?.service?.duration_minutes,
           house: raw.house ? {
             full_address: raw.house.full_address,
@@ -147,7 +147,7 @@ function SearchingContent() {
             id, status, final_total_price, scheduled_start_at,
             house:houses ( full_address, lat, lng, name_label ),
             specialist:profiles!specialist_id ( id, first_name, last_name, avatar_url, phone_number ),
-            order_items ( service_name, service:services ( image_url, duration_minutes ) )
+            order_items ( service_name, service:services ( image_url, duration_minutes, category:service_categories ( image_url ) ) )
           `)
           .eq("id", bookingId).single();
         if (data) {
@@ -158,7 +158,7 @@ function SearchingContent() {
             final_total_price: raw.final_total_price || 0,
             scheduled_start_at: raw.scheduled_start_at || "",
             service_name: raw.order_items?.[0]?.service_name || prev?.service_name,
-            service_icon_url: raw.order_items?.[0]?.service?.image_url || prev?.service_icon_url,
+            service_icon_url: raw.order_items?.[0]?.service?.category?.image_url || raw.order_items?.[0]?.service?.image_url || prev?.service_icon_url,
             service_duration: raw.order_items?.[0]?.service?.duration_minutes || prev?.service_duration,
             house: raw.house ? { full_address: raw.house.full_address, lat: Number(raw.house.lat), lng: Number(raw.house.lng), name_label: raw.house.name_label } : null,
             specialist: raw.specialist ? { id: raw.specialist.id, first_name: raw.specialist.first_name, last_name: raw.specialist.last_name, avatar_url: raw.specialist.avatar_url, rating: raw.specialist.rating || 4.9, phone_number: raw.specialist.phone_number || "" } : null,
