@@ -467,7 +467,7 @@ export default function LoginPage() {
           </p>
 
           {isCountryModalOpen && (
-            <div className="absolute inset-0 z-50 flex flex-col justify-end bg-black/45 animate-fade-in">
+            <div className="fixed inset-0 z-[9999] flex flex-col justify-end bg-black/45 animate-fade-in">
               {/* Backdrop */}
               <div 
                 className="absolute inset-0 cursor-default" 
@@ -475,7 +475,7 @@ export default function LoginPage() {
               />
               
               {/* Modal Container */}
-              <div className="relative bg-white rounded-t-[28px] h-full flex flex-col overflow-hidden shadow-2xl animate-slide-up">
+              <div className="relative bg-white rounded-t-[28px] h-full flex flex-col overflow-hidden animate-slide-up" style={{ boxShadow: "0 -8px 40px rgba(0,0,0,0.18)" }}>
                 {/* Header */}
                 <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b border-zinc-100">
                   <span className="font-outfit text-[20px] font-extrabold text-zinc-900">
