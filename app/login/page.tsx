@@ -107,7 +107,7 @@ export default function LoginPage() {
         {/* ── PURPLE HEADER ───────────────────────────────────── */}
         <div
           className="relative overflow-hidden"
-          style={{ background: "#7B82F4", height: 260, flexShrink: 0 }}
+          style={{ background: "#7B82F4", height: 372, flexShrink: 0 }}
         >
           {/* Floating pill: Offices — top-center */}
           <div
@@ -180,10 +180,9 @@ export default function LoginPage() {
             style={{
               position: "absolute",
               top: 96,
-              bottom: 16,
               left: 24,
               width: "calc(100% - 48px)",
-              height: "calc(100% - 112px)",
+              height: 260,
               objectFit: "contain",
               objectPosition: "bottom center",
               userSelect: "none",
