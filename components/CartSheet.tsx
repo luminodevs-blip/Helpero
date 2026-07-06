@@ -109,13 +109,13 @@ export default function CartSheet() {
 
       {/* Sheet Container */}
       <div
-        className="relative bg-white w-full max-w-md rounded-t-[28px] shadow-2xl flex flex-col h-[100dvh] transition-transform duration-300 transform translate-y-0 animate-slide-up pb-safe z-10"
+        className="relative bg-white w-full max-w-md rounded-none shadow-2xl flex flex-col h-[100dvh] transition-transform duration-300 transform translate-y-0 animate-slide-up pb-safe z-10"
         style={{
           boxShadow: "0 -8px 24px rgba(0, 0, 0, 0.08)",
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-4 border-b border-zinc-100 flex-shrink-0 relative">
+        <div className="flex items-center justify-between px-4 pt-[24px] pb-[20px] border-b border-zinc-100 flex-shrink-0 relative">
           <button
             onClick={() => setCartSheetOpen(false)}
             className="p-1 rounded-full hover:bg-zinc-100 text-zinc-800 transition-colors z-10"
