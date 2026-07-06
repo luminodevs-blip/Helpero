@@ -41,6 +41,7 @@ export default function CheckoutPage() {
   const [promoInput, setPromoInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isServiceDetailsExpanded, setIsServiceDetailsExpanded] = useState(false);
 
   useEffect(() => {
     if (!activeBookingDraft) {
@@ -249,31 +250,82 @@ export default function CheckoutPage() {
           
           {/* Service Item */}
           <div 
-            className="flex items-center justify-between !mt-[20px] !mb-[20px] cursor-pointer hover:opacity-80 transition-opacity"
-            onClick={() => router.push(`/service/${activeBookingDraft.serviceId}`)}
+            className={`flex flex-col transition-colors ${isServiceDetailsExpanded ? "bg-[#F8F9FA] -mx-5 px-5 py-[20px] border-y border-zinc-100" : "!mt-[20px] !mb-[20px]"}`}
           >
-            <div className="flex items-center gap-3">
-              {activeBookingDraft.serviceImageUrl ? (
-                <img
-                  src={activeBookingDraft.serviceImageUrl}
-                  alt={activeBookingDraft.serviceName}
-                  className="h-10 w-10 rounded-lg object-cover"
-                />
-              ) : (
-                <div className="h-10 w-10 rounded-lg bg-zinc-100 flex items-center justify-center">
-                  <BadgeCheck className="h-5 w-5 text-zinc-400" />
+            <div 
+              className="flex items-center justify-between cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => setIsServiceDetailsExpanded(!isServiceDetailsExpanded)}
+            >
+              <div className="flex items-center gap-3">
+                {(!isServiceDetailsExpanded && activeBookingDraft.serviceImageUrl) ? (
+                  <img
+                    src={activeBookingDraft.serviceImageUrl}
+                    alt={activeBookingDraft.serviceName}
+                    className="h-10 w-10 rounded-lg object-cover"
+                  />
+                ) : (!isServiceDetailsExpanded ? (
+                  <div className="h-10 w-10 rounded-lg bg-zinc-100 flex items-center justify-center">
+                    <BadgeCheck className="h-5 w-5 text-zinc-400" />
+                  </div>
+                ) : null)}
+                <div className="flex flex-col">
+                  <span className="font-sans text-[16px] font-medium text-zinc-900">
+                    {activeBookingDraft.serviceName}
+                  </span>
+                  <span className="font-sans text-[14px] font-normal text-[#57636C]">
+                    1 position
+                  </span>
                 </div>
-              )}
-              <div className="flex flex-col">
-                <span className="font-sans text-[16px] font-medium text-zinc-900">
-                  {activeBookingDraft.serviceName}
-                </span>
-                <span className="font-sans text-[14px] font-normal text-[#57636C]">
-                  1 position
-                </span>
               </div>
+              <ChevronRight className={`h-5 w-5 text-zinc-400 transition-transform ${isServiceDetailsExpanded ? "rotate-90" : ""}`} />
             </div>
-            <ChevronRight className="h-5 w-5 text-zinc-400" />
+
+            {isServiceDetailsExpanded && (
+              <div className="flex flex-col mt-4">
+                <div className="w-full h-px bg-zinc-200/60 mb-4" />
+                
+                <div className="flex">
+                  <div className="flex-1 flex flex-col">
+                    <span className="font-sans text-[13px] text-zinc-800 mb-1">Date</span>
+                    <span className="font-sans text-[14px] font-medium text-zinc-900">
+                      {activeBookingDraft.visit?.arrivalDateDisplay || "Today"}
+                    </span>
+                  </div>
+                  <div className="flex-1 flex flex-col">
+                    <span className="font-sans text-[13px] text-zinc-800 mb-1">Arrival time</span>
+                    <span className="font-sans text-[14px] font-medium text-zinc-900">
+                      {activeBookingDraft.visit?.displayTime || "8:00 - 8:15"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="w-full h-px bg-zinc-200/60 my-4" />
+
+                <div className="flex flex-col">
+                  <span className="font-sans text-[13px] text-zinc-800 mb-1">You selected</span>
+                  <span className="font-sans text-[14px] font-medium text-zinc-900 mb-1">
+                    {activeBookingDraft.serviceName}
+                  </span>
+                  {activeBookingDraft.selectedAddons?.map((addon, idx) => (
+                    <span key={idx} className="font-sans text-[13.5px] text-zinc-500">
+                      + {addon.name} x{addon.qty}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="w-full h-px bg-zinc-200/60 my-4" />
+
+                <div className="flex flex-col">
+                  <span className="font-sans text-[13px] text-zinc-800 mb-1">Location</span>
+                  <span className="font-sans text-[14px] font-medium text-zinc-900">
+                    {selectedAddress?.nameLabel || "My House"}
+                  </span>
+                  <span className="font-sans text-[13.5px] text-zinc-800 mt-1 leading-snug">
+                    {selectedAddress?.fullAddress || "12 William Farrell St, Unit 401 Toronto, ON M5V 2T6"}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="w-full h-px bg-zinc-100 !my-0" />
