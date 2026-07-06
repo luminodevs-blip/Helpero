@@ -314,7 +314,7 @@ export default function CheckoutPage() {
           <div className="w-full h-px bg-zinc-100 !mt-[12px] !mb-0" />
 
           {/* Price Breakdown */}
-          <div className="pt-2 space-y-2">
+          <div className="!mt-[16px] space-y-2">
             <div className="flex justify-between font-sans text-[15px] font-normal">
               <span className="text-zinc-900">Sub total</span>
               <span className="text-zinc-900">${subtotal.toFixed(2)}</span>
