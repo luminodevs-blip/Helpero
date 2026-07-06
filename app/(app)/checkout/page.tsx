@@ -248,7 +248,7 @@ export default function CheckoutPage() {
           </h2>
           
           {/* Service Item */}
-          <div className="flex items-center justify-between py-2 !mt-[20px]">
+          <div className="flex items-center justify-between !mt-[20px] !mb-[20px]">
             <div className="flex items-center gap-3">
               {activeBookingDraft.serviceImageUrl ? (
                 <img
@@ -273,7 +273,7 @@ export default function CheckoutPage() {
             <ChevronRight className="h-4 w-4 text-zinc-400 rotate-90" />
           </div>
 
-          <div className="w-full h-px bg-zinc-100 my-2" />
+          <div className="w-full h-px bg-zinc-100 !my-0" />
 
           {/* Promocode */}
           <div>
