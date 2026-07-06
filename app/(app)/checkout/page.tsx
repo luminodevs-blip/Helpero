@@ -459,7 +459,7 @@ export default function CheckoutPage() {
             onClick={() => setIsFeeModalOpen(false)}
           />
           {/* Modal */}
-          <div className="relative w-full max-w-md bg-white rounded-t-[28px] sm:rounded-[28px] flex flex-col transform transition-transform duration-300">
+          <div className="relative w-full max-w-md bg-white rounded-t-[10px] sm:rounded-[10px] flex flex-col transform transition-transform duration-300">
             <div className="p-5 pb-4 flex justify-center">
               <h3 className="font-outfit text-[18px] font-semibold text-zinc-900">
                 How's this fee calculated?
