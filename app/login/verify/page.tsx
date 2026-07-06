@@ -172,18 +172,14 @@ function VerifyOtpPageContent() {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 6,
             background: "none",
             border: "none",
             cursor: "pointer",
             padding: 0,
             color: "#374151",
-            fontSize: 14,
-            fontWeight: 500,
           }}
         >
-          <ArrowLeft size={18} color="#374151" />
-          Back to login
+          <ArrowLeft size={20} color="#374151" />
         </button>
       </div>
 
@@ -204,7 +200,7 @@ function VerifyOtpPageContent() {
         <p style={{ fontSize: 14, color: "#6b7280", margin: "0 0 4px", fontWeight: 400 }}>
           A confirmation code has been sent to:
         </p>
-        <p style={{ fontSize: 15, color: "#7B82F4", fontWeight: 700, margin: 0 }}>
+        <p style={{ fontSize: 15, color: "#111111", fontWeight: 700, margin: 0 }}>
           {phone}
         </p>
       </div>
@@ -233,7 +229,7 @@ function VerifyOtpPageContent() {
             display: "flex",
             justifyContent: "space-between",
             gap: 8,
-            marginBottom: 28,
+            marginBottom: 32,
           }}
         >
           {otp.map((digit, idx) => (
@@ -243,6 +239,7 @@ function VerifyOtpPageContent() {
               inputMode="numeric"
               maxLength={1}
               value={digit}
+              placeholder="–"
               ref={(el) => {
                 inputRefs.current[idx] = el;
               }}
@@ -250,55 +247,34 @@ function VerifyOtpPageContent() {
               onKeyDown={(e) => handleKeyDown(e, idx)}
               onPaste={idx === 0 ? handlePaste : undefined}
               style={{
-                flex: 1,
-                height: 56,
+                width: 50,
+                height: 50,
+                flexShrink: 0,
                 textAlign: "center",
-                fontSize: 22,
-                fontWeight: 700,
+                fontSize: 24,
+                fontWeight: 400,
                 color: "#111111",
-                border: "1.5px solid #e5e7eb",
+                border: "2px solid #e5e7eb",
                 borderRadius: 12,
                 background: "#ffffff",
                 outline: "none",
                 transition: "border-color 0.15s",
               }}
               onFocus={(e) => (e.target.style.borderColor = "#7B82F4")}
-              onBlur={(e) => (e.target.style.borderColor = "#e5e7eb")}
+              onBlur={(e) => (e.target.style.borderColor = digit ? "#7B82F4" : "#e5e7eb")}
             />
           ))}
         </div>
 
-        {/* Confirm Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: "100%",
-            height: 56,
-            borderRadius: 12,
-            background: "#7B82F4",
-            border: "none",
-            color: "#ffffff",
-            fontSize: 18,
-            fontWeight: 700,
-            cursor: loading ? "not-allowed" : "pointer",
-            opacity: loading ? 0.7 : 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            marginBottom: 20,
-            transition: "opacity 0.15s",
-          }}
-        >
-          {loading ? (
-            <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+        {/* Loading spinner shown while verifying */}
+        {loading && (
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
+            <svg className="animate-spin h-6 w-6" style={{ color: "#7B82F4" }} fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
             </svg>
-          ) : (
-            "Confirm"
-          )}
-        </button>
+          </div>
+        )}
 
         {/* Resend */}
         <div style={{ textAlign: "center" }}>
@@ -311,12 +287,14 @@ function VerifyOtpPageContent() {
               border: "none",
               cursor: canResend ? "pointer" : "default",
               fontSize: 14,
-              fontWeight: 600,
+              fontWeight: 500,
               color: canResend ? "#7B82F4" : "#9ca3af",
               padding: "8px 0",
             }}
           >
-            {canResend ? "Send again" : `Send again in ${resendTimer}s`}
+            {canResend
+              ? "Send again"
+              : `Send again  ${String(Math.floor(resendTimer / 60)).padStart(2, "0")}:${String(resendTimer % 60).padStart(2, "0")}`}
           </button>
         </div>
       </form>
