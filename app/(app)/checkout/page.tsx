@@ -144,58 +144,53 @@ export default function CheckoutPage() {
         throw new Error(rpcError.message);
       }
 
-      // 2. Resolve mode slug → UUID
-      const ARRIVAL_MODE_MAP: Record<string, string> = {
-        priority:  "2bafdcc6-4340-47ef-a412-26e108ad45cb",
-        standard:  "180f6035-575d-4947-9226-81a888c4dd2f",
-        scheduled: "b46ffadd-8017-4e25-82eb-6550988ab31d",
-      };
-      const modeSlug = activeBookingDraft.visit?.mode ?? "standard";
-      const arrivalModeId = ARRIVAL_MODE_MAP[modeSlug] ?? ARRIVAL_MODE_MAP["standard"];
+      // 2. Create order — prices are calculated SERVER-SIDE (SECURITY DEFINER)
+      //    We NEVER send prices from the frontend to prevent price manipulation.
+      const addonIds = (activeBookingDraft.selectedAddons || []).map((a) => a.id);
 
-      // 3. Create order record in the orders table
-      const { data: booking, error: bookingError } = await supabase
-        .from("orders")
-        .insert({
-          user_id: user.id,
-          house_id: selectedAddress.id,
-          scheduled_start_at: activeBookingDraft.visit?.arrivalTimeSlot,
-          scheduled_end_at: null,
-          arrival_mode_id: arrivalModeId,
-          total_items_price: subtotal,
-          total_tax_amount: taxAmount,
-          final_total_price: grandTotal,
-          status: "pending_payment",
-          payment_status: "pending",
-          discount_amount: promoDiscount,
-          promo_code: promoCode,
-          visit_fee: visitFee,
-        })
-        .select()
-        .single();
+      const { data: orderId, error: orderError } = await supabase.rpc("client_create_order", {
+        p_house_id: selectedAddress.id,
+        p_service_id: activeBookingDraft.serviceId,
+        p_addon_ids: addonIds,
+        p_arrival_mode_slug: activeBookingDraft.visit?.mode ?? "standard",
+        p_scheduled_start_at: activeBookingDraft.visit?.arrivalTimeSlot,
+        p_promo_code: promoCode || null,
+      });
 
-      if (bookingError) {
-        throw new Error(bookingError.message);
+      if (orderError) {
+        throw new Error(orderError.message);
       }
 
-      // 3. Update draft with booking ID and fetch Stripe Client Secret
-      const updatedDraft = { ...activeBookingDraft, bookingId: booking.id, status: "pending_payment" };
-      setActiveDraft(updatedDraft);
-      setCreatedBookingId(booking.id);
+      // 3. Fetch server-calculated total for Stripe
+      const { data: createdOrder, error: fetchError } = await supabase
+        .from("orders")
+        .select("id, final_total_price")
+        .eq("id", orderId)
+        .single();
 
-      // Call ProcessPayment
+      if (fetchError || !createdOrder) {
+        throw new Error("Failed to fetch order details");
+      }
+
+      // 4. Update draft with booking ID
+      const updatedDraft = { ...activeBookingDraft, bookingId: createdOrder.id, status: "pending_payment" };
+      setActiveDraft(updatedDraft);
+      setCreatedBookingId(createdOrder.id);
+
+      // 5. Initialize Stripe with the SERVER-calculated amount
       const res = await fetch("/api/process-payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: grandTotal,
+          amount: createdOrder.final_total_price,
           currency: "cad",
-          customerId: user.id
-        })
+          orderId: createdOrder.id,
+        }),
       });
 
       if (!res.ok) {
-        throw new Error("Failed to initialize payment");
+        const errBody = await res.json().catch(() => ({}));
+        throw new Error(errBody.error || "Failed to initialize payment");
       }
 
       const { clientSecret } = await res.json();
