@@ -341,7 +341,19 @@ export default function CheckoutPage() {
                 <span>-${promoDiscount.toFixed(2)}</span>
               </div>
             )}
+
+            <div className="flex justify-between font-outfit text-[16px] font-bold text-zinc-900 pt-2">
+              <span>Total</span>
+              <span>${grandTotal.toFixed(2)}</span>
+            </div>
           </div>
+
+          <div className="w-full h-px bg-zinc-100 mt-4 mb-4" />
+
+          {/* Legal note */}
+          <p className="font-sans text-[13px] leading-relaxed text-zinc-900">
+            By confirming booking , I agree to the <a href="#" className="underline">service policy</a> and <a href="#" className="underline">refund policy</a>, I also agree to pay for the full amount of booking
+          </p>
         </div>
       </div>
 
