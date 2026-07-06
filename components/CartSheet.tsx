@@ -123,7 +123,7 @@ export default function CartSheet() {
             <X size={20} strokeWidth={2.5} />
           </button>
           
-          <h2 className="font-outfit text-[17px] font-bold text-zinc-950 absolute left-1/2 -translate-x-1/2">
+          <h2 className="font-outfit text-[20px] font-semibold text-zinc-950 absolute left-1/2 -translate-x-1/2">
             Your cart
           </h2>
 
@@ -152,17 +152,17 @@ export default function CartSheet() {
               </div>
 
               <div className="space-y-2 max-w-[280px]">
-                <h3 className="font-outfit text-[17px] font-bold text-zinc-900 leading-snug">
+                <h3 className="font-outfit text-[17px] font-semibold text-zinc-900 leading-snug">
                   Your cart is empty
                 </h3>
-                <p className="text-[13px] text-zinc-500 font-semibold leading-relaxed">
+                <p className="text-[14.5px] text-zinc-500 font-normal leading-relaxed">
                   Looks like you haven't added any services yet. Explore our catalog to find what you need.
                 </p>
               </div>
 
               <button
                 onClick={() => setCartSheetOpen(false)}
-                className="bg-zinc-950 text-white font-bold text-sm px-6 py-3 rounded-xl hover:bg-zinc-900 active:scale-95 transition-all shadow-sm"
+                className="bg-zinc-950 text-white font-normal text-[14.5px] px-6 py-3 rounded-xl hover:bg-zinc-900 active:scale-95 transition-all shadow-sm"
               >
                 Browse Services
               </button>
@@ -257,13 +257,13 @@ export default function CartSheet() {
           <div className="p-4 border-t border-zinc-100 bg-white flex gap-3 flex-shrink-0">
             <button
               onClick={() => setCartSheetOpen(false)}
-              className="flex-1 py-3 px-4 rounded-xl border border-zinc-300 text-zinc-950 font-bold text-sm bg-white hover:bg-zinc-50 active:scale-98 transition-all text-center"
+              className="flex-1 py-3 px-4 rounded-xl border border-zinc-300 text-zinc-950 font-semibold text-[15px] bg-white hover:bg-zinc-50 active:scale-98 transition-all text-center"
             >
               Add Services
             </button>
             <button
               onClick={() => handleCheckoutItem(cart[0])}
-              className="flex-1 py-3 px-4 rounded-xl bg-zinc-950 text-white font-bold text-sm hover:bg-zinc-900 active:scale-98 transition-all text-center shadow-sm"
+              className="flex-1 py-3 px-4 rounded-xl bg-zinc-950 text-white font-semibold text-[15px] hover:bg-zinc-900 active:scale-98 transition-all text-center shadow-sm"
             >
               Checkout
             </button>
