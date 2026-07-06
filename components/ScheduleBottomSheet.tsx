@@ -146,7 +146,7 @@ export default function ScheduleBottomSheet({
             Service duration — {formatDuration(serviceDurationMinutes)}
           </p>
 
-          <div className="grid grid-cols-3 gap-3 mb-6">
+          <div className="grid grid-cols-3 gap-[12px] mb-6">
             {timeSlots.map((time) => {
               const selected = time === selectedTime;
               return (
