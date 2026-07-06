@@ -85,7 +85,10 @@ export default function StripePaymentModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md bg-white rounded-t-[20px] sm:rounded-[20px] flex flex-col pt-6 px-6 animate-in slide-in-from-bottom-10 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
+      <div className="relative w-full max-w-md bg-white rounded-t-[20px] sm:rounded-[20px] flex flex-col pt-5 px-6 animate-in slide-in-from-bottom-10 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
+        {/* Drag handle */}
+        <div className="absolute top-[10px] left-1/2 -translate-x-1/2 w-[36px] h-[4px] rounded-full bg-zinc-200 sm:hidden" />
+
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-[18px] font-semibold text-zinc-900 font-outfit">Payment</h2>
           <button
