@@ -111,7 +111,7 @@ export default function ScheduleBottomSheet({
             Choose day
           </h2>
 
-          <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-hide -mx-5 px-5">
+          <div className="flex gap-2.5 overflow-x-auto scrollbar-hide -mx-5 px-5">
             {days.map((date, idx) => {
               const selected = isSameDay(date, selectedDate);
               const dayName = date.toLocaleDateString("en-US", { weekday: "short" });
@@ -137,7 +137,7 @@ export default function ScheduleBottomSheet({
             })}
           </div>
 
-          <div className="w-full h-px bg-zinc-100 my-5 -mx-5 px-5 w-[calc(100%+40px)]" />
+          <div className="w-full h-px bg-zinc-100 mt-[14px] mb-5 -mx-5 px-5 w-[calc(100%+40px)]" />
 
           <h2 className="font-outfit text-[18px] font-semibold text-zinc-900 mb-1">
             Choose a time
