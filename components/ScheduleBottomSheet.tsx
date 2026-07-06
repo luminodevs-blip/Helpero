@@ -97,7 +97,7 @@ export default function ScheduleBottomSheet({
         onClick={handleClose}
       />
       <div
-        className={`fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-[28px] max-w-md mx-auto shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col ${
+        className={`fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-[14px] max-w-md mx-auto shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col ${
           isClosing || !isOpen ? "translate-y-full" : "translate-y-0"
         }`}
         style={{ maxHeight: "85vh" }}
