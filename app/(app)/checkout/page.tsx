@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
 import {
@@ -43,6 +43,23 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [isServiceDetailsExpanded, setIsServiceDetailsExpanded] = useState(false);
   const [isFeeModalOpen, setIsFeeModalOpen] = useState(false);
+
+  // Compute actual time range
+  const displayTimeRange = useMemo(() => {
+    if (!activeBookingDraft?.visit) return "8:00 - 8:15";
+    const { mode, displayTime, arrivalTimeSlot } = activeBookingDraft.visit;
+    if (mode === "scheduled" && arrivalTimeSlot && activeBookingDraft.totalDuration) {
+      const start = new Date(arrivalTimeSlot);
+      const end = new Date(start.getTime() + activeBookingDraft.totalDuration * 60000);
+      const formatTime = (d: Date) => {
+        let h = d.getHours().toString().padStart(2, '0');
+        let m = d.getMinutes().toString().padStart(2, '0');
+        return `${h}:${m}`;
+      };
+      return `${formatTime(start)} - ${formatTime(end)}`;
+    }
+    return displayTime || "8:00 - 8:15";
+  }, [activeBookingDraft]);
 
   useEffect(() => {
     if (!activeBookingDraft) {
@@ -251,7 +268,7 @@ export default function CheckoutPage() {
           
           {/* Service Item */}
           <div 
-            className={`flex flex-col transition-colors ${isServiceDetailsExpanded ? "bg-[#F8F9FA] -mx-5 px-5 py-[20px] border-y border-zinc-100" : "!mt-[20px] !mb-[20px]"}`}
+            className={`flex flex-col transition-colors ${isServiceDetailsExpanded ? "bg-[#F8F9FA] -mx-5 px-5 py-[20px]" : "!mt-[20px] !mb-[20px]"}`}
           >
             <div 
               className="flex items-center justify-between cursor-pointer hover:opacity-80 transition-opacity"
@@ -270,10 +287,10 @@ export default function CheckoutPage() {
                   </div>
                 ) : null)}
                 <div className="flex flex-col">
-                  <span className="font-sans text-[16px] font-medium text-zinc-900">
+                  <span className={`font-sans ${isServiceDetailsExpanded ? "text-[15px] font-semibold" : "text-[16px] font-medium"} text-zinc-900`}>
                     {activeBookingDraft.serviceName}
                   </span>
-                  <span className="font-sans text-[14px] font-normal text-[#57636C]">
+                  <span className={`font-sans ${isServiceDetailsExpanded ? "text-[13px]" : "text-[14px]"} font-normal text-[#57636C]`}>
                     1 position
                   </span>
                 </div>
@@ -287,15 +304,15 @@ export default function CheckoutPage() {
                 
                 <div className="flex">
                   <div className="flex-1 flex flex-col">
-                    <span className="font-sans text-[13px] text-zinc-800 mb-1">Date</span>
-                    <span className="font-sans text-[14px] font-medium text-zinc-900">
+                    <span className="font-sans text-[12px] text-zinc-500 mb-1">Date</span>
+                    <span className="font-sans text-[13px] font-medium text-zinc-900">
                       {activeBookingDraft.visit?.arrivalDateDisplay || "Today"}
                     </span>
                   </div>
                   <div className="flex-1 flex flex-col">
-                    <span className="font-sans text-[13px] text-zinc-800 mb-1">Arrival time</span>
-                    <span className="font-sans text-[14px] font-medium text-zinc-900">
-                      {activeBookingDraft.visit?.displayTime || "8:00 - 8:15"}
+                    <span className="font-sans text-[12px] text-zinc-500 mb-1">Arrival time</span>
+                    <span className="font-sans text-[13px] font-medium text-zinc-900">
+                      {displayTimeRange}
                     </span>
                   </div>
                 </div>
@@ -303,12 +320,12 @@ export default function CheckoutPage() {
                 <div className="w-full h-px bg-zinc-200/60 my-4" />
 
                 <div className="flex flex-col">
-                  <span className="font-sans text-[13px] text-zinc-800 mb-1">You selected</span>
-                  <span className="font-sans text-[14px] font-medium text-zinc-900 mb-1">
+                  <span className="font-sans text-[12px] text-zinc-500 mb-1.5">You selected</span>
+                  <span className="font-sans text-[13px] font-medium text-zinc-900 mb-[2px]">
                     {activeBookingDraft.serviceName}
                   </span>
                   {activeBookingDraft.selectedAddons?.map((addon, idx) => (
-                    <span key={idx} className="font-sans text-[13.5px] text-zinc-500">
+                    <span key={idx} className="font-sans text-[13px] text-zinc-500">
                       + {addon.name} x{addon.qty}
                     </span>
                   ))}
@@ -317,12 +334,12 @@ export default function CheckoutPage() {
                 <div className="w-full h-px bg-zinc-200/60 my-4" />
 
                 <div className="flex flex-col">
-                  <span className="font-sans text-[13px] text-zinc-800 mb-1">Location</span>
-                  <span className="font-sans text-[14px] font-medium text-zinc-900">
-                    {selectedAddress?.nameLabel || "My House"}
+                  <span className="font-sans text-[12px] text-zinc-500 mb-1.5">Location</span>
+                  <span className="font-sans text-[13px] font-medium text-zinc-900">
+                    {selectedAddress?.nameLabel || "Home"}
                   </span>
-                  <span className="font-sans text-[13.5px] text-zinc-800 mt-1 leading-snug">
-                    {selectedAddress?.fullAddress || "12 William Farrell St, Unit 401 Toronto, ON M5V 2T6"}
+                  <span className="font-sans text-[13px] text-zinc-900 mt-0.5 leading-[1.4]">
+                    {selectedAddress?.fullAddress || "1 Bloor St E, Toronto, ON M4W 1A8, Canada"}
                   </span>
                 </div>
               </div>
