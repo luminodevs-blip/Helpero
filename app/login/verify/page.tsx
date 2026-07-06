@@ -37,16 +37,13 @@ function VerifyOtpPageContent() {
   }, [resendTimer]);
 
   const handleInputChange = (value: string, index: number) => {
-    // Keep only numbers
     const cleanValue = value.replace(/\D/g, "");
     if (!cleanValue) return;
 
     const newOtp = [...otp];
-    // Take only the last character if multiple are entered
     newOtp[index] = cleanValue.slice(-1);
     setOtp(newOtp);
 
-    // Auto-focus next input
     if (index < 5 && cleanValue) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -55,13 +52,11 @@ function VerifyOtpPageContent() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === "Backspace") {
       if (!otp[index] && index > 0) {
-        // Clear previous cell and focus it
         const newOtp = [...otp];
         newOtp[index - 1] = "";
         setOtp(newOtp);
         inputRefs.current[index - 1]?.focus();
       } else {
-        // Clear current cell
         const newOtp = [...otp];
         newOtp[index] = "";
         setOtp(newOtp);
@@ -72,7 +67,6 @@ function VerifyOtpPageContent() {
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
-    
     if (pastedData.length === 6) {
       const newOtp = pastedData.split("");
       setOtp(newOtp);
@@ -101,8 +95,6 @@ function VerifyOtpPageContent() {
       if (verifyError) {
         setError(verifyError.message);
       } else if (data?.user) {
-        // Route Guard Checks
-        // 1. Check Profile
         const { data: profile } = await supabase
           .from("profiles")
           .select("id")
@@ -114,7 +106,6 @@ function VerifyOtpPageContent() {
           return;
         }
 
-        // 2. Check Houses
         const { data: houses } = await supabase
           .from("houses")
           .select("id")
@@ -146,11 +137,9 @@ function VerifyOtpPageContent() {
     setError(null);
     setCanResend(false);
     setResendTimer(60);
-    
+
     try {
-      const { error: resendError } = await supabase.auth.signInWithOtp({
-        phone,
-      });
+      const { error: resendError } = await supabase.auth.signInWithOtp({ phone });
       if (resendError) {
         setError(resendError.message);
         setCanResend(true);
@@ -164,101 +153,194 @@ function VerifyOtpPageContent() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#1a1a2e] sm:p-4">
-      <div className="w-full h-screen sm:h-auto sm:max-h-[95vh] overflow-y-auto bg-white flex flex-col justify-center px-6 py-8 sm:p-8 sm:rounded-[28px] sm:shadow-2xl max-w-[430px] border border-zinc-100 sm:border-zinc-200">
-        {/* Back Button */}
-        <div>
+    <div
+      style={{
+        minHeight: "100dvh",
+        background: "#ffffff",
+        display: "flex",
+        flexDirection: "column",
+        padding: "0 24px",
+        maxWidth: 430,
+        margin: "0 auto",
+        boxSizing: "border-box",
+      }}
+    >
+      {/* Back Button */}
+      <div style={{ paddingTop: 56, marginBottom: 32 }}>
+        <button
+          onClick={() => router.push("/login")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: 0,
+            color: "#374151",
+            fontSize: 14,
+            fontWeight: 500,
+          }}
+        >
+          <ArrowLeft size={18} color="#374151" />
+          Back to login
+        </button>
+      </div>
+
+      {/* Title & Subtitle */}
+      <div style={{ marginBottom: 32 }}>
+        <h2
+          style={{
+            fontFamily: "'Outfit', sans-serif",
+            fontSize: 28,
+            fontWeight: 700,
+            color: "#111111",
+            margin: "0 0 10px",
+            lineHeight: 1.2,
+          }}
+        >
+          Confirm phone
+        </h2>
+        <p style={{ fontSize: 14, color: "#6b7280", margin: "0 0 4px", fontWeight: 400 }}>
+          A confirmation code has been sent to:
+        </p>
+        <p style={{ fontSize: 15, color: "#7B82F4", fontWeight: 700, margin: 0 }}>
+          {phone}
+        </p>
+      </div>
+
+      {/* Error Alert */}
+      {error && (
+        <div
+          style={{
+            marginBottom: 16,
+            background: "#fff0f0",
+            border: "1px solid #fca5a5",
+            borderRadius: 10,
+            padding: "10px 14px",
+            fontSize: 13,
+            color: "#dc2626",
+          }}
+        >
+          {error}
+        </div>
+      )}
+
+      {/* OTP Pin Grid */}
+      <form onSubmit={handleVerify}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: 8,
+            marginBottom: 28,
+          }}
+        >
+          {otp.map((digit, idx) => (
+            <input
+              key={idx}
+              type="text"
+              inputMode="numeric"
+              maxLength={1}
+              value={digit}
+              ref={(el) => {
+                inputRefs.current[idx] = el;
+              }}
+              onChange={(e) => handleInputChange(e.target.value, idx)}
+              onKeyDown={(e) => handleKeyDown(e, idx)}
+              onPaste={idx === 0 ? handlePaste : undefined}
+              style={{
+                flex: 1,
+                height: 56,
+                textAlign: "center",
+                fontSize: 22,
+                fontWeight: 700,
+                color: "#111111",
+                border: "1.5px solid #e5e7eb",
+                borderRadius: 12,
+                background: "#ffffff",
+                outline: "none",
+                transition: "border-color 0.15s",
+              }}
+              onFocus={(e) => (e.target.style.borderColor = "#7B82F4")}
+              onBlur={(e) => (e.target.style.borderColor = "#e5e7eb")}
+            />
+          ))}
+        </div>
+
+        {/* Confirm Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          style={{
+            width: "100%",
+            height: 56,
+            borderRadius: 12,
+            background: "#7B82F4",
+            border: "none",
+            color: "#ffffff",
+            fontSize: 18,
+            fontWeight: 700,
+            cursor: loading ? "not-allowed" : "pointer",
+            opacity: loading ? 0.7 : 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 20,
+            transition: "opacity 0.15s",
+          }}
+        >
+          {loading ? (
+            <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
+          ) : (
+            "Confirm"
+          )}
+        </button>
+
+        {/* Resend */}
+        <div style={{ textAlign: "center" }}>
           <button
-            onClick={() => router.push("/login")}
-            className="flex items-center text-sm font-medium text-zinc-500 hover:text-zinc-800 transition-colors focus:outline-none"
+            type="button"
+            disabled={!canResend}
+            onClick={handleResend}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: canResend ? "pointer" : "default",
+              fontSize: 14,
+              fontWeight: 600,
+              color: canResend ? "#7B82F4" : "#9ca3af",
+              padding: "8px 0",
+            }}
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to login
+            {canResend ? "Send again" : `Send again in ${resendTimer}s`}
           </button>
         </div>
-
-        {/* Title & Subtitle */}
-        <div className="text-center">
-          <h2 className="font-outfit text-3xl font-bold tracking-tight text-zinc-900">
-            Confirm phone
-          </h2>
-          <p className="mt-2 text-sm text-zinc-500">
-            A confirmation code has been sent to:
-          </p>
-          <p className="mt-1 text-base font-bold text-primary tracking-wide">
-            {phone}
-          </p>
-        </div>
-
-        {/* Error Alert */}
-        {error && (
-          <div className="rounded-lg bg-error/10 p-3 text-sm text-error border border-error/20">
-            {error}
-          </div>
-        )}
-
-        {/* OTP Pin Grid Form */}
-        <form onSubmit={handleVerify} className="mt-8 space-y-6">
-          <div className="flex justify-between gap-2">
-            {otp.map((digit, idx) => (
-              <input
-                key={idx}
-                type="text"
-                maxLength={1}
-                value={digit}
-                ref={(el) => {
-                  inputRefs.current[idx] = el;
-                }}
-                onChange={(e) => handleInputChange(e.target.value, idx)}
-                onKeyDown={(e) => handleKeyDown(e, idx)}
-                onPaste={idx === 0 ? handlePaste : undefined}
-                className="w-12 h-14 text-center text-xl font-bold text-zinc-900 border border-zinc-200 rounded-xl bg-zinc-50 focus:border-[#7B61FF] focus:ring-2 focus:ring-[#7B61FF]/20 outline-none transition-all"
-              />
-            ))}
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex w-full items-center justify-center h-14 rounded-xl text-white font-sans text-[15px] font-bold shadow-md focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              style={{ background: "#7B61FF" }}
-            >
-              {loading ? (
-                <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-              ) : (
-                "Confirm"
-              )}
-            </button>
-
-            <button
-              type="button"
-              disabled={!canResend}
-              onClick={handleResend}
-              className="text-sm font-bold text-primary disabled:text-text-secondary hover:text-primary/80 disabled:hover:text-text-secondary focus:outline-none transition-colors self-center py-2"
-            >
-              {canResend ? "Send again" : `Send again in ${resendTimer}s`}
-            </button>
-          </div>
-        </form>
-      </div>
+      </form>
     </div>
   );
 }
 
 export default function VerifyOtpPage() {
   return (
-    <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-[#1a1a2e]">
-        <div className="text-white text-lg font-semibold flex items-center gap-2">
-          <Loader2 className="h-5 w-5 animate-spin" />
-          Loading...
+    <Suspense
+      fallback={
+        <div
+          style={{
+            minHeight: "100dvh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "#ffffff",
+          }}
+        >
+          <Loader2 className="h-6 w-6 animate-spin text-[#7B82F4]" />
         </div>
-      </div>
-    }>
+      }
+    >
       <VerifyOtpPageContent />
     </Suspense>
   );
