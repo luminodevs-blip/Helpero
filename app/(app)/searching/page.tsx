@@ -81,7 +81,7 @@ function SearchingContent() {
           .select(`
             id, status, final_total_price, scheduled_start_at,
             house:houses ( full_address, lat, lng, name_label ),
-            specialist:profiles!orders_specialist_id_fkey ( id, first_name, last_name, avatar_url, rating, phone_number )
+            specialist:profiles!specialist_id ( id, first_name, last_name, avatar_url, rating, phone_number )
           `)
           .eq("id", bookingId)
           .single();
