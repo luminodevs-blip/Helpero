@@ -166,7 +166,7 @@ export default function ScheduleBottomSheet({
           </div>
         </div>
 
-        <div className="p-5 border-t border-zinc-100 bg-white pb-8 shrink-0">
+        <div className="p-5 border-t border-zinc-100 bg-white pb-[40px] shrink-0">
           <button
             onClick={handleUpdate}
             className="w-full h-[50px] bg-[#14181B] text-white rounded-[12px] font-sans text-[18px] font-semibold flex items-center justify-center hover:bg-zinc-800 transition-colors active:scale-[0.98]"
