@@ -468,8 +468,8 @@ export default function CheckoutPage() {
             
             <div className="w-full h-px bg-zinc-100" />
 
-            <div className="p-5">
-              <p className="font-sans text-[14.5px] font-normal leading-[1.6] text-zinc-800 mb-6">
+            <div className="pt-[20px] px-5 pb-5">
+              <p className="font-sans text-[14.5px] font-normal leading-[1.6] text-zinc-800 mb-[34px]">
                 Your total is based on the size of your home, the services you select, and any extras you add. No hidden fees — you always see the final price before booking.
               </p>
 
