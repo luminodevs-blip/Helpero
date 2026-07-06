@@ -123,26 +123,27 @@ export default function EntryMethodBottomSheet({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <div className="flex items-center justify-between px-5 pt-[24px] pb-[4px] shrink-0 border-b border-transparent">
-          <button
-            onClick={handleClose}
-            className="p-1 -ml-1 rounded-full hover:bg-zinc-100 text-zinc-900 focus:outline-none transition-colors"
-          >
-            <X className="w-6 h-6" strokeWidth={2} />
-          </button>
+        <div className="px-5 pt-[24px] shrink-0">
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={handleClose}
+              className="p-1 -ml-1 rounded-full hover:bg-zinc-100 text-zinc-900 focus:outline-none transition-colors"
+            >
+              <X className="w-6 h-6" strokeWidth={2} />
+            </button>
+            <button className="p-1 -mr-1 rounded-full text-zinc-900">
+              <Info className="w-5 h-5" strokeWidth={2} />
+            </button>
+          </div>
           <div className="flex flex-col items-center">
-            <h2 className="font-outfit text-[20px] font-semibold text-zinc-900">
+            <h2 className="font-outfit text-[20px] font-semibold text-zinc-900 mb-[4px]">
               How will we enter?
             </h2>
+            <p className="text-[14.5px] font-sans font-normal text-zinc-500 text-center mb-[24px]">
+              Choose how the cleaner can enter your home.
+            </p>
           </div>
-          <button className="p-1 -mr-1 rounded-full text-zinc-900">
-            <Info className="w-5 h-5" strokeWidth={2} />
-          </button>
         </div>
-
-        <p className="text-[14.5px] font-sans font-normal text-zinc-500 text-center mb-[24px] px-5 shrink-0">
-          Choose how the cleaner can enter your home.
-        </p>
 
         <div ref={scrollRef} className="px-5 overflow-y-auto scrollbar-hide flex-1 space-y-3 pb-[140px]">
           {ENTRY_METHODS.map((method) => {
