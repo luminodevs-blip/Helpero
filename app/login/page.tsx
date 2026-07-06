@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { KeyRound, Mail, X } from "lucide-react";
+import { KeyRound, Mail, X, Home, Building2, Coffee } from "lucide-react";
 
 const countries = [
   { name: "United States", code: "+1", flag: "🇺🇸", short: "US" },
@@ -109,31 +109,68 @@ export default function LoginPage() {
           className="relative overflow-hidden flex-shrink-0"
           style={{ background: "#7B82F4", height: 310 }}
         >
-          {/* Floating pill: Offices — top-center, a bit right */}
+          {/* Floating pill: Offices — top-center */}
           <div
-            className="absolute flex items-center gap-1 bg-white rounded-2xl shadow-md px-4 py-2"
-            style={{ top: 40, left: "50%", transform: "translateX(-16px)" }}
+            className="absolute"
+            style={{
+              top: 40,
+              left: "50%",
+              transform: "translateX(-50%)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 6,
+              width: 100,
+              height: 40,
+              borderRadius: 10,
+              background: "#ffffff",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+            }}
           >
-            <span style={{ fontSize: 14 }}>☕</span>
-            <span style={{ fontSize: 13, fontWeight: 700, color: "#1a1a1a" }}>Offices</span>
+            <Coffee size={16} color="#7B82F4" className="shrink-0" />
+            <span style={{ fontSize: 16, fontWeight: 600, color: "#1a1a1a" }}>Offices</span>
           </div>
 
           {/* Floating pill: Houses — left */}
           <div
-            className="absolute flex items-center gap-1 bg-white rounded-2xl shadow-md px-4 py-2"
-            style={{ top: 80, left: 16 }}
+            className="absolute"
+            style={{
+              top: 80,
+              left: 16,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 6,
+              width: 100,
+              height: 40,
+              borderRadius: 10,
+              background: "#ffffff",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+            }}
           >
-            <span style={{ fontSize: 14 }}>🏠</span>
-            <span style={{ fontSize: 13, fontWeight: 700, color: "#1a1a1a" }}>Houses</span>
+            <Home size={24} color="#7B82F4" className="shrink-0" />
+            <span style={{ fontSize: 16, fontWeight: 600, color: "#1a1a1a" }}>Houses</span>
           </div>
 
           {/* Floating pill: Apart — right */}
           <div
-            className="absolute flex items-center gap-1 bg-white rounded-2xl shadow-md px-4 py-2"
-            style={{ top: 95, right: 16 }}
+            className="absolute"
+            style={{
+              top: 95,
+              right: 16,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 6,
+              width: 100,
+              height: 40,
+              borderRadius: 10,
+              background: "#ffffff",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+            }}
           >
-            <span style={{ fontSize: 14 }}>🏢</span>
-            <span style={{ fontSize: 13, fontWeight: 700, color: "#1a1a1a" }}>Apart</span>
+            <Building2 size={24} color="#7B82F4" className="shrink-0" />
+            <span style={{ fontSize: 16, fontWeight: 600, color: "#1a1a1a" }}>Apart</span>
           </div>
 
           {/* Illustration — height 260, offset 24 left */}
