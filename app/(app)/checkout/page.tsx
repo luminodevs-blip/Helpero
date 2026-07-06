@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
+import StripePaymentModal from "@/components/StripePaymentModal";
 import {
   ArrowLeft,
   Tag,
@@ -43,6 +44,11 @@ export default function CheckoutPage() {
   const [error, setError] = useState<string | null>(null);
   const [isServiceDetailsExpanded, setIsServiceDetailsExpanded] = useState(false);
   const [isFeeModalOpen, setIsFeeModalOpen] = useState(false);
+
+  // Stripe Modal state
+  const [isStripeModalOpen, setIsStripeModalOpen] = useState(false);
+  const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null);
+  const [createdBookingId, setCreatedBookingId] = useState<number | null>(null);
 
   // Compute actual time range
   const displayTimeRange = useMemo(() => {
@@ -123,13 +129,12 @@ export default function CheckoutPage() {
 
   const handleBookNow = async () => {
     if (!user || !activeBookingDraft || !selectedAddress) return;
+    
     setLoading(true);
-    setError(null);
-
     try {
       // 1. Secure the booking slot in Supabase
       const { error: rpcError } = await supabase.rpc("secure_booking_slot", {
-        p_house_id: selectedAddress.id,
+        p_house_id: selectedAddress!.id,
         p_duration_min: activeBookingDraft.totalDuration,
         p_mode_slug: activeBookingDraft.visit?.mode,
         p_target_start: activeBookingDraft.visit?.arrivalTimeSlot,
@@ -164,13 +169,30 @@ export default function CheckoutPage() {
         throw new Error(bookingError.message);
       }
 
-      // 3. Update draft with booking ID and navigate to searching screen
+      // 3. Update draft with booking ID and fetch Stripe Client Secret
       const updatedDraft = { ...activeBookingDraft, bookingId: booking.id, status: "pending_payment" };
       setActiveDraft(updatedDraft);
-      const updatedCart = cart.filter((item) => item.serviceId !== activeBookingDraft.serviceId);
-      updateCart(updatedCart);
+      setCreatedBookingId(booking.id);
 
-      router.push(`/searching?bookingId=${booking.id}`);
+      // Call ProcessPayment
+      const res = await fetch("/api/process-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: grandTotal,
+          currency: "cad",
+          customerId: user.id
+        })
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to initialize payment");
+      }
+
+      const { clientSecret } = await res.json();
+      setStripeClientSecret(clientSecret);
+      setIsStripeModalOpen(true);
+
     } catch (err: any) {
       setError(err?.message || "Booking failed. Please try again.");
     } finally {
@@ -500,6 +522,24 @@ export default function CheckoutPage() {
           </div>
         </div>
       )}
+
+      {/* Stripe Payment Modal */}
+      <StripePaymentModal
+        isOpen={isStripeModalOpen}
+        onClose={() => setIsStripeModalOpen(false)}
+        clientSecret={stripeClientSecret || ""}
+        onSuccess={() => {
+          setIsStripeModalOpen(false);
+          const updatedCart = cart.filter((item) => item.serviceId !== activeBookingDraft?.serviceId);
+          updateCart(updatedCart);
+          setActiveDraft(null);
+          if (createdBookingId) {
+            router.push(`/searching?bookingId=${createdBookingId}`);
+          } else {
+            router.push("/orders");
+          }
+        }}
+      />
     </div>
   );
 }

@@ -13,7 +13,7 @@ import { Key, Building2, Archive } from "lucide-react";
 // ─── Types ───────────────────────────────────────────────────────────
 interface ArrivalSlot {
   id: string;
-  mode: "priority" | "standard" | "scheduled";
+  mode: "express" | "standard" | "scheduled";
   timeStart: string;
   timeEnd: string | null;
   fee: number;
@@ -24,9 +24,9 @@ interface ArrivalSlot {
 }
 
 const MODE_CONFIG = {
-  priority: {
+  express: {
     icon: Zap,
-    label: "Priority",
+    label: "Express",
     color: "text-primary",
   },
   standard: {
@@ -105,8 +105,8 @@ export default function DateTimePage() {
 
       setSlots(fetchedSlots);
 
-      // Auto-select priority or standard slot
-      const defaultSlot = fetchedSlots.find((s) => s.mode === "priority") || fetchedSlots.find((s) => s.mode === "standard");
+      // Auto-select express or standard slot
+      const defaultSlot = fetchedSlots.find((s) => s.mode === "express") || fetchedSlots.find((s) => s.mode === "standard");
       if (defaultSlot && !selectedSlot) {
         setSelectedSlot(defaultSlot);
       }
@@ -188,12 +188,12 @@ export default function DateTimePage() {
     }
   };
 
-  const prioritySlots = slots.filter((s) => s.mode === "priority");
+  const expressSlots = slots.filter((s) => s.mode === "express");
   const standardSlots = slots.filter((s) => s.mode === "standard");
   const scheduledSlots = slots.filter((s) => s.mode === "scheduled");
 
   const slotsByMode = [
-    ...(prioritySlots.length > 0 ? [prioritySlots[0]] : []),
+    ...(expressSlots.length > 0 ? [expressSlots[0]] : []),
     ...(standardSlots.length > 0 ? [standardSlots[0]] : []),
     ...(scheduledSlots.length > 0 ? [selectedSlot?.mode === 'scheduled' ? selectedSlot : scheduledSlots[0]] : []),
   ];
