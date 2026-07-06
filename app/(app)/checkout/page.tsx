@@ -5,15 +5,14 @@ import { useRouter } from "next/navigation";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
 import {
   ArrowLeft,
-  MapPin,
-  Clock,
   Tag,
   ChevronRight,
   BadgeCheck,
   AlertCircle,
   Loader2,
   CreditCard,
-  Smartphone,
+  Info,
+  Sparkles,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
@@ -30,67 +29,6 @@ function useCountdown(seconds: number) {
   return { timeLeft, formatted: `${mm}:${ss}`, expired: timeLeft <= 0 };
 }
 
-// ─── Promo code section ───────────────────────────────────────────────
-function PromoCodeSection({
-  onApply,
-  appliedCode,
-  discountAmount,
-}: {
-  onApply: (code: string) => void;
-  appliedCode: string | null;
-  discountAmount: number;
-}) {
-  const [code, setCode] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!code.trim()) return;
-    setLoading(true);
-    await onApply(code.trim().toUpperCase());
-    setLoading(false);
-  };
-
-  return (
-    <div className="bg-bg-primary rounded-2xl border border-alternate p-4">
-      <div className="flex items-center gap-2 mb-3">
-        <Tag className="h-4 w-4 text-primary" />
-        <span className="text-sm font-bold text-text-primary">Promo code</span>
-      </div>
-
-      {appliedCode ? (
-        <div className="flex items-center justify-between bg-primary/10 rounded-xl px-4 py-2.5 border border-primary/30">
-          <div className="flex items-center gap-2">
-            <BadgeCheck className="h-4 w-4 text-primary" />
-            <span className="text-sm font-bold text-primary">{appliedCode}</span>
-          </div>
-          <span className="text-sm font-extrabold text-primary">
-            -${discountAmount.toFixed(2)}
-          </span>
-        </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="flex gap-2">
-          <input
-            type="text"
-            value={code}
-            onChange={(e) => setCode(e.target.value.toUpperCase())}
-            placeholder="Enter code"
-            maxLength={20}
-            className="flex-1 border border-alternate bg-bg-secondary rounded-xl px-4 py-3 text-sm text-text-primary placeholder-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none uppercase tracking-widest font-semibold"
-          />
-          <button
-            type="submit"
-            disabled={loading || !code.trim()}
-            className="px-5 rounded-xl bg-primary text-white text-sm font-bold disabled:opacity-40 hover:bg-primary/90 transition-colors flex items-center justify-center"
-          >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Apply"}
-          </button>
-        </form>
-      )}
-    </div>
-  );
-}
-
 export default function CheckoutPage() {
   const router = useRouter();
   const { activeBookingDraft, selectedAddress, user, cart, updateCart, setActiveDraft } = useClientAuth();
@@ -99,7 +37,8 @@ export default function CheckoutPage() {
 
   const [promoCode, setPromoCode] = useState<string | null>(null);
   const [promoDiscount, setPromoDiscount] = useState(0);
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "apple_pay" | "google_pay">("card");
+  const [isPromoExpanded, setIsPromoExpanded] = useState(false);
+  const [promoInput, setPromoInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -130,18 +69,22 @@ export default function CheckoutPage() {
   const totalBeforePromo = subtotal + taxAmount;
   const grandTotal = Math.max(0, totalBeforePromo - promoDiscount);
 
-  const handleApplyPromo = async (code: string) => {
+  const handleApplyPromo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!promoInput.trim()) return;
+    setLoading(true);
     setError(null);
     try {
       const { data, error: promoError } = await supabase
         .from("promo_codes")
         .select("*")
-        .eq("code", code)
+        .eq("code", promoInput.trim().toUpperCase())
         .eq("is_active", true)
         .maybeSingle();
 
       if (promoError || !data) {
         setError("Invalid or expired promo code");
+        setLoading(false);
         return;
       }
 
@@ -151,8 +94,11 @@ export default function CheckoutPage() {
           ? (subtotal * data.discount_value) / 100
           : data.discount_value
       );
+      setIsPromoExpanded(false);
     } catch {
       setError("Failed to validate promo code");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -214,55 +160,34 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen bg-bg-secondary pb-32 relative flex flex-col border-x border-alternate shadow-md">
+    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[140px] relative flex flex-col border-x border-zinc-100 shadow-md font-sans">
       {/* Header */}
-      <div className="bg-bg-secondary px-5 pt-6 pb-4 border-b border-alternate sticky top-0 z-30">
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => router.back()}
-            className="p-1 rounded-full hover:bg-bg-primary text-text-primary"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </button>
-
-          <div className="flex flex-col items-center">
-            <span className="text-[10px] font-bold text-primary uppercase tracking-widest">
-              Step 3 of 3
-            </span>
-            <span className="text-sm font-bold text-text-primary mt-0.5">
-              Review & Pay
-            </span>
-          </div>
-
-          {/* Countdown timer */}
-          <div
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold ${
-              parseInt(countdownTime) < 2
-                ? "bg-error/10 text-error"
-                : "bg-primary/10 text-primary"
-            }`}
-          >
-            <Clock className="h-3 w-3" />
-            {countdownTime}
-          </div>
-        </div>
-
-        {/* Progress bar */}
-        <div className="w-full bg-alternate h-1 rounded-full mt-4 overflow-hidden">
-          <div className="bg-primary h-full rounded-full" style={{ width: "100%" }} />
+      <div className="bg-white px-5 pt-[52px] pb-[16px] flex items-center relative shrink-0">
+        <button
+          onClick={() => router.back()}
+          className="absolute left-5 p-2 -ml-2 rounded-full hover:bg-zinc-100 text-zinc-900 transition-colors"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </button>
+        <div className="flex-1 flex justify-center">
+          <h1 className="font-outfit text-[18px] font-bold text-zinc-900">
+            Checkout
+          </h1>
         </div>
       </div>
 
+      <div className="w-full h-px bg-zinc-100 mb-6 shrink-0" />
+
       {/* Main scrollable body */}
-      <div className="flex-1 overflow-y-auto px-5 py-6 space-y-5">
+      <div className="flex-1 overflow-y-auto px-5 space-y-8 pb-10">
         
         {/* ── Slot expired warning ── */}
         {slotExpired && (
-          <div className="rounded-2xl bg-error/10 border border-error/20 p-4 flex items-start gap-3">
-            <AlertCircle className="h-5 w-5 text-error mt-0.5 flex-shrink-0" />
+          <div className="rounded-2xl bg-red-50 p-4 flex items-start gap-3">
+            <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-sm font-bold text-error">Time slot expired</p>
-              <p className="text-xs text-text-secondary mt-0.5">
+              <p className="text-[14px] font-bold text-red-600">Time slot expired</p>
+              <p className="text-[13px] text-red-500/80 mt-0.5">
                 Your reserved slot has expired. Please go back and select a new time.
               </p>
             </div>
@@ -271,218 +196,184 @@ export default function CheckoutPage() {
 
         {/* ── Error ── */}
         {error && (
-          <div className="rounded-2xl bg-error/10 border border-error/20 p-4 text-sm text-error font-semibold">
+          <div className="rounded-2xl bg-red-50 border border-red-100 p-4 text-[14px] text-red-600 font-semibold">
             {error}
           </div>
         )}
 
-        {/* ── Service card ── */}
-        <div className="bg-bg-primary rounded-2xl border border-alternate p-4 space-y-3">
-          <div className="flex items-start gap-3">
-            {activeBookingDraft.serviceImageUrl ? (
-              <img
-                src={activeBookingDraft.serviceImageUrl}
-                alt={activeBookingDraft.serviceName}
-                className="h-14 w-14 rounded-xl object-cover border border-alternate"
-              />
-            ) : (
-              <div className="h-14 w-14 rounded-xl bg-primary/10 border border-alternate flex items-center justify-center">
-                <BadgeCheck className="h-6 w-6 text-primary/50" />
-              </div>
-            )}
-            <div className="flex-1">
-              <p className="font-outfit text-sm font-extrabold text-text-primary">
-                {activeBookingDraft.serviceName}
-              </p>
-              <p className="text-xs text-text-secondary mt-0.5">
-                {activeBookingDraft.totalDuration} min
-              </p>
-            </div>
-            <p className="text-sm font-extrabold text-primary font-outfit">
-              ${basePrice.toFixed(2)}
-            </p>
-          </div>
-
-          {/* Addons list */}
-          {(activeBookingDraft.selectedAddons || []).length > 0 && (
-            <div className="border-t border-alternate pt-3 space-y-2">
-              {activeBookingDraft.selectedAddons.map((addon) => (
-                <div key={addon.id} className="flex items-center justify-between">
-                  <span className="text-xs text-text-secondary">
-                    {addon.name} × {addon.qty}
-                  </span>
-                  <span className="text-xs font-bold text-text-primary">
-                    +${addon.totalPrice.toFixed(2)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* ── Arrival info ── */}
-        {activeBookingDraft.visit && (
-          <div className="bg-bg-primary rounded-2xl border border-alternate p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Clock className="h-4 w-4 text-primary" />
-              <span className="text-sm font-bold text-text-primary">Arrival time</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-extrabold text-text-primary">
-                  {activeBookingDraft.visit.arrivalDateDisplay}
-                </p>
-                <p className="text-xs text-text-secondary mt-0.5">
-                  {activeBookingDraft.visit.displayTime}
-                </p>
-              </div>
-              <div className="px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold capitalize">
-                {activeBookingDraft.visit.mode}
-              </div>
-            </div>
-            {visitFee > 0 && (
-              <div className="flex items-center justify-between mt-3 border-t border-alternate pt-3">
-                <span className="text-xs text-text-secondary">
-                  {activeBookingDraft.visit.mode} fee
-                </span>
-                <span className="text-xs font-bold text-text-primary">
-                  +${visitFee.toFixed(2)}
-                </span>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ── Address ── */}
-        {selectedAddress && (
-          <div className="bg-bg-primary rounded-2xl border border-alternate p-4">
-            <div className="flex items-start gap-3">
-              <MapPin className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="text-sm font-bold text-text-primary">
-                  {selectedAddress.nameLabel}
-                </p>
-                <p className="text-xs text-text-secondary mt-0.5 leading-relaxed">
-                  {selectedAddress.fullAddress}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ── Promo Code ── */}
-        <PromoCodeSection
-          onApply={handleApplyPromo}
-          appliedCode={promoCode}
-          discountAmount={promoDiscount}
-        />
-
         {/* ── Payment Method ── */}
-        <div className="bg-bg-primary rounded-2xl border border-alternate p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <CreditCard className="h-4 w-4 text-primary" />
-            <span className="text-sm font-bold text-text-primary">Payment method</span>
+        <div className="space-y-4">
+          <h2 className="font-outfit text-[16px] font-semibold text-zinc-900">
+            How would you like to pay?
+          </h2>
+          
+          <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200/80 bg-[#FAFAFA]">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-10 bg-white border border-zinc-200 rounded flex items-center justify-center shadow-sm shrink-0">
+                <CreditCard className="h-5 w-5 text-zinc-700" />
+              </div>
+              <span className="font-sans text-[14px] font-medium text-zinc-900">
+                Bank Card
+              </span>
+            </div>
+            <button className="text-[14px] font-medium text-[#7B82F4] hover:opacity-80 transition-opacity">
+              Change
+            </button>
           </div>
-          <div className="grid grid-cols-3 gap-2">
-            {(["card", "apple_pay", "google_pay"] as const).map((method) => {
-              const isActive = paymentMethod === method;
-              return (
+
+          {/* Promo Banner */}
+          <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[#7B82F4] to-[#A2A6F6] p-5 text-white">
+            <div className="relative z-10">
+              <h3 className="font-outfit text-[16px] font-bold leading-tight mb-4">
+                Buy Helpero credit<br />
+                Get free credit
+              </h3>
+              <button className="text-[13px] font-medium flex items-center gap-1 hover:opacity-80 transition-opacity">
+                Purchase now <ArrowLeft className="h-3.5 w-3.5 rotate-180" />
+              </button>
+            </div>
+            <div className="absolute right-0 top-0 bottom-0 w-32 flex items-center justify-center opacity-30">
+              {/* Star graphic placeholder */}
+              <Sparkles className="h-32 w-32 fill-current text-white translate-x-4" />
+            </div>
+          </div>
+        </div>
+
+        <div className="w-full h-px bg-zinc-100" />
+
+        {/* ── Order details ── */}
+        <div className="space-y-2">
+          <h2 className="font-outfit text-[16px] font-semibold text-zinc-900 mb-4">
+            Order details
+          </h2>
+          
+          {/* Service Item */}
+          <div className="flex items-center justify-between py-2">
+            <div className="flex items-center gap-3">
+              {activeBookingDraft.serviceImageUrl ? (
+                <img
+                  src={activeBookingDraft.serviceImageUrl}
+                  alt={activeBookingDraft.serviceName}
+                  className="h-10 w-10 rounded-lg object-cover"
+                />
+              ) : (
+                <div className="h-10 w-10 rounded-lg bg-zinc-100 flex items-center justify-center">
+                  <BadgeCheck className="h-5 w-5 text-zinc-400" />
+                </div>
+              )}
+              <div className="flex flex-col">
+                <span className="font-sans text-[14px] font-medium text-zinc-900">
+                  {activeBookingDraft.serviceName}
+                </span>
+                <span className="font-sans text-[13px] text-[#57636C]">
+                  1 position
+                </span>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-zinc-400 rotate-90" />
+          </div>
+
+          <div className="w-full h-px bg-zinc-100 my-2" />
+
+          {/* Promocode */}
+          <div>
+            <div 
+              className="flex items-center justify-between py-2 cursor-pointer hover:bg-zinc-50 rounded-lg -mx-2 px-2 transition-colors"
+              onClick={() => setIsPromoExpanded(!isPromoExpanded)}
+            >
+              <div className="flex items-center gap-3">
+                <Tag className="h-5 w-5 text-zinc-700" />
+                <span className="font-sans text-[14px] font-medium text-zinc-900">
+                  {promoCode ? `Promocode applied: ${promoCode}` : "Add promocode"}
+                </span>
+              </div>
+              <ChevronRight className={`h-4 w-4 text-zinc-400 transition-transform ${isPromoExpanded ? 'rotate-90' : ''}`} />
+            </div>
+            
+            {/* Expanded Promo Input */}
+            {isPromoExpanded && (
+              <div className="mt-3 flex gap-2">
+                <input
+                  type="text"
+                  value={promoInput}
+                  onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
+                  placeholder="Enter code"
+                  className="flex-1 border border-zinc-200 rounded-xl px-4 py-3 text-[14px] text-zinc-900 placeholder:text-zinc-400 focus:border-[#7B82F4] outline-none uppercase font-medium bg-[#FAFAFA]"
+                />
                 <button
-                  key={method}
-                  type="button"
-                  onClick={() => setPaymentMethod(method)}
-                  className={`flex flex-col items-center justify-center gap-1.5 px-2 py-3 rounded-xl border-2 transition-all text-[10px] font-extrabold uppercase tracking-wider ${
-                    isActive
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-alternate bg-bg-secondary text-text-secondary hover:border-primary/30"
-                  }`}
+                  onClick={handleApplyPromo}
+                  disabled={loading || !promoInput.trim()}
+                  className="px-5 rounded-xl bg-zinc-900 text-white text-[14px] font-semibold disabled:opacity-50 hover:bg-zinc-800 transition-colors flex items-center justify-center"
                 >
-                  {method === "card" && <CreditCard className="h-5 w-5" />}
-                  {method === "apple_pay" && (
-                    <svg className="h-5 w-5 fill-current" viewBox="0 0 24 24">
-                      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-1 .04-2.2.67-2.92 1.51-.62.73-1.16 1.87-1.01 2.98 1.11.08 2.25-.59 2.94-1.43z" />
-                    </svg>
-                  )}
-                  {method === "google_pay" && <Smartphone className="h-5 w-5" />}
-                  <span>{method === "card" ? "Card" : method === "apple_pay" ? "Apple Pay" : "Google Pay"}</span>
+                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Apply"}
                 </button>
-              );
-            })}
+              </div>
+            )}
+          </div>
+
+          <div className="w-full h-px bg-zinc-100 my-2" />
+
+          {/* Price Breakdown */}
+          <div className="pt-2 space-y-3">
+            <div className="flex justify-between font-sans text-[14px]">
+              <span className="text-zinc-900">Sub total</span>
+              <span className="text-zinc-900">${subtotal.toFixed(2)}</span>
+            </div>
+            
+            {visitFee > 0 && (
+              <div className="flex justify-between font-sans text-[14px]">
+                <span className="text-zinc-900">Booking Fee</span>
+                <span className="text-zinc-900">${visitFee.toFixed(2)}</span>
+              </div>
+            )}
+            
+            <div className="flex justify-between font-sans text-[14px] items-center">
+              <div className="flex items-center gap-1.5 text-zinc-900">
+                Taxes & Fees
+                <Info className="h-3.5 w-3.5 text-zinc-400" />
+              </div>
+              <span className="text-zinc-900">${taxAmount.toFixed(2)}</span>
+            </div>
+
+            {promoDiscount > 0 && (
+              <div className="flex justify-between font-sans text-[14px] text-[#7B82F4]">
+                <span>Discount</span>
+                <span>-${promoDiscount.toFixed(2)}</span>
+              </div>
+            )}
           </div>
         </div>
-
-        {/* ── Price Breakdown ── */}
-        <div className="bg-bg-primary rounded-2xl border border-alternate p-4 space-y-2.5">
-          <h4 className="font-outfit text-sm font-extrabold text-text-primary mb-3">
-            Price breakdown
-          </h4>
-          <div className="flex justify-between text-xs text-text-secondary">
-            <span>Service</span>
-            <span className="font-bold text-text-primary">${basePrice.toFixed(2)}</span>
-          </div>
-          {addonsTotal > 0 && (
-            <div className="flex justify-between text-xs text-text-secondary">
-              <span>Add-ons</span>
-              <span className="font-bold text-text-primary">+${addonsTotal.toFixed(2)}</span>
-            </div>
-          )}
-          {visitFee > 0 && (
-            <div className="flex justify-between text-xs text-text-secondary">
-              <span>{activeBookingDraft.visit?.mode} fee</span>
-              <span className="font-bold text-text-primary">+${visitFee.toFixed(2)}</span>
-            </div>
-          )}
-          <div className="flex justify-between text-xs text-text-secondary">
-            <span>HST (13%)</span>
-            <span className="font-bold text-text-primary">+${taxAmount.toFixed(2)}</span>
-          </div>
-          {promoDiscount > 0 && (
-            <div className="flex justify-between text-xs text-green-500">
-              <span>Promo ({promoCode})</span>
-              <span className="font-bold">-${promoDiscount.toFixed(2)}</span>
-            </div>
-          )}
-          <div className="border-t border-alternate pt-2.5 flex justify-between text-text-primary font-extrabold">
-            <span>Total</span>
-            <span className="text-primary text-base font-outfit">${grandTotal.toFixed(2)}</span>
-          </div>
-        </div>
-
-        {/* Terms note */}
-        <p className="text-[10px] text-text-secondary text-center leading-relaxed px-4">
-          By completing your order you agree to our{" "}
-          <a href="https://helpero.ca/terms" className="text-primary underline">
-            Terms of Service
-          </a>
-          . A specialist will be assigned automatically after payment.
-        </p>
       </div>
 
       {/* ── Sticky Bottom CTA ── */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-bg-secondary border-t border-alternate py-4 px-6 flex items-center justify-between max-w-md mx-auto">
-        <div className="flex flex-col">
-          <span className="text-[10px] text-text-secondary font-semibold uppercase tracking-wide">
-            Total due
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white flex flex-col max-w-md mx-auto border-t border-zinc-100">
+        {/* Timer Bar */}
+        <div className="w-full bg-[#7B82F4] py-2 px-5 flex items-center justify-between text-white">
+          <span className="text-[13px] font-medium">
+            Slot reservation time
           </span>
-          <span className="font-outfit text-xl font-extrabold text-primary">
-            ${grandTotal.toFixed(2)}
+          <span className="text-[14px] font-semibold font-outfit">
+            {countdownTime}
           </span>
         </div>
-
-        <button
-          onClick={handleBookNow}
-          disabled={loading || slotExpired}
-          className="px-8 h-14 rounded-full bg-primary text-white font-sans text-sm font-bold hover:bg-primary/95 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95 shadow-md flex items-center justify-center gap-2"
-        >
-          {loading ? (
-            <Loader2 className="h-5 w-5 animate-spin" />
-          ) : (
-            <>
-              Book Now
-              <ChevronRight className="h-4 w-4" />
-            </>
-          )}
-        </button>
+        
+        {/* Pay Button Area */}
+        <div className="p-5 pb-[40px] bg-white">
+          <button
+            onClick={handleBookNow}
+            disabled={loading || slotExpired}
+            className="w-full h-[50px] rounded-[10px] bg-[#14181B] text-white font-sans text-[16px] font-semibold hover:bg-zinc-800 disabled:opacity-50 transition-colors active:scale-[0.98] shadow-md flex items-center justify-center gap-2"
+          >
+            {loading ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <>
+                <CreditCard className="h-5 w-5" />
+                Pay Now
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );
