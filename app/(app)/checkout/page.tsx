@@ -222,7 +222,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Promo Banner */}
-          <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[#7B82F4] to-[#A2A6F6] p-5 text-white">
+          <div className="relative overflow-hidden rounded-[12px] bg-gradient-to-r from-[#7B82F4] to-[#A2A6F6] p-4 text-white">
             <div className="relative z-10">
               <h3 className="font-outfit text-[18px] font-semibold leading-tight mb-4">
                 Buy Helpero credit<br />
