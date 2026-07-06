@@ -360,11 +360,11 @@ export default function CheckoutPage() {
       {/* ── Sticky Bottom CTA ── */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white flex flex-col max-w-md mx-auto border-t border-zinc-100">
         {/* Timer Bar */}
-        <div className="w-full bg-[#7B82F4] py-2 px-5 flex items-center justify-between text-white">
-          <span className="text-[13px] font-medium">
+        <div className="w-full h-[28px] bg-[#7B82F4] px-5 flex items-center justify-between text-white">
+          <span className="text-[14.5px] font-light font-sans">
             Slot reservation time
           </span>
-          <span className="text-[14px] font-semibold font-outfit">
+          <span className="text-[14.5px] font-medium font-sans">
             {countdownTime}
           </span>
         </div>
