@@ -70,7 +70,7 @@ export default function ProfilePage() {
       label: "Addresses",
       icon: MapPin,
       subtitle: "Manage your saved addresses",
-      action: () => router.push("/address/new"),
+      action: () => router.push("/address"),
     },
     {
       label: "Support Center",

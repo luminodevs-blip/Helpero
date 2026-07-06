@@ -47,7 +47,7 @@ export default function SettingsPage() {
           title: "My Addresses",
           subtitle: "Your saved places",
           icon: Home,
-          action: () => router.push("/address/new"),
+          action: () => router.push("/address"),
         },
         {
           id: "confidentiality",
