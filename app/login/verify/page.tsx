@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 
-export default function VerifyOtpPage() {
+function VerifyOtpPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const phone = searchParams.get("phone") || "";
@@ -246,5 +246,20 @@ export default function VerifyOtpPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function VerifyOtpPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center bg-[#1a1a2e]">
+        <div className="text-white text-lg font-semibold flex items-center gap-2">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          Loading...
+        </div>
+      </div>
+    }>
+      <VerifyOtpPageContent />
+    </Suspense>
   );
 }
