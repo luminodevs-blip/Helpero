@@ -93,10 +93,10 @@ export default function CartSheet() {
 
   // Helper to format duration
   const formatDuration = (mins?: number) => {
-    if (!mins) return "0m";
+    if (!mins) return "0 min";
     const h = Math.floor(mins / 60);
     const m = mins % 60;
-    return `${h > 0 ? `${h}h ` : ""}${m > 0 ? `${m}m` : ""}`.trim();
+    return `${h > 0 ? `${h} hr ` : ""}${m > 0 ? `${m} min` : ""}`.trim();
   };
 
   return (
@@ -196,7 +196,7 @@ export default function CartSheet() {
                         <h4 className="font-outfit text-[15px] font-bold text-zinc-900 truncate">
                           {item.serviceName}
                         </h4>
-                        <p className="text-[12px] text-zinc-500 font-medium mt-1">
+                        <p className="text-[14.5px] text-zinc-500 font-normal mt-1">
                           {formatDuration(item.totalDuration)} · ${item.totalPrice.toFixed(2)}
                         </p>
                       </div>
