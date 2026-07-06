@@ -273,12 +273,12 @@ function SearchingContent() {
 
           {/* Header */}
           <div>
-            <h3 className="font-outfit text-[20px] font-extrabold text-zinc-900">
+            <h3 className="font-outfit text-[28px] font-bold text-zinc-900 leading-tight">
               {order.status === "assigned" && order.specialist
                 ? "Specialist Found! 🎉"
                 : "Finding your specialist"}
             </h3>
-            <p className="text-[13px] text-zinc-500 mt-0.5">
+            <p className="text-[16px] font-normal text-zinc-500 mt-1 leading-snug">
               {order.status === "assigned" && order.specialist
                 ? `${order.specialist.first_name} is on the way to you.`
                 : "Matching you with the highest rated pro in Toronto."}
@@ -325,10 +325,10 @@ function SearchingContent() {
               🧹
             </div>
             <div className="flex-1">
-              <p className="font-outfit font-bold text-zinc-900 text-[14px]">Standard Cleaning</p>
-              <p className="text-[12px] text-zinc-400">3 hours 45 minutes</p>
+              <p className="font-outfit font-medium text-zinc-900 text-[18px]">Standard Cleaning</p>
+              <p className="text-[15px] font-normal text-zinc-400">3 hours 45 minutes</p>
             </div>
-            <p className="font-outfit font-extrabold text-zinc-900 text-[15px]">
+            <p className="font-outfit font-semibold text-zinc-900 text-[17px]">
               ${Number(order.final_total_price).toFixed(2)}
             </p>
           </div>
@@ -338,7 +338,7 @@ function SearchingContent() {
             <button
               onClick={handleCancelOrder}
               disabled={cancelling}
-              className="w-full h-12 border border-zinc-200 rounded-xl text-zinc-500 font-semibold text-[13px] flex items-center justify-center gap-2 hover:bg-zinc-50 transition-all"
+              className="w-full h-12 border border-zinc-200 rounded-xl text-zinc-500 font-normal text-[18px] flex items-center justify-center gap-2 hover:bg-zinc-50 transition-all"
             >
               {cancelling ? <Loader2 className="h-4 w-4 animate-spin" /> : "Cancel order"}
             </button>
