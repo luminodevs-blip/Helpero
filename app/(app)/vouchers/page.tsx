@@ -194,7 +194,7 @@ export default function VouchersPage() {
   };
 
   return (
-    <div className="flex flex-col flex-1 bg-white min-h-screen animate-page-fade-in font-sans">
+    <div className="w-full max-w-md mx-auto min-h-screen bg-white relative flex flex-col border-x border-alternate shadow-md animate-page-fade-in font-sans">
       {/* Header */}
       <div className="px-5 pt-12 pb-5 flex items-center justify-between border-b border-zinc-100 sticky top-0 bg-white z-20">
         <button

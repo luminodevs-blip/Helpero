@@ -327,7 +327,7 @@ export default function PaymentsPage() {
   };
 
   return (
-    <div className="flex flex-col flex-1 bg-white min-h-screen animate-page-fade-in relative">
+    <div className="w-full max-w-md mx-auto min-h-screen bg-white relative flex flex-col border-x border-alternate shadow-md animate-page-fade-in">
       {/* Header */}
       <div className="px-5 pt-12 pb-4 flex flex-col gap-4 sticky top-0 bg-white z-10">
         <button
