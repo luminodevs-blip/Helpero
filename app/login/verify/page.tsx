@@ -163,6 +163,8 @@ function VerifyOtpPageContent() {
     setError(null);
     setCanResend(false);
     setResendTimer(60);
+    setOtp(Array(6).fill(""));
+    inputRefs.current[0]?.focus();
 
     try {
       const { error: resendError } = await supabase.auth.signInWithOtp({ phone });
