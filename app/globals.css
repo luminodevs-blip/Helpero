@@ -31,7 +31,7 @@
 }
 
 body {
-  background-color: var(--secondary-background);
+  background-color: var(--primary-background);
   color: var(--primary-text);
   font-family: var(--font-outfit), sans-serif;
   min-height: 100vh;
