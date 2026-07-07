@@ -86,7 +86,7 @@ export default function SupportPage() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen bg-white relative flex flex-col border-x border-alternate shadow-md animate-page-fade-in font-sans">
+    <div className="w-full max-w-md mx-auto min-h-screen bg-white relative flex flex-col border-x border-alternate shadow-md font-sans">
       {/* ── 1. HEADER (Purple banner with technician cartoon) ── */}
       <div className="bg-[#7B82F4] text-white pt-12 pb-[56px] px-5 relative overflow-hidden flex-shrink-0">
         <div className="absolute inset-0 bg-radial-gradient from-white/10 to-transparent pointer-events-none opacity-40" />

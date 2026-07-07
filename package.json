@@ -1,6 +1,6 @@
 {
   "name": "helpero-client-web",
-  "version": "0.1.0",
+  "version": "1.0.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -22,6 +22,7 @@
     "stripe": "^22.3.0"
   },
   "devDependencies": {
+    "@onlook/nextjs": "^2.1.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

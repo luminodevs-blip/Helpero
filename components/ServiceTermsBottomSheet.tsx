@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 interface ServiceTermsBottomSheetProps {
   isOpen: boolean;
@@ -12,6 +14,13 @@ export default function ServiceTermsBottomSheet({
   onClose,
 }: ServiceTermsBottomSheetProps) {
   const [isClosing, setIsClosing] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useBodyScrollLock(isOpen);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Swipe-to-close refs
   const touchStartY = useRef<number | null>(null);
@@ -24,7 +33,7 @@ export default function ServiceTermsBottomSheet({
     }
   }, [isOpen]);
 
-  if (!isOpen && !isClosing) return null;
+  if ((!isOpen && !isClosing) || !mounted) return null;
 
   const handleClose = () => {
     setIsClosing(true);
@@ -76,7 +85,7 @@ export default function ServiceTermsBottomSheet({
     touchStartY.current = null;
   };
 
-  return (
+  return createPortal(
     <>
       <div
         className={`fixed inset-0 bg-zinc-900/40 z-[60] transition-opacity duration-300 ${
@@ -86,7 +95,7 @@ export default function ServiceTermsBottomSheet({
       />
       <div
         ref={sheetRef}
-        className={`fixed bottom-0 left-0 right-0 z-[60] bg-white rounded-t-[20px] max-w-md mx-auto shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col ${
+        className={`fixed bottom-0 left-0 right-0 z-[60] bg-white rounded-t-[14px] max-w-md mx-auto shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col ${
           isClosing || !isOpen ? "translate-y-full" : "translate-y-0"
         }`}
         style={{ maxHeight: "90vh" }}
@@ -126,6 +135,7 @@ export default function ServiceTermsBottomSheet({
           </button>
         </div>
       </div>
-    </>
+    </>,
+    document.body
   );
 }

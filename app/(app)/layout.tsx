@@ -7,7 +7,7 @@ import { useClientAuth } from "@/app/contexts/ClientAuthContext";
 import CartSheet from "@/components/CartSheet";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  const { user, profile, selectedAddress, isLoading } = useClientAuth();
+  const { user, profile, selectedAddress, currentZoneId, isLoading } = useClientAuth();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -29,7 +29,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       router.replace("/address/new");
       return;
     }
-  }, [user, profile, selectedAddress, isLoading, pathname, router]);
+
+    // If they are out of active coverage, restrict them to /address/new or / (where they see the waitlist)
+    const isOutOfCoverage = selectedAddress !== null && currentZoneId === null;
+    if (isOutOfCoverage && pathname !== "/address/new" && pathname !== "/") {
+      router.replace("/");
+      return;
+    }
+  }, [user, profile, selectedAddress, currentZoneId, isLoading, pathname, router]);
 
   if (isLoading) {
     return (
@@ -43,7 +50,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   // While redirecting, show a spinner to avoid flash of protected content
-  if (!user || !profile || (!selectedAddress && pathname !== "/address/new")) {
+  const isOutOfCoverage = selectedAddress !== null && currentZoneId === null;
+  const isRedirecting =
+    !user ||
+    !profile ||
+    (!selectedAddress && pathname !== "/address/new") ||
+    (isOutOfCoverage && pathname !== "/address/new" && pathname !== "/");
+
+  if (isRedirecting) {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-bg-primary">
         <svg className="animate-spin h-10 w-10 text-primary" fill="none" viewBox="0 0 24 24">

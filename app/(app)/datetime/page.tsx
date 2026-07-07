@@ -1,15 +1,104 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
-import { ArrowLeft, Clock, Zap, CalendarDays, ChevronRight, Loader2, Home, User, ChevronUp } from "lucide-react";
+import { ArrowLeft, Clock, Zap, CalendarDays, ChevronRight, Loader2, Home, User, Users, ChevronUp } from "lucide-react";
 import { MdLocationOn } from "react-icons/md";
 import AddressSelector from "@/components/AddressSelector";
 import ScheduleBottomSheet from "@/components/ScheduleBottomSheet";
 import EntryMethodBottomSheet, { ENTRY_METHODS } from "@/components/EntryMethodBottomSheet";
 import { Key, Building2, Archive } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { useJsApiLoader } from "@react-google-maps/api";
+
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "AIzaSyC_tcXVeDFmHjvpPz-ZMZXceu5PSppmXPM";
+const LIBRARIES: any[] = ["places"];
+
+const MAP_STYLES = [
+  {
+    featureType: "all",
+    elementType: "geometry",
+    stylers: [{ color: "#f5f5f5" }]
+  },
+  {
+    featureType: "all",
+    elementType: "labels.icon",
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "all",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#9e9e9e" }]
+  },
+  {
+    featureType: "all",
+    elementType: "labels.text.stroke",
+    stylers: [{ color: "#f5f5f5" }]
+  },
+  {
+    featureType: "administrative",
+    elementType: "labels",
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "poi",
+    elementType: "labels",
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "transit",
+    elementType: "labels",
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "road",
+    elementType: "geometry",
+    stylers: [{ color: "#ffffff" }]
+  },
+  {
+    featureType: "water",
+    elementType: "geometry",
+    stylers: [{ color: "#c9c9c9" }]
+  }
+];
+
+function GoogleMapPreview({ lat, lng }: { lat: number; lng: number }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current || !window.google) return;
+    
+    new window.google.maps.Map(containerRef.current, {
+      center: { lat, lng },
+      zoom: 16,
+      disableDefaultUI: true,
+      gestureHandling: "none",
+      styles: MAP_STYLES,
+    });
+  }, [lat, lng]);
+
+  return (
+    <div className="w-full h-full relative flex items-center justify-center bg-zinc-100">
+      <div ref={containerRef} className="w-full h-full" />
+      {/* Central Pin overlay */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10 flex items-center justify-center">
+        {/* Black circular container */}
+        <div className="w-[38px] h-[38px] rounded-full bg-zinc-900 border border-zinc-800 shadow-md flex items-center justify-center">
+          {/* White Map Pin SVG */}
+          <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z"
+              fill="white"
+            />
+            {/* Inner Black Dot */}
+            <circle cx="12" cy="9" r="2.5" fill="#18181b" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ─── Types ───────────────────────────────────────────────────────────
 interface ArrivalSlot {
@@ -44,7 +133,13 @@ const MODE_CONFIG = {
 
 export default function DateTimePage() {
   const router = useRouter();
-  const { activeBookingDraft, selectedAddress, cart, updateCart, setActiveDraft } = useClientAuth();
+  const { activeBookingDraft, selectedAddress, cart, updateCart, setActiveDraft, setCartSheetOpen } = useClientAuth();
+
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+    libraries: LIBRARIES,
+  });
 
   const [slots, setSlots] = useState<ArrivalSlot[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,6 +157,89 @@ export default function DateTimePage() {
       router.replace("/");
     }
   }, [activeBookingDraft, router]);
+
+  const lastAddressIdRef = useRef<number | undefined>(undefined);
+
+  // Auto-populate entry notes and method from selected address instructions/codes if empty or address changed
+  useEffect(() => {
+    if (!activeBookingDraft || !selectedAddress) return;
+    
+    const addressChanged = lastAddressIdRef.current !== selectedAddress.id;
+    
+    if (addressChanged || !activeBookingDraft.entryMethod || !activeBookingDraft.entryNotes) {
+      lastAddressIdRef.current = selectedAddress.id;
+      
+      const instructionsLower = (selectedAddress.instructions || "").toLowerCase();
+      const intercom = (selectedAddress.intercomCode || "").trim();
+      const gate = (selectedAddress.gateCode || "").trim();
+      
+      let detectedMethod = "home";
+      const parts = [];
+      
+      // 1. Lockbox check
+      if (
+        instructionsLower.includes("lockbox") ||
+        instructionsLower.includes("box") ||
+        instructionsLower.includes("локсбокс") ||
+        instructionsLower.includes("сейф")
+      ) {
+        detectedMethod = "lockbox";
+        if (selectedAddress.instructions) parts.push(selectedAddress.instructions);
+      }
+      // 2. Concierge check
+      else if (
+        instructionsLower.includes("concierge") ||
+        instructionsLower.includes("front desk") ||
+        instructionsLower.includes("lobby") ||
+        instructionsLower.includes("security") ||
+        instructionsLower.includes("охрана") ||
+        instructionsLower.includes("консьерж") ||
+        instructionsLower.includes("ресепшн")
+      ) {
+        detectedMethod = "concierge";
+        if (selectedAddress.instructions) parts.push(selectedAddress.instructions);
+      }
+      // 3. Door code check
+      else if (
+        intercom || 
+        gate || 
+        instructionsLower.includes("door code") ||
+        instructionsLower.includes("intercom") ||
+        instructionsLower.includes("code") ||
+        instructionsLower.includes("код") ||
+        instructionsLower.includes("домофон")
+      ) {
+        detectedMethod = "doorcode";
+        if (intercom) parts.push(`Buzz code: ${intercom}`);
+        if (gate) parts.push(`Gate: ${gate}`);
+        if (selectedAddress.instructions) parts.push(selectedAddress.instructions);
+      }
+      // 4. Default to Home
+      else {
+        detectedMethod = "home";
+        if (selectedAddress.instructions) parts.push(selectedAddress.instructions);
+      }
+      
+      const combinedNotes = parts.join(". ");
+      
+      // Update draft if different
+      if (
+        activeBookingDraft.entryMethod !== detectedMethod || 
+        activeBookingDraft.entryNotes !== combinedNotes
+      ) {
+        const updatedDraft = {
+          ...activeBookingDraft,
+          entryMethod: detectedMethod,
+          entryNotes: combinedNotes,
+        };
+        setActiveDraft(updatedDraft);
+        const updatedCart = cart.map((item) =>
+          item.serviceId === activeBookingDraft.serviceId ? updatedDraft : item
+        );
+        updateCart(updatedCart);
+      }
+    }
+  }, [selectedAddress, activeBookingDraft, cart, updateCart, setActiveDraft]);
 
   // Prefetch checkout step for instant transition
   useEffect(() => {
@@ -98,22 +276,50 @@ export default function DateTimePage() {
         throw new Error(data.error || "Failed to fetch availability");
       }
 
-      const fetchedSlots: ArrivalSlot[] = (data.slots || []).map((s: any) => ({
-        id: s.id || `${s.mode}-${s.timeStart}`,
-        mode: s.mode || "standard",
-        timeStart: s.timeStart,
-        timeEnd: s.timeEnd || null,
-        fee: s.fee || 0,
-        isGolden: s.isGolden || false,
-        reason: s.reason || "",
-        displayDate: s.displayDate || "Today",
-        displayTime: s.displayTime || s.timeStart,
-      }));
+      const fetchedSlots: ArrivalSlot[] = (data.slots || []).map((s: any) => {
+        let timeStart = s.timeStart;
+        let displayTime = s.displayTime || s.timeStart;
+        
+        if (s.mode === "standard") {
+          try {
+            const date = new Date(s.timeStart);
+            // Shift standard slot 3 hours later to distinguish it from priority
+            date.setHours(date.getHours() + 3);
+            timeStart = date.toISOString();
+            
+            const duration = activeBookingDraft.totalDuration || 60;
+            const endDate = new Date(date.getTime() + duration * 60000);
+            
+            const formatTime = (d: Date) => {
+              return d.toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false
+              });
+            };
+            displayTime = `${formatTime(date)} - ${formatTime(endDate)}`;
+          } catch (e) {
+            console.error(e);
+          }
+        }
+        
+        return {
+          id: s.id || `${s.mode}-${timeStart}`,
+          mode: s.mode || "standard",
+          timeStart: timeStart,
+          timeEnd: s.timeEnd || null,
+          fee: s.fee || 0,
+          isGolden: s.isGolden || false,
+          reason: s.reason || "",
+          displayDate: s.displayDate || "Today",
+          displayTime: displayTime,
+        };
+      });
 
       setSlots(fetchedSlots);
 
-      // Auto-select priority or standard slot
-      const defaultSlot = fetchedSlots.find((s) => s.mode === "priority") || fetchedSlots.find((s) => s.mode === "standard");
+      // Auto-select standard or priority slot
+      const defaultSlot = fetchedSlots.find((s) => s.mode === "standard") || fetchedSlots.find((s) => s.mode === "priority");
       if (defaultSlot && !selectedSlot) {
         setSelectedSlot(defaultSlot);
       }
@@ -138,7 +344,7 @@ export default function DateTimePage() {
     }
   };
 
-  const handleScheduleConfirm = (date: Date, timeStr: string) => {
+  const handleScheduleConfirm = (date: Date, timeStr: string, fee: number) => {
     const scheduledSlot = slots.find((s) => s.mode === "scheduled");
     if (!scheduledSlot) return;
 
@@ -164,6 +370,7 @@ export default function DateTimePage() {
       displayDate: dayName,
       displayTime: timeStr,
       timeStart: isoTimeStart,
+      fee: fee,
     };
     setSelectedSlot(updatedSlot);
   };
@@ -242,6 +449,27 @@ export default function DateTimePage() {
     return `${mins}min`;
   };
 
+  const getTeamConfig = (durationMinutes: number) => {
+    if (durationMinutes <= 360) {
+      return { specialistsCount: 1, searchDuration: durationMinutes };
+    }
+    const multipliers: Record<number, number> = {
+      2: 0.6,
+      3: 0.5,
+      4: 0.4,
+      5: 0.3,
+      6: 0.25
+    };
+    for (let s = 2; s <= 6; s++) {
+      const mult = multipliers[s] || (1 / s);
+      const elapsed = Math.ceil(durationMinutes * mult);
+      if (elapsed <= 360) {
+        return { specialistsCount: s, searchDuration: elapsed };
+      }
+    }
+    return { specialistsCount: 6, searchDuration: 360 };
+  };
+
   const totalAmount = ((activeBookingDraft?.totalPrice || 0) + (selectedSlot?.fee || 0)).toFixed(2);
 
   const entryMethodId = activeBookingDraft?.entryMethod || "home";
@@ -266,7 +494,7 @@ export default function DateTimePage() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[100px] relative flex flex-col shadow-md font-sans border-x border-zinc-100 animate-page-fade-in">
+    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[100px] relative flex flex-col shadow-md font-sans border-x border-zinc-100 ">
       
       {/* 1. Header */}
       <div className="bg-white px-5 pt-12 pb-5 flex items-center justify-between sticky top-0 z-30">
@@ -351,15 +579,15 @@ export default function DateTimePage() {
                     </div>
                     
                     {slot.mode === "standard" ? (
-                      <p className="text-[12px] text-zinc-500 font-medium mt-3 truncate">
+                      <p className="text-[14px] font-normal text-zinc-500 mt-3 truncate">
                         free
                       </p>
                     ) : slot.fee > 0 ? (
-                      <p className="text-[12px] text-zinc-500 font-medium mt-3 truncate">
+                      <p className="text-[14px] font-normal text-zinc-500 mt-3 truncate">
                         + ${slot.fee}
                       </p>
                     ) : (
-                      <p className="text-[12px] text-zinc-400 font-medium mt-3 opacity-0">
+                      <p className="text-[14px] font-normal text-zinc-500 mt-3 opacity-0 select-none">
                         Placeholder
                       </p>
                     )}
@@ -373,8 +601,21 @@ export default function DateTimePage() {
         {/* Cleaning Duration */}
         <div className="flex items-center justify-end border-b border-zinc-100 pb-3 !mt-[16px]">
           <span className="font-sans text-[14.5px] font-normal text-[#57636C] mr-2">Cleaning duration:</span>
-          <span className="font-sans text-[14.5px] font-medium text-zinc-900">
-            {formatDuration(activeBookingDraft?.totalDuration)}
+          <span className="font-sans text-[14.5px] font-medium text-zinc-900 inline-flex items-center">
+            {(() => {
+              const { specialistsCount, searchDuration } = getTeamConfig(activeBookingDraft?.totalDuration || 0);
+              return (
+                <>
+                  <span>{formatDuration(searchDuration)}</span>
+                  {specialistsCount > 1 && (
+                    <span className="inline-flex items-center gap-0.5 bg-zinc-100 px-1.5 py-0.5 rounded-md text-[11px] text-zinc-600 font-semibold ml-1.5">
+                      <Users className="w-3.5 h-3.5" />
+                      <span>{specialistsCount}</span>
+                    </span>
+                  )}
+                </>
+              );
+            })()}
           </span>
         </div>
 
@@ -386,23 +627,16 @@ export default function DateTimePage() {
           
           <div 
             onClick={() => setIsAddressSelectorOpen(true)}
-            className="w-full h-[120px] bg-zinc-100 rounded-t-[10px] relative overflow-hidden flex items-center justify-center border border-zinc-200 cursor-pointer"
+            className="w-full h-[120px] bg-zinc-100 rounded-[10px] relative overflow-hidden flex items-center justify-center border border-zinc-200 cursor-pointer"
           >
             {selectedAddress?.lat && selectedAddress?.lng ? (
-              <>
-                <img
-                  className="w-full h-full object-cover"
-                  src={`https://maps.googleapis.com/maps/api/staticmap?center=${selectedAddress.lat},${selectedAddress.lng}&zoom=16&size=640x320&scale=2&map_id=51e65d1a42c6dcc2d42df44f&key=AIzaSyBraQ6yVwpcq2NnWG1lUjiAOWp9_ck0sy0`}
-                  alt="Service Location"
-                />
-                {/* Custom Black Marker covering the red one */}
-                <div 
-                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-full z-10"
-                  style={{ filter: 'drop-shadow(0px 0px 8px rgba(255, 255, 255, 0.9))' }}
-                >
-                  <MdLocationOn className="w-[52px] h-[52px] text-zinc-900" />
+              isLoaded ? (
+                <GoogleMapPreview lat={Number(selectedAddress.lat)} lng={Number(selectedAddress.lng)} />
+              ) : (
+                <div className="flex items-center justify-center w-full h-full bg-zinc-50">
+                  <Loader2 className="w-6 h-6 animate-spin text-zinc-400" />
                 </div>
-              </>
+              )
             ) : (
               <>
                 {/* Map Pin icon representing map center */}
@@ -461,11 +695,21 @@ export default function DateTimePage() {
         
         {/* Footer */}
         <div className="pt-4 pb-[40px] px-5 flex items-center justify-between">
-          <div className="flex flex-col gap-0.5">
-            <span className="font-sans text-[16px] font-normal text-[#57636C]">
-              Total
-            </span>
-            <div className="flex items-center gap-1.5 cursor-pointer">
+          <div 
+            onClick={() => setCartSheetOpen(true)}
+            className="flex flex-col gap-0.5 cursor-pointer select-none active:opacity-75 transition-opacity"
+          >
+            <div className="flex items-baseline gap-2">
+              <span className="font-sans text-[16px] font-normal text-[#57636C]">
+                Total
+              </span>
+              {selectedSlot && selectedSlot.fee > 0 && (
+                <span className="text-[10px] text-[#7B82F4] font-extrabold bg-[#7B82F4]/10 rounded-full px-2.5 py-0.5 whitespace-nowrap">
+                  +${selectedSlot.fee.toFixed(2)} slot
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-1.5">
               <span className="font-outfit text-[18px] font-semibold text-zinc-900">
                 ${totalAmount}
               </span>
@@ -495,6 +739,8 @@ export default function DateTimePage() {
         onClose={() => setIsScheduleOpen(false)}
         onSelect={handleScheduleConfirm}
         serviceDurationMinutes={activeBookingDraft.totalDuration}
+        houseId={selectedAddress?.id}
+        serviceId={activeBookingDraft.serviceId}
       />
       <EntryMethodBottomSheet
         isOpen={isEntryMethodOpen}

@@ -10,7 +10,7 @@ import { MdReceiptLong } from "react-icons/md";
 
 export default function AddonsPage() {
   const router = useRouter();
-  const { activeBookingDraft, cart, updateCart, setActiveDraft } = useClientAuth();
+  const { activeBookingDraft, cart, updateCart, setActiveDraft, setCartSheetOpen } = useClientAuth();
 
   const [addons, setAddons] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -127,7 +127,7 @@ export default function AddonsPage() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[100px] relative flex flex-col shadow-md font-sans animate-page-fade-in">
+    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[100px] relative flex flex-col shadow-md font-sans ">
       {/* 1. Header */}
       <div className="bg-white px-5 pt-12 pb-5 flex items-center justify-between sticky top-0 z-30">
         <button
@@ -277,11 +277,14 @@ export default function AddonsPage() {
         
         {/* Footer */}
         <div className="pt-4 pb-[40px] px-5 flex items-center justify-between">
-          <div className="flex flex-col gap-0.5">
+          <div 
+            onClick={() => setCartSheetOpen(true)}
+            className="flex flex-col gap-0.5 cursor-pointer select-none"
+          >
             <span className="font-sans text-[16px] font-normal text-[#57636C]">
               Total
             </span>
-            <div className="flex items-center gap-1.5 cursor-pointer">
+            <div className="flex items-center gap-1.5">
               <span className="font-outfit text-[18px] font-semibold text-zinc-900">
                 ${activeBookingDraft.totalPrice?.toFixed(2)}
               </span>

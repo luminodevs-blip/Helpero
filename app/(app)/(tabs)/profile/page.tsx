@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
+import pkg from "@/package.json";
 import {
   User,
   CreditCard,
@@ -87,7 +88,7 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="flex flex-col flex-1 bg-white animate-page-fade-in">
+    <div className="flex flex-col flex-1 bg-white">
       {/* ── 1. HEADER ── */}
       <div className="bg-primary text-white pt-10 pb-[40px] px-5 relative overflow-hidden flex-shrink-0">
         <div className="absolute inset-0 bg-radial-gradient from-white/10 to-transparent pointer-events-none opacity-40" />
@@ -163,26 +164,9 @@ export default function ProfilePage() {
           })}
         </div>
 
-        {/* Log Out */}
-        <div className="mt-6">
-          <button
-            onClick={handleSignOut}
-            disabled={loggingOut}
-            className="w-full h-[52px] rounded-2xl border border-zinc-200 bg-white hover:bg-zinc-50 flex items-center justify-center gap-2 text-[15px] font-semibold text-zinc-700 transition-colors"
-          >
-            {loggingOut ? (
-              <Loader2 className="h-5 w-5 animate-spin text-zinc-400" />
-            ) : (
-              <>
-                <LogOut className="h-[18px] w-[18px] text-zinc-400" />
-                <span>Log Out</span>
-              </>
-            )}
-          </button>
-        </div>
 
         {/* Version */}
-        <p className="text-center text-[12px] text-zinc-400 mt-6">Helpero v.1.0.1</p>
+        <p className="text-right text-[12px] text-zinc-400 mt-6 pr-1">Helpero v.{pkg.version}</p>
       </div>
     </div>
   );

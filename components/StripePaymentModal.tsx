@@ -10,6 +10,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { X, Loader2, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_test_placeholder"
@@ -124,6 +125,7 @@ export default function StripePaymentModal({
   onSuccess,
   bookingId,
 }: StripePaymentModalProps) {
+  useBodyScrollLock(isOpen);
   if (!isOpen || !clientSecret) return null;
 
   return (

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { KeyRound, Mail, X, Home, Building2, Coffee } from "lucide-react";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 const countries = [
   { name: "United States", code: "+1", flag: "🇺🇸", short: "US" },
@@ -47,6 +48,8 @@ export default function LoginPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useBodyScrollLock(isCountryModalOpen);
 
   const filteredCountries = countries.filter(c => 
     c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -101,9 +104,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex w-full min-h-screen items-center justify-center bg-[#1a1a2e] sm:p-4 animate-page-fade-in">
+    <div className="flex w-full min-h-screen items-center justify-center bg-[#1a1a2e] sm:p-4">
       {/* Phone-sized container: full screen on mobile, card on desktop */}
-      <div className="relative w-full h-screen sm:h-[870px] sm:max-h-[95vh] overflow-hidden sm:rounded-[28px] sm:shadow-2xl bg-white flex flex-col max-w-[430px] border border-zinc-100 sm:border-zinc-200">
+      <div className="relative w-full h-screen sm:h-[870px] sm:max-h-[95vh] overflow-hidden sm:rounded-[28px] sm:shadow-2xl bg-white flex flex-col max-w-[430px] sm:border sm:border-zinc-200">
         {/* ── PURPLE HEADER ───────────────────────────────────── */}
         <div
           className="relative overflow-hidden"

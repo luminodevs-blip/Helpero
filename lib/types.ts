@@ -7,7 +7,12 @@ export interface AddressStruct {
   city?: string;
   isDefault: boolean;
   nameLabel: string; // "Home", "Office", etc.
-  propertyType: string; // "Apartment", "House"
+  propertyType: string; // "Apartment", "House", "Office"
+  floor?: string;
+  unitNumber?: string;
+  intercomCode?: string;
+  gateCode?: string;
+  instructions?: string;
 }
 
 export interface SelectedAddonStruct {
@@ -18,6 +23,7 @@ export interface SelectedAddonStruct {
   totalPrice: number;
   unitDuration: number;
   totalDuration: number;
+  compareAtPrice?: number;
 }
 
 // ─── Visit/slot details (Step 2: Arrival time) ───────────────────────

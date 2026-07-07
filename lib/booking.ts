@@ -27,6 +27,7 @@ export function updateBookingAddon(
         totalPrice: addon.price || addon.unit_price || 0,
         unitDuration: addon.durationMinutes || addon.duration_minutes || 0,
         totalDuration: addon.durationMinutes || addon.duration_minutes || 0,
+        compareAtPrice: addon.compare_at_price || addon.compareAtPrice || undefined,
       });
     }
   } else if (action === "remove") {

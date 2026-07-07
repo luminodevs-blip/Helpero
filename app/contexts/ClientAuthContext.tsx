@@ -13,6 +13,7 @@ interface ClientAuthContextProps {
   selectedAddress: AddressStruct | null;
   savedAddresses: AddressStruct[];
   currentZoneId: number | null;
+  detectedZone: any | null;
   isLoading: boolean;
   cart: BookingDraft[];
   activeBookingDraft: BookingDraft | null;
@@ -34,6 +35,7 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
   const [selectedAddress, setSelectedAddress] = useState<AddressStruct | null>(null);
   const [savedAddresses, setSavedAddresses] = useState<AddressStruct[]>([]);
   const [currentZoneId, setCurrentZoneId] = useState<number | null>(null);
+  const [detectedZone, setDetectedZone] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(() => {
     if (typeof window !== "undefined" && window.self !== window.top) {
       return false; // Disable loading splash screens inside visual editor previews
@@ -53,21 +55,33 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
         user_lng: lng,
       });
       if (!error && data) {
-        setCurrentZoneId(Number(data.zone_id || data.id || null));
+        const zone = Array.isArray(data) ? data[0] : data;
+        if (zone) {
+          setDetectedZone(zone);
+          if (zone.is_active) {
+            setCurrentZoneId(Number(zone.id || zone.zone_id));
+          } else {
+            setCurrentZoneId(null);
+          }
+        } else {
+          setDetectedZone(null);
+          setCurrentZoneId(null);
+        }
       } else {
-        // Fallback or default
-        setCurrentZoneId(1); // Default to Toronto zone
+        setDetectedZone(null);
+        setCurrentZoneId(null);
       }
     } catch {
-      setCurrentZoneId(1);
+      setDetectedZone(null);
+      setCurrentZoneId(null);
     }
   };
 
   // Fetch houses/addresses and profile data
-  const loadUserData = async (currentUser: User) => {
+  const loadUserData = async (currentUser: User, forceLoadingState = false) => {
     try {
       const isIframe = typeof window !== "undefined" && window.self !== window.top;
-      if (!isIframe) {
+      if (!isIframe && (forceLoadingState || !profile || savedAddresses.length === 0)) {
         setIsLoading(true);
       }
       
@@ -103,6 +117,11 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
         isDefault: !!h.is_default,
         nameLabel: h.name_label || "Home",
         propertyType: h.property_type || "Apartment",
+        floor: h.floor || "",
+        unitNumber: h.unit_number || "",
+        intercomCode: h.intercom_code || "",
+        gateCode: h.gate_code || "",
+        instructions: h.instructions || "",
       }));
 
       setSavedAddresses(mappedAddresses);
@@ -160,7 +179,7 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
-          loadUserData(session.user);
+          loadUserData(session.user, !isIframe);
         } else {
           setIsLoading(false);
         }
@@ -177,12 +196,13 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
             setUser(currentSession?.user ?? null);
 
             if (event === "SIGNED_IN" && currentSession?.user) {
-              await loadUserData(currentSession.user);
+              await loadUserData(currentSession.user, true);
             } else if (event === "SIGNED_OUT") {
               setProfile(null);
               setSelectedAddress(null);
               setSavedAddresses([]);
               setCurrentZoneId(null);
+              setDetectedZone(null);
               setCart([]);
               setActiveBookingDraft(null);
               setIsLoading(false);
@@ -230,7 +250,7 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
 
   const refreshAddresses = async () => {
     if (user) {
-      await loadUserData(user);
+      await loadUserData(user, false);
     }
   };
 
@@ -258,6 +278,7 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
         selectedAddress,
         savedAddresses,
         currentZoneId,
+        detectedZone,
         isLoading,
         cart,
         activeBookingDraft,

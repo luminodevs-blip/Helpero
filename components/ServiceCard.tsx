@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useClientAuth } from "@/app/contexts/ClientAuthContext";
 import { useCartAnimation } from "@/app/contexts/CartAnimationContext";
 import { BookingDraft } from "@/lib/types";
-import { Star, Sparkles, ChevronDown, ChevronUp, X, Key, Zap, Droplet, DoorOpen, ParkingCircle, Box, Square, Package, Maximize, Wrench, Wifi, AppWindow, Leaf } from "lucide-react";
+import { Star, Sparkles, ChevronDown, ChevronUp, X, Key, Zap, Droplet, DoorOpen, ParkingCircle, Box, Square, Package, Maximize, Wrench, Wifi, AppWindow, Leaf, RotateCcw } from "lucide-react";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 const iconMap: Record<string, any> = {
   access: Key,
@@ -32,11 +33,24 @@ interface ServiceCardProps {
 
 export default function ServiceCard({ service, onClick, className = "" }: ServiceCardProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { triggerAnimation } = useCartAnimation();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showResumeModal, setShowResumeModal] = useState(false);
   const [reviews, setReviews] = useState<any[]>([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const [activeFilter, setActiveFilter] = useState("Most detailed");
+
+  // Lock body scroll when detail sheet or resume modal is open
+  useBodyScrollLock(isExpanded || showResumeModal);
+
+  const autoExpandId = searchParams?.get("serviceId");
+
+  useEffect(() => {
+    if (autoExpandId && Number(autoExpandId) === Number(service.id)) {
+      setIsExpanded(true);
+    }
+  }, [autoExpandId, service.id]);
 
   useEffect(() => {
     if (isExpanded) {
@@ -133,14 +147,20 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
     }
   };
 
-  const handleBookNow = () => {
-    if (!service) return;
+  const handleResumeBooking = () => {
+    const catId = Number(service.category_id);
+    const existingDraft = cart.find((item) => item.categoryId === catId);
+    if (existingDraft) {
+      setActiveDraft(existingDraft);
+    }
+    setShowResumeModal(false);
+    router.push("/configure");
+  };
 
+  const handleStartFresh = () => {
     const sId = Number(service.id);
     const catId = Number(service.category_id);
-
     const filteredCart = cart.filter((item) => item.categoryId !== catId);
-
     const newDraft: BookingDraft = {
       currentCartId: `${sId}-${Date.now()}`,
       serviceId: sId,
@@ -154,11 +174,61 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
       selectedAddons: [],
       address: null,
     };
-
     updateCart([...filteredCart, newDraft]);
     setActiveDraft(newDraft);
-
+    setShowResumeModal(false);
     router.push("/configure");
+  };
+
+  const handleBookNow = () => {
+    if (!service) return;
+
+    const sId = Number(service.id);
+    const catId = Number(service.category_id);
+
+    const existingDraft = cart.find((item) => item.categoryId === catId);
+
+    if (existingDraft) {
+      if (existingDraft.serviceId === sId) {
+        setShowResumeModal(true);
+      } else {
+        // Discard existing draft in category if service is different, and create fresh
+        const filteredCart = cart.filter((item) => item.categoryId !== catId);
+        const newDraft: BookingDraft = {
+          currentCartId: `${sId}-${Date.now()}`,
+          serviceId: sId,
+          categoryId: catId,
+          serviceName: service.name,
+          basePrice: service.base_price || 0,
+          baseDuration: service.duration_minutes || 60,
+          totalPrice: service.base_price || 0,
+          totalDuration: service.duration_minutes || 60,
+          itemsPrice: service.base_price || 0,
+          selectedAddons: [],
+          address: null,
+        };
+        updateCart([...filteredCart, newDraft]);
+        setActiveDraft(newDraft);
+        router.push("/configure");
+      }
+    } else {
+      const newDraft: BookingDraft = {
+        currentCartId: `${sId}-${Date.now()}`,
+        serviceId: sId,
+        categoryId: catId,
+        serviceName: service.name,
+        basePrice: service.base_price || 0,
+        baseDuration: service.duration_minutes || 60,
+        totalPrice: service.base_price || 0,
+        totalDuration: service.duration_minutes || 60,
+        itemsPrice: service.base_price || 0,
+        selectedAddons: [],
+        address: null,
+      };
+      updateCart([...cart, newDraft]);
+      setActiveDraft(newDraft);
+      router.push("/configure");
+    }
   };
 
   return (
@@ -535,6 +605,51 @@ export default function ServiceCard({ service, onClick, className = "" }: Servic
             @keyframes slideUp {
               from { transform: translateY(100%); }
               to { transform: translateY(0); }
+            }
+          `}} />
+        </div>
+      )}
+
+      {showResumeModal && (
+        <div 
+          className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/40 backdrop-blur-[2px]"
+          onClick={() => setShowResumeModal(false)}
+        >
+          <div 
+            className="bg-white rounded-[24px] p-6 w-[calc(100%-32px)] max-w-sm shadow-2xl flex flex-col items-center text-center border border-zinc-100 relative z-10"
+            onClick={(e) => e.stopPropagation()}
+            style={{ animation: "scaleUp 0.25s ease-out forwards" }}
+          >
+            <div className="w-12 h-12 rounded-full bg-[#7B82F4]/10 text-[#7B82F4] flex items-center justify-center mb-4">
+              <RotateCcw className="h-5 w-5" />
+            </div>
+
+            <h3 className="font-outfit text-[18px] font-bold text-zinc-900 mb-2">
+              Resume Booking?
+            </h3>
+            <p className="text-[13.5px] text-zinc-500 font-medium leading-relaxed mb-6">
+              You have an unfinished booking for {service.name}. Would you like to resume where you left off or start fresh?
+            </p>
+
+            <div className="flex flex-col gap-2.5 w-full">
+              <button
+                onClick={handleResumeBooking}
+                className="bg-[#7B82F4] text-white font-semibold text-[14.5px] py-3 rounded-xl hover:bg-[#6c73e0] active:scale-95 transition-all text-center w-full shadow-sm"
+              >
+                Yes, resume configuration
+              </button>
+              <button
+                onClick={handleStartFresh}
+                className="border border-zinc-200 text-zinc-700 font-semibold text-[14.5px] py-3 rounded-xl hover:bg-zinc-50 active:scale-95 transition-all text-center w-full"
+              >
+                Start fresh
+              </button>
+            </div>
+          </div>
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes scaleUp {
+              from { transform: scale(0.9); opacity: 0; }
+              to { transform: scale(1); opacity: 1; }
             }
           `}} />
         </div>

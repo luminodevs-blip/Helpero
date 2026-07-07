@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { X, Info } from "lucide-react";
 import ServiceTermsBottomSheet from "./ServiceTermsBottomSheet";
 
@@ -30,6 +31,11 @@ export default function EntryMethodBottomSheet({
   const [notes, setNotes] = useState(initialNotes);
   const [isClosing, setIsClosing] = useState(false);
   const [isServiceTermsOpen, setIsServiceTermsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Swipe-to-close refs
   const touchStartY = useRef<number | null>(null);
@@ -50,7 +56,7 @@ export default function EntryMethodBottomSheet({
     };
   }, [isOpen, initialMethod, initialNotes]);
 
-  if (!isOpen && !isClosing) return null;
+  if ((!isOpen && !isClosing) || !mounted) return null;
 
   const handleClose = () => {
     setIsClosing(true);
@@ -107,7 +113,7 @@ export default function EntryMethodBottomSheet({
     touchStartY.current = null;
   };
 
-  return (
+  return createPortal(
     <>
       <div
         className={`fixed inset-0 bg-zinc-900/40 z-50 transition-opacity duration-300 ${
@@ -117,7 +123,7 @@ export default function EntryMethodBottomSheet({
       />
       <div
         ref={sheetRef}
-        className={`fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-[20px] max-w-md mx-auto shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col ${
+        className={`fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-[14px] max-w-md mx-auto shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col ${
           isClosing || !isOpen ? "translate-y-full" : "translate-y-0"
         }`}
         style={{ maxHeight: "90vh" }}
@@ -141,10 +147,10 @@ export default function EntryMethodBottomSheet({
             </button>
           </div>
           <div className="flex flex-col items-center">
-            <h2 className="font-outfit text-[20px] font-semibold text-zinc-900 mb-[4px]">
+            <h2 className="font-outfit text-[20px] font-extrabold text-zinc-900 mb-[4px]">
               How will we enter?
             </h2>
-            <p className="text-[14.5px] font-sans font-normal text-zinc-500 text-center mb-[24px]">
+            <p className="text-sm font-sans font-semibold text-zinc-500 text-center mb-[24px]">
               Choose how the cleaner can enter your home.
             </p>
           </div>
@@ -157,20 +163,20 @@ export default function EntryMethodBottomSheet({
               <div
                 key={method.id}
                 onClick={() => setSelectedMethod(method.id)}
-                className={`flex items-center p-4 rounded-[12px] border cursor-pointer transition-all ${
+                className={`flex items-center p-4 rounded-2xl border cursor-pointer transition-all ${
                   isSelected
                     ? "border-[#7B82F4] bg-[#7B82F4]/5"
                     : "border-zinc-200 bg-white hover:border-zinc-300"
                 }`}
               >
-                <div className="w-[38px] h-[38px] bg-white border border-zinc-100 rounded-[10px] flex items-center justify-center shadow-sm text-lg mr-4 shrink-0">
+                <div className="w-[38px] h-[38px] bg-white border border-zinc-100 rounded-xl flex items-center justify-center shadow-sm text-lg mr-4 shrink-0">
                   {method.emoji}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-outfit text-[16px] font-medium text-zinc-900 leading-tight">
+                  <h3 className="font-outfit text-[15px] font-bold text-zinc-900 leading-tight">
                     {method.title}
                   </h3>
-                  <p className="font-sans text-[14px] font-normal text-zinc-500 mt-0.5">
+                  <p className="font-sans text-xs font-semibold text-zinc-500 mt-0.5">
                     {method.subtitle}
                   </p>
                 </div>
@@ -190,14 +196,14 @@ export default function EntryMethodBottomSheet({
           })}
 
           <div className="mt-8">
-            <h4 className="font-outfit text-[14.5px] font-medium text-zinc-900 mb-[14px]">
+            <h4 className="font-outfit text-[15px] font-bold text-zinc-900 mb-[14px]">
               Access notes (optional)
             </h4>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Example: gate code, parking instructions, call upon arrival..."
-              className="w-full bg-[#F5F7FB] border border-transparent focus:border-[#7B82F4] rounded-[14px] p-4 font-sans text-[14px] font-normal text-zinc-900 placeholder:text-zinc-400 outline-none resize-none transition-colors"
+              className="w-full bg-[#F1F4F8] border border-transparent focus:border-[#7B82F4] rounded-2xl p-4 font-sans text-sm font-semibold text-zinc-900 placeholder:text-zinc-400 outline-none resize-none transition-colors"
               rows={4}
             />
           </div>
@@ -206,7 +212,7 @@ export default function EntryMethodBottomSheet({
         <div className="absolute bottom-0 left-0 right-0 p-5 bg-white border-t border-zinc-100 pb-[40px] shrink-0">
           <button
             onClick={handleUpdate}
-            className="w-full h-[50px] bg-[#14181B] text-white rounded-[8px] font-sans text-[16px] font-semibold flex items-center justify-center hover:bg-zinc-800 transition-colors active:scale-[0.98] shadow-md"
+            className="w-full h-[50px] bg-[#14181B] text-white rounded-xl font-sans text-base font-semibold flex items-center justify-center hover:bg-zinc-800 transition-colors active:scale-[0.98] shadow-md"
           >
             Update Booking
           </button>
@@ -217,6 +223,7 @@ export default function EntryMethodBottomSheet({
         isOpen={isServiceTermsOpen} 
         onClose={() => setIsServiceTermsOpen(false)} 
       />
-    </>
+    </>,
+    document.body
   );
 }

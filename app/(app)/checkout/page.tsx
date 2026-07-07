@@ -48,7 +48,14 @@ function useCountdown(initialSeconds: number | null, onExpire: () => void) {
 }
 export default function CheckoutPage() {
   const router = useRouter();
-  const { activeBookingDraft, selectedAddress, user, cart, updateCart, setActiveDraft } = useClientAuth();
+  const { activeBookingDraft, selectedAddress, currentZoneId, user, cart, updateCart, setActiveDraft } = useClientAuth();
+
+  // Redirect to Home if out of service area or no address selected
+  useEffect(() => {
+    if (!selectedAddress || currentZoneId === null) {
+      router.replace("/");
+    }
+  }, [selectedAddress, currentZoneId, router]);
 
   const [isTimerExpired, setIsTimerExpired] = useState(false);
   const [initialSeconds, setInitialSeconds] = useState<number | null>(null);
@@ -98,6 +105,32 @@ export default function CheckoutPage() {
 
   // Payment Method state
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<"apple_pay" | "bank_card">("bank_card");
+  const [dbTotals, setDbTotals] = useState<any | null>(null);
+
+  useEffect(() => {
+    if (!activeBookingDraft || !selectedAddress || currentZoneId === null) return;
+
+    const fetchTotals = async () => {
+      try {
+        const addonIds = (activeBookingDraft.selectedAddons || []).map((a) => a.id);
+        const { data, error } = await supabase.rpc("calculate_order_total", {
+          p_service_id: activeBookingDraft.serviceId,
+          p_addon_ids: addonIds,
+          p_zone_id: currentZoneId,
+          p_promo_code: promoCode || null,
+          p_user_id: user?.id || null,
+        });
+
+        if (!error && data) {
+          setDbTotals(data);
+        }
+      } catch (err) {
+        console.error("Error fetching database totals:", err);
+      }
+    };
+
+    fetchTotals();
+  }, [activeBookingDraft, selectedAddress, currentZoneId, promoCode, user]);
 
   useEffect(() => {
     const saved = localStorage.getItem("preferred_payment_method");
@@ -166,39 +199,39 @@ export default function CheckoutPage() {
     (sum, a) => sum + a.totalPrice,
     0
   );
-  const visitFee = activeBookingDraft.visit?.fee || 0;
-  const subtotal = basePrice + addonsTotal + visitFee;
+  const localVisitFee = activeBookingDraft.visit?.fee || 0; // Time slot surcharge
+  const localMinimumTopUp = addonsTotal < basePrice ? basePrice - addonsTotal : 0;
+  const subtotal = basePrice + addonsTotal; // Base service subtotal
   const taxRate = 0.13; // Ontario HST
-  const taxAmount = subtotal * taxRate;
-  const totalBeforePromo = subtotal + taxAmount;
+  const taxAmount = (subtotal + localMinimumTopUp) * taxRate;
+  const totalBeforePromo = subtotal + localMinimumTopUp + taxAmount;
   const grandTotal = Math.max(0, totalBeforePromo - promoDiscount);
 
   const handleApplyPromo = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!promoInput.trim()) return;
+    const cleanCode = promoInput.trim().toUpperCase();
+    if (!cleanCode || currentZoneId === null) return;
     setLoading(true);
     setError(null);
     try {
-      const { data, error: promoError } = await supabase
-        .from("promo_codes")
-        .select("*")
-        .eq("code", promoInput.trim().toUpperCase())
-        .eq("is_active", true)
-        .maybeSingle();
+      const addonIds = (activeBookingDraft.selectedAddons || []).map((a) => a.id);
+      const { data, error: rpcError } = await supabase.rpc("calculate_order_total", {
+        p_service_id: activeBookingDraft.serviceId,
+        p_addon_ids: addonIds,
+        p_zone_id: currentZoneId,
+        p_promo_code: cleanCode,
+        p_user_id: user?.id || null,
+      });
 
-      if (promoError || !data) {
-        setError("Invalid or expired promo code");
-        setLoading(false);
-        return;
+      if (rpcError || !data || data.promo_info?.status !== "applied") {
+        setError(data?.promo_info?.error || "Invalid or expired promo code");
+        setPromoCode(null);
+        setPromoDiscount(0);
+      } else {
+        setPromoCode(cleanCode);
+        setPromoDiscount(Number(data.promo_info.discount || 0));
+        setIsPromoExpanded(false);
       }
-
-      setPromoCode(data.code);
-      setPromoDiscount(
-        data.discount_type === "percentage"
-          ? (subtotal * data.discount_value) / 100
-          : data.discount_value
-      );
-      setIsPromoExpanded(false);
     } catch {
       setError("Failed to validate promo code");
     } finally {
@@ -277,7 +310,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[140px] relative flex flex-col border-x border-zinc-100 shadow-md font-sans animate-page-fade-in">
+    <div className="w-full max-w-md mx-auto min-h-screen bg-white pb-[140px] relative flex flex-col border-x border-zinc-100 shadow-md font-sans ">
       {/* Header */}
       <div className="bg-white px-5 pt-[52px] pb-[16px] flex items-center relative shrink-0">
         <button
@@ -494,20 +527,48 @@ export default function CheckoutPage() {
           {/* Price Breakdown */}
           <div className="!mt-[16px] space-y-2">
             <div className="flex justify-between font-sans text-[15px] font-normal">
-              <span className="text-zinc-900">Sub total</span>
-              <span className="text-zinc-900">${subtotal.toFixed(2)}</span>
+              <span className="text-zinc-500">Service subtotal</span>
+              <span className="text-zinc-900">${(dbTotals?.subtotal ?? subtotal).toFixed(2)}</span>
             </div>
-            
-            {visitFee > 0 && (
+
+            {((dbTotals ? dbTotals.visit_fee : localMinimumTopUp) > 0) && (
               <div className="flex justify-between font-sans text-[15px] font-normal">
-                <span className="text-zinc-900">Booking Fee</span>
-                <span className="text-zinc-900">${visitFee.toFixed(2)}</span>
+                <span className="text-zinc-500">Minimum order top-up</span>
+                <span className="text-zinc-900">${(dbTotals ? dbTotals.visit_fee : localMinimumTopUp).toFixed(2)}</span>
               </div>
             )}
-            
+
+            {dbTotals && dbTotals.trip_fee > 0 && (
+              <div className="flex justify-between font-sans text-[15px] font-normal">
+                <span className="text-zinc-500">Travel fee</span>
+                <span className="text-zinc-900">${dbTotals.trip_fee.toFixed(2)}</span>
+              </div>
+            )}
+
+            {dbTotals && dbTotals.booking_fee > 0 && (
+              <div className="flex justify-between font-sans text-[15px] font-normal">
+                <span className="text-zinc-500">Trust & Safety fee</span>
+                <span className="text-zinc-900">${dbTotals.booking_fee.toFixed(2)}</span>
+              </div>
+            )}
+
+            {dbTotals && dbTotals.high_demand_fee > 0 && (
+              <div className="flex justify-between font-sans text-[15px] font-normal">
+                <span className="text-zinc-500">High demand surge</span>
+                <span className="text-zinc-900">${dbTotals.high_demand_fee.toFixed(2)}</span>
+              </div>
+            )}
+
+            {(dbTotals ? dbTotals.promo_discount > 0 : promoDiscount > 0) && (
+              <div className="flex justify-between font-sans text-[15px] font-normal text-[#7B82F4]">
+                <span>Promo discount</span>
+                <span>-${(dbTotals ? dbTotals.promo_discount : promoDiscount).toFixed(2)}</span>
+              </div>
+            )}
+
             <div className="flex justify-between font-sans text-[15px] font-normal items-center">
-              <div className="flex items-center gap-1.5 text-zinc-900">
-                Taxes & Fees
+              <div className="flex items-center gap-1.5 text-zinc-500">
+                Taxes (13% HST)
                 <button 
                   type="button" 
                   className="p-1 -m-1 hover:opacity-80 transition-opacity"
@@ -516,19 +577,12 @@ export default function CheckoutPage() {
                   <Info className="h-3.5 w-3.5 text-zinc-400" />
                 </button>
               </div>
-              <span className="text-zinc-900">${taxAmount.toFixed(2)}</span>
+              <span className="text-zinc-900">${(dbTotals ? dbTotals.taxes : taxAmount).toFixed(2)}</span>
             </div>
 
-            {promoDiscount > 0 && (
-              <div className="flex justify-between font-sans text-[15px] font-normal text-[#7B82F4]">
-                <span>Discount</span>
-                <span>-${promoDiscount.toFixed(2)}</span>
-              </div>
-            )}
-
-            <div className="flex justify-between font-outfit text-[17px] font-medium text-zinc-900">
+            <div className="flex justify-between font-outfit text-[17px] font-bold text-zinc-900 !mt-3 pt-3 border-t border-zinc-100">
               <span>Total</span>
-              <span>${grandTotal.toFixed(2)}</span>
+              <span>${(dbTotals ? dbTotals.total : grandTotal).toFixed(2)}</span>
             </div>
           </div>
 

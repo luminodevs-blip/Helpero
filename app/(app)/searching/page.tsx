@@ -20,6 +20,9 @@ import {
   Home,
 } from "lucide-react";
 
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "AIzaSyC_tcXVeDFmHjvpPz-ZMZXceu5PSppmXPM";
+const LIBRARIES: any[] = ["places"];
+
 interface Specialist {
   id: string;
   first_name: string;
@@ -75,7 +78,8 @@ function SearchingContent() {
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+    libraries: LIBRARIES,
   });
 
   useEffect(() => {

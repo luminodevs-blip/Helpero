@@ -65,15 +65,6 @@ export default function CategoryPage() {
     loadCategoryData();
   }, [categoryId]);
 
-  // Prefetch services details to make page navigation instant
-  useEffect(() => {
-    if (services.length > 0) {
-      services.forEach((s) => {
-        router.prefetch(`/service/${s.id}`);
-      });
-    }
-  }, [services, router]);
-
   const handleShare = async () => {
     try {
       await navigator.share({ title: category?.name, url: window.location.href });
@@ -111,7 +102,7 @@ export default function CategoryPage() {
   const totalBookings = services.reduce((acc, s) => acc + (s.bookings_count ?? s.reviews_count ?? 0), 0) || 182;
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen bg-zinc-200 relative flex flex-col animate-page-fade-in">
+    <div className="w-full max-w-md mx-auto min-h-screen bg-zinc-200 relative flex flex-col">
 
       {/* ── 1. HERO: Video or Image — background layer ── */}
       <div className="h-[280px] w-full relative flex-shrink-0 overflow-hidden">

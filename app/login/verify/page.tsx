@@ -204,153 +204,144 @@ function VerifyOtpPageContent() {
   };
 
   return (
-    <div
-      className="animate-page-fade-in"
-      style={{
-        minHeight: "100dvh",
-        background: "#ffffff",
-        display: "flex",
-        flexDirection: "column",
-        padding: "0 16px",
-        maxWidth: 430,
-        margin: "0 auto",
-        boxSizing: "border-box",
-      }}
-    >
-      {/* Back Button */}
-      <div style={{ paddingTop: 56, marginBottom: 34 }}>
-        <button
-          onClick={() => router.push("/login")}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            padding: 0,
-            color: "#374151",
-          }}
-        >
-          <ArrowLeft size={24} color="#374151" />
-        </button>
-      </div>
-
-      {/* Title & Subtitle */}
-      <div style={{ marginBottom: 32 }}>
-        <h2
-          style={{
-            fontFamily: "'Outfit', sans-serif",
-            fontSize: 24,
-            fontWeight: 600,
-            color: "#111111",
-            margin: "0 0 10px",
-            lineHeight: 1.2,
-          }}
-        >
-          Confirm phone
-        </h2>
-        <p style={{ fontSize: 16, color: "#6b7280", margin: "0 0 4px", fontWeight: 400 }}>
-          A confirmation code has been sent to:
-        </p>
-        <p style={{ fontSize: 16, color: "#111111", fontWeight: 400, margin: 0 }}>
-          {formatPhoneDisplay(phone)}
-        </p>
-      </div>
-
-      {/* Error Alert */}
-      {error && (
-        <div
-          style={{
-            marginBottom: 16,
-            background: "#fff0f0",
-            border: "1px solid #fca5a5",
-            borderRadius: 10,
-            padding: "10px 14px",
-            fontSize: 13,
-            color: "#dc2626",
-          }}
-        >
-          {error}
-        </div>
-      )}
-
-      {/* OTP Pin Grid */}
-      <form onSubmit={handleVerify}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            gap: 8,
-            marginBottom: 32,
-          }}
-        >
-          {otp.map((digit, idx) => (
-            <input
-              key={idx}
-              type="text"
-              inputMode="numeric"
-              maxLength={1}
-              autoComplete={idx === 0 ? "one-time-code" : "off"}
-              value={digit}
-              placeholder="–"
-              ref={(el) => {
-                inputRefs.current[idx] = el;
-              }}
-              onChange={(e) => handleInputChange(e.target.value, idx)}
-              onKeyDown={(e) => handleKeyDown(e, idx)}
-              onPaste={idx === 0 ? handlePaste : undefined}
-              style={{
-                width: 50,
-                height: 50,
-                flexShrink: 0,
-                textAlign: "center",
-                fontSize: 24,
-                fontWeight: 400,
-                color: "#111111",
-                border: "2px solid #e5e7eb",
-                borderRadius: 12,
-                background: "#ffffff",
-                outline: "none",
-                transition: "border-color 0.15s",
-              }}
-              onFocus={(e) => (e.target.style.borderColor = "#7B82F4")}
-              onBlur={(e) => (e.target.style.borderColor = digit ? "#7B82F4" : "#e5e7eb")}
-            />
-          ))}
+    <div className="flex w-full min-h-screen items-center justify-center bg-[#1a1a2e] sm:p-4 animate-page-fade-in">
+      {/* Phone-sized container: full screen on mobile, card on desktop */}
+      <div className="relative w-full h-screen sm:h-[870px] sm:max-h-[95vh] overflow-hidden sm:rounded-[28px] sm:shadow-2xl bg-white flex flex-col max-w-[430px] border border-zinc-100 sm:border-zinc-200 px-6 pt-12 pb-8 sm:px-8 sm:py-8">
+        {/* Back Button */}
+        <div style={{ marginBottom: 34 }}>
+          <button
+            onClick={() => router.push("/login")}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 0,
+              color: "#374151",
+            }}
+          >
+            <ArrowLeft size={24} color="#374151" />
+          </button>
         </div>
 
-        {/* Loading spinner shown while verifying */}
-        {loading && (
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
-            <svg className="animate-spin h-6 w-6" style={{ color: "#7B82F4" }} fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-            </svg>
+        {/* Title & Subtitle */}
+        <div style={{ marginBottom: 32 }}>
+          <h2
+            style={{
+              fontFamily: "'Outfit', sans-serif",
+              fontSize: 24,
+              fontWeight: 600,
+              color: "#111111",
+              margin: "0 0 10px",
+              lineHeight: 1.2,
+            }}
+          >
+            Confirm phone
+          </h2>
+          <p style={{ fontSize: 16, color: "#6b7280", margin: "0 0 4px", fontWeight: 400 }}>
+            A confirmation code has been sent to:
+          </p>
+          <p style={{ fontSize: 16, color: "#111111", fontWeight: 400, margin: 0 }}>
+            {formatPhoneDisplay(phone)}
+          </p>
+        </div>
+
+        {/* Error Alert */}
+        {error && (
+          <div
+            style={{
+              marginBottom: 16,
+              background: "#fff0f0",
+              border: "1px solid #fca5a5",
+              borderRadius: 10,
+              padding: "10px 14px",
+              fontSize: 13,
+              color: "#dc2626",
+            }}
+          >
+            {error}
           </div>
         )}
 
-        {/* Resend */}
-        <div style={{ textAlign: "center" }}>
-          <button
-            type="button"
-            disabled={!canResend}
-            onClick={handleResend}
+        {/* OTP Pin Grid */}
+        <form onSubmit={handleVerify}>
+          <div
             style={{
-              background: "none",
-              border: "none",
-              cursor: canResend ? "pointer" : "default",
-              fontSize: 16,
-              fontWeight: 400,
-              color: canResend ? "#7B82F4" : "#9ca3af",
-              padding: "8px 0",
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 8,
+              marginBottom: 32,
             }}
           >
-            {canResend
-              ? "Send again"
-              : `Send again  ${String(Math.floor(resendTimer / 60)).padStart(2, "0")}:${String(resendTimer % 60).padStart(2, "0")}`}
-          </button>
-        </div>
-      </form>
+            {otp.map((digit, idx) => (
+              <input
+                key={idx}
+                type="text"
+                inputMode="numeric"
+                maxLength={1}
+                autoComplete={idx === 0 ? "one-time-code" : "off"}
+                value={digit}
+                placeholder="–"
+                ref={(el) => {
+                  inputRefs.current[idx] = el;
+                }}
+                onChange={(e) => handleInputChange(e.target.value, idx)}
+                onKeyDown={(e) => handleKeyDown(e, idx)}
+                onPaste={idx === 0 ? handlePaste : undefined}
+                style={{
+                  width: 50,
+                  height: 50,
+                  flexShrink: 0,
+                  textAlign: "center",
+                  fontSize: 24,
+                  fontWeight: 400,
+                  color: "#111111",
+                  border: "2px solid #e5e7eb",
+                  borderRadius: 12,
+                  background: "#ffffff",
+                  outline: "none",
+                  transition: "border-color 0.15s",
+                }}
+                onFocus={(e) => (e.target.style.borderColor = "#7B82F4")}
+                onBlur={(e) => (e.target.style.borderColor = digit ? "#7B82F4" : "#e5e7eb")}
+              />
+            ))}
+          </div>
+
+          {/* Loading spinner shown while verifying */}
+          {loading && (
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
+              <svg className="animate-spin h-6 w-6" style={{ color: "#7B82F4" }} fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+            </div>
+          )}
+
+          {/* Resend */}
+          <div style={{ textAlign: "center" }}>
+            <button
+              type="button"
+              disabled={!canResend}
+              onClick={handleResend}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: canResend ? "pointer" : "default",
+                fontSize: 16,
+                fontWeight: 400,
+                color: canResend ? "#7B82F4" : "#9ca3af",
+                padding: "8px 0",
+              }}
+            >
+              {canResend
+                ? "Send again"
+                : `Send again  ${String(Math.floor(resendTimer / 60)).padStart(2, "0")}:${String(resendTimer % 60).padStart(2, "0")}`}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

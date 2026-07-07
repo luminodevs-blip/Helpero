@@ -112,7 +112,7 @@ export default function SearchPage() {
   );
 
   return (
-    <div className="flex flex-col flex-1 bg-white animate-page-fade-in">
+    <div className="flex flex-col flex-1 bg-white">
 
       {/* ── PINNED BAR: instant, no animation, identical to original ── */}
       {pinned && (
@@ -156,8 +156,35 @@ export default function SearchPage() {
         <div className="h-[1px] bg-zinc-100 w-[calc(100%+40px)] -mx-5" />
 
         {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <Loader2 className="h-8 w-8 text-primary animate-spin" />
+          <div className="flex flex-col">
+            {[...Array(5)].map((_, i) => (
+              <div
+                key={i}
+                className="py-5 flex gap-4 border-b border-zinc-100 last:border-0"
+              >
+                {/* LEFT: text lines */}
+                <div className="flex-1 min-w-0 flex flex-col gap-2">
+                  {/* Title */}
+                  <div className="h-[22px] w-[62%] rounded-md bg-zinc-100 animate-shimmer" />
+                  {/* Price */}
+                  <div className="h-[16px] w-[40%] rounded-md bg-zinc-100 animate-shimmer" />
+                  {/* Divider */}
+                  <div className="h-[1px] w-full bg-zinc-100 mt-1" />
+                  {/* Bullet lines */}
+                  <div className="h-[14px] w-[88%] rounded-md bg-zinc-100 animate-shimmer" />
+                  <div className="h-[14px] w-[72%] rounded-md bg-zinc-100 animate-shimmer" />
+                  <div className="h-[14px] w-[80%] rounded-md bg-zinc-100 animate-shimmer" />
+                  {/* Learn more stub */}
+                  <div className="h-[14px] w-[28%] rounded-md bg-zinc-100 animate-shimmer mt-2" />
+                </div>
+
+                {/* RIGHT: image + button */}
+                <div className="flex flex-col gap-2 flex-shrink-0 w-[100px]">
+                  <div className="h-[100px] w-full rounded-[8px] bg-zinc-100 animate-shimmer" />
+                  <div className="h-[34px] w-full rounded-[8px] bg-zinc-100 animate-shimmer" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : results.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center space-y-3">

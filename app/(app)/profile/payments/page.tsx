@@ -22,6 +22,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 // Initialize Stripe Promise
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "");
@@ -202,6 +203,8 @@ export default function PaymentsPage() {
   const [deleteConfirmCard, setDeleteConfirmCard] = useState<any | null>(null);
   const [deleting, setDeleting] = useState(false);
 
+  useBodyScrollLock(isAddCardOpen || deleteConfirmCard !== null);
+
   const fetchBalanceAndCards = async () => {
     if (!user) return;
     try {
@@ -327,7 +330,7 @@ export default function PaymentsPage() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto min-h-screen bg-white relative flex flex-col border-x border-alternate shadow-md animate-page-fade-in">
+    <div className="w-full max-w-md mx-auto min-h-screen bg-white relative flex flex-col border-x border-alternate shadow-md">
       {/* Header */}
       <div className="px-5 pt-12 pb-4 flex flex-col gap-4 sticky top-0 bg-white z-10">
         <button

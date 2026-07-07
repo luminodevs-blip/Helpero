@@ -20,7 +20,7 @@ export default function CartIcon({ className = "" }: CartIconProps) {
         <ShoppingCart className="h-4.5 w-4.5 text-white" />
       </div>
       {cart.length > 0 && (
-        <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#f43f5e] text-[9px] font-bold text-white shadow-md">
+        <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-white text-[10px] font-extrabold text-[#7B82F4] shadow-md border border-[#7B82F4]/10">
           {cart.length}
         </span>
       )}
