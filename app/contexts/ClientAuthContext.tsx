@@ -34,7 +34,12 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
   const [selectedAddress, setSelectedAddress] = useState<AddressStruct | null>(null);
   const [savedAddresses, setSavedAddresses] = useState<AddressStruct[]>([]);
   const [currentZoneId, setCurrentZoneId] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => {
+    if (typeof window !== "undefined" && window.self !== window.top) {
+      return false; // Disable loading splash screens inside visual editor previews
+    }
+    return true;
+  });
 
   // Cart state
   const [cart, setCart] = useState<BookingDraft[]>([]);
@@ -61,7 +66,10 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
   // Fetch houses/addresses and profile data
   const loadUserData = async (currentUser: User) => {
     try {
-      setIsLoading(true);
+      const isIframe = typeof window !== "undefined" && window.self !== window.top;
+      if (!isIframe) {
+        setIsLoading(true);
+      }
       
       // 1. Fetch Profile
       const { data: profileData, error: profileErr } = await supabase
@@ -141,40 +149,58 @@ export function ClientAuthProvider({ children }: { children: React.ReactNode }) 
   };
 
   useEffect(() => {
-    // 1. Initial Session Check
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        loadUserData(session.user);
-      } else {
-        setIsLoading(false);
-      }
-    });
+    const isIframe = typeof window !== "undefined" && window.self !== window.top;
+    if (isIframe) {
+      setIsLoading(false);
+    }
 
-    // 2. Auth state change listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, currentSession) => {
-        setSession(currentSession);
-        setUser(currentSession?.user ?? null);
-
-        if (event === "SIGNED_IN" && currentSession?.user) {
-          await loadUserData(currentSession.user);
-        } else if (event === "SIGNED_OUT") {
-          setProfile(null);
-          setSelectedAddress(null);
-          setSavedAddresses([]);
-          setCurrentZoneId(null);
-          setCart([]);
-          setActiveBookingDraft(null);
+    try {
+      // 1. Initial Session Check
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          loadUserData(session.user);
+        } else {
           setIsLoading(false);
         }
-      }
-    );
+      }).catch((err) => {
+        console.error("Supabase getSession error:", err);
+        setIsLoading(false);
+      });
 
-    return () => {
-      subscription.unsubscribe();
-    };
+      // 2. Auth state change listener
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        async (event, currentSession) => {
+          try {
+            setSession(currentSession);
+            setUser(currentSession?.user ?? null);
+
+            if (event === "SIGNED_IN" && currentSession?.user) {
+              await loadUserData(currentSession.user);
+            } else if (event === "SIGNED_OUT") {
+              setProfile(null);
+              setSelectedAddress(null);
+              setSavedAddresses([]);
+              setCurrentZoneId(null);
+              setCart([]);
+              setActiveBookingDraft(null);
+              setIsLoading(false);
+            }
+          } catch (err) {
+            console.error("Auth state change callback error:", err);
+            setIsLoading(false);
+          }
+        }
+      );
+
+      return () => {
+        subscription?.unsubscribe();
+      };
+    } catch (err) {
+      console.error("Auth initialization error (likely blocked localStorage inside iframe):", err);
+      setIsLoading(false);
+    }
   }, []);
 
   const setAddress = async (address: AddressStruct) => {
