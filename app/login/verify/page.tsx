@@ -7,13 +7,36 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 
 function formatPhoneDisplay(phone: string): string {
   if (!phone.startsWith("+")) return phone;
-  const digits = phone.slice(1); // remove +
-  // Country code: 1 digit for +1 (US/CA), 2 digits for most others
-  const ccLength = digits.startsWith("1") ? 1 : 2;
-  const cc = digits.slice(0, ccLength);
-  const rest = digits.slice(ccLength);
-  const groups = rest.match(/.{1,4}/g) || [];
-  return `+${cc} ${groups.join(" ")}`;
+  
+  let cc = "";
+  let digits = "";
+  
+  if (phone.startsWith("+1")) {
+    cc = "+1";
+    digits = phone.slice(2);
+  } else if (phone.startsWith("+371")) {
+    cc = "+371";
+    digits = phone.slice(4);
+  } else {
+    cc = phone.slice(0, 3);
+    digits = phone.slice(3);
+  }
+
+  if (cc === "+1") {
+    if (digits.length <= 3) return `${cc} ${digits}`;
+    if (digits.length <= 6) return `${cc} (${digits.slice(0, 3)}) ${digits.slice(3)}`;
+    return `${cc} (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+  }
+  
+  if (cc === "+44") {
+    if (digits.length <= 4) return `${cc} ${digits}`;
+    if (digits.length <= 7) return `${cc} ${digits.slice(0, 4)} ${digits.slice(4)}`;
+    return `${cc} ${digits.slice(0, 4)} ${digits.slice(4, 7)}-${digits.slice(7, 10)}`;
+  }
+  
+  if (digits.length <= 3) return `${cc} ${digits}`;
+  if (digits.length <= 6) return `${cc} ${digits.slice(0, 3)} ${digits.slice(3)}`;
+  return `${cc} ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 11)}`;
 }
 
 function VerifyOtpPageContent() {
